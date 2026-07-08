@@ -27,3 +27,8 @@ webtalk*
 # OS/editor noise
 .DS_Store
 Thumbs.db
+
+# Secrets - never commit
+.env
+.secrets/
+*.token
