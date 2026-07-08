@@ -140,3 +140,63 @@ xsim top -tclbatch xsim_run.tcl
 - 대표 GitHub commit link
 
 이 주간 정리는 나중에 포트폴리오, 면접 준비, 복습 자료로 바로 쓸 수 있다.
+
+## 자동화 (GitHub + Notion)
+
+이 repo는 `JH` 폴더(week1, week2, week3 전체 포함) 루트에서 git으로 관리하고, GitHub `pjh8047pjh-hue/ETRI`에 연결되어 있다. Notion 쪽에는 이 가이드 템플릿과 같은 구조의 "Daily Log" 데이터베이스가 연결되어 있다. 두 곳 다 사람이 직접 처음 한 번 설정해야 하는 부분과, 그 이후 매번 반복하는 부분이 나뉜다.
+
+### 사전 준비물 (한 번만 하면 됨)
+
+1. **git** — 이미 설치되어 있어야 함
+2. **GitHub CLI (`gh`)** — `winget install --id GitHub.cli -e` 로 설치 후 `gh auth login` 으로 브라우저 인증
+   - 새로 설치한 직후에는 새 터미널 창을 열어야 `gh` 명령이 PATH에서 인식됨
+   - `gh auth status` 로 로그인 상태 확인 가능
+3. **Notion Integration** — <https://www.notion.so/my-integrations> 에서 생성, "Internal Integration Secret" 토큰 발급
+4. **Notion Daily Log 데이터베이스** — Integration을 공유(Connections)해 둔 페이지 아래에 아래 속성으로 생성:
+   - `Name` (title), `Date` (date), `Topic` (rich_text), `GitHub` (url), `Tags` (multi_select)
+   - 본문은 이 가이드의 템플릿(한 일 / 수정한 파일 / 실행한 명령 / 결과 / 에러·해결 / 배운 점 / 다음 할 일 / GitHub 링크) 구조를 heading + bullet로 그대로 사용
+5. **`JH/.env` 파일** (git에 커밋되지 않음, `.gitignore`에 등록되어 있음):
+
+   ```text
+   NOTION_TOKEN=ntn_...
+   NOTION_DAILY_LOG_DB_ID=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+   ```
+
+6. **`JH/scripts/New-DailyLogPage.ps1`** — `.env`를 읽어서 Notion Daily Log 페이지 하나를 만들어주는 PowerShell 스크립트
+
+이 5가지가 이미 되어 있다면, 다른 사람이 이 repo를 이어받아도 아래 "매번 하는 일"만 반복하면 된다.
+
+### 매번 하는 일 (하루 작업 끝날 때)
+
+1. **GitHub**
+
+   ```powershell
+   cd C:\Users\user\Documents\JH
+   git status
+   git add <수정한 파일들>
+   git commit -m "Add APB memory slave module"
+   git push
+   ```
+
+2. **Notion** — PowerShell에서 스크립트 실행 (한글 인코딩 문제를 피하려면 스크립트 파일이 UTF-8 with BOM으로 저장되어 있어야 함):
+
+   ```powershell
+   & "C:\Users\user\Documents\JH\scripts\New-DailyLogPage.ps1" `
+     -Date "YYYY-MM-DD" `
+     -Topic "오늘 주제" `
+     -DidToday @("한 일 1", "한 일 2") `
+     -FilesChanged @("rtl/verilog/mem_apb.v") `
+     -Commands "xvlog -prj xsim.prj`nxelab ... -s top`nxsim top -tclbatch xsim_run.tcl" `
+     -Result @("compile 통과", "slave 0~3 test OK") `
+     -ErrorsFixed @("에러 상황 -> 해결 방법") `
+     -Learned @("배운 점") `
+     -NextTodo @("다음 할 일") `
+     -GithubUrl "https://github.com/pjh8047pjh-hue/ETRI/commit/<COMMIT_HASH>" `
+     -Tags @("APB")
+   ```
+
+   실행하면 콘솔에 생성된 Notion 페이지 URL이 출력된다.
+
+### 자동 실행 여부
+
+이 automation은 정해진 시간에 저절로 도는 cron이 아니라 **사람이(또는 Claude Code에게 "오늘 로그 정리해줘"라고 시켜서) 원할 때 실행하는 방식**이다. "한 일 / 에러 / 배운 점" 같은 항목은 그날 맥락을 이해해야 의미 있게 채울 수 있어서, 완전 자동화보다는 하루를 마무리하며 직접(혹은 Claude Code와 함께) 정리하는 쪽을 택했다.
