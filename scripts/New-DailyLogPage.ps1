@@ -35,7 +35,6 @@ if (-not $token -or -not $dbId) { throw "NOTION_TOKEN / NOTION_DAILY_LOG_DB_ID n
 $headers = @{
     "Authorization"  = "Bearer $token"
     "Notion-Version" = "2022-06-28"
-    "Content-Type"   = "application/json"
 }
 
 function New-BulletBlocks([string[]]$Items) {
@@ -98,8 +97,10 @@ $body = @{
     children   = $children
 } | ConvertTo-Json -Depth 20
 
+$bodyBytes = [System.Text.Encoding]::UTF8.GetBytes($body)
+
 try {
-    $page = Invoke-RestMethod -Uri "https://api.notion.com/v1/pages" -Headers $headers -Method Post -Body $body
+    $page = Invoke-RestMethod -Uri "https://api.notion.com/v1/pages" -Headers $headers -Method Post -Body $bodyBytes -ContentType "application/json; charset=utf-8"
     Write-Output "Created Notion page: $($page.url)"
 } catch {
     $resp = $_.Exception.Response
