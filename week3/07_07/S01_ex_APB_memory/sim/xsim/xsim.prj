@@ -1,0 +1,7 @@
+verilog work \
+        -d SIM -d VCD -d VIVADO -d AMBA3 -d AMBA4\
+	-i ../../bench/verilog\
+           ../../bench/verilog/top.v\
+           ../../bench/verilog/bfm_apb_s4.v\
+	-i ../../rtl/verilog\
+           ../../rtl/verilog/mem_apb.v

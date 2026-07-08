@@ -1,0 +1,29 @@
+# Xilinx / Vivado generated project files
+*.cache/
+*.runs/
+*.sim/
+*.Xil/
+.Xil/
+xsim.dir/
+*.jou
+*.log
+*.str
+*.bit
+*.ltx
+*.pb
+*.wdb
+*.dcp
+webtalk*
+.Rpr
+
+# Simulator / compiled binaries
+*.exe
+*.o
+*.obj
+
+# Installed tools copied into project folders
+**/gtkwave64/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
