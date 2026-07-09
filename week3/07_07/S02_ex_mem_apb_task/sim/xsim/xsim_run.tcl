@@ -1,4 +1,3 @@
-#log_wave -r /
-#run 1000 us
+log_wave -r /
 run all
 quit
