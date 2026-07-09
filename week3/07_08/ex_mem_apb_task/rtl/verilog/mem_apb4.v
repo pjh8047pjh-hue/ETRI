@@ -30,15 +30,15 @@ module mem_apb4
      , (* X_INTERFACE_PARAMETER = "ASSOCIATED_BUSIF S_APB, ASSOCIATED_RESET PRESETn" *)
        (* X_INTERFACE_INFO = "xilinx.com:signal:clock:1.0 PCLK CLK" *) input  wire         PCLK
      , (* X_INTERFACE_PARAMETER = "ASSOCIATED_BUSIF S_APB, ASSOCIATED_RESET PRESETn, CLK_DOMAIN PCLK" *)
-       (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSEL" *) input  wire         S_APB_PSEL
-     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PENABLE" *) input  wire         S_APB_PENABLE
-     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PADDR" *) input  wire [31:0]  S_APB_PADDR
+       (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSEL" *) input  wire           S_APB_PSEL
+     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PENABLE" *) input  wire        S_APB_PENABLE
+     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PADDR" *) input  wire [31:0]   S_APB_PADDR
      , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PWRITE" *) input  wire         S_APB_PWRITE
      , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PWDATA" *) input  wire [31:0]  S_APB_PWDATA
      , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PRDATA" *) output reg  [31:0]  S_APB_PRDATA
      , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PREADY" *) output reg          S_APB_PREADY
-     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSLVERR" *) output reg          S_APB_PSLVERR
-     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSTRB" *) input  wire [ 3:0]  S_APB_PSTRB
+     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSLVERR" *) output reg         S_APB_PSLVERR
+     , (* X_INTERFACE_INFO = "xilinx.com:interface:apb:1.0 S_APB PSTRB" *) input  wire [ 3:0]   S_APB_PSTRB
 );
 
      //---------------------------------------------------
@@ -64,8 +64,7 @@ module mem_apb4
      reg state = ST_IDLE;
 
      wire access        = S_APB_PSEL & S_APB_PENABLE;
-     wire access_ready  = (state == ST_DELAY) ? (cntDly >= DELAY)
-                                               : ((DELAY == 0) || !access);
+     wire access_ready  = (state == ST_DELAY) ? (cntDly >= DELAY) : ((DELAY == 0) || !access);
      wire transfer_done = access & access_ready;
 
      always @(*) begin
@@ -108,7 +107,7 @@ module mem_apb4
                     if (!access || access_ready) begin
                          cntDly <= 'h1;
                          state  <= ST_IDLE;
-                    end else begin
+                    end else begin 
                          cntDly <= cntDly + 1;
                     end
                end // ST_DELAY
