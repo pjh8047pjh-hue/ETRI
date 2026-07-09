@@ -24,6 +24,23 @@ webtalk*
 # Installed tools copied into project folders
 **/gtkwave64/
 
+# Vivado regenerated project trees / block-design outputs
+**/project_zed.gen/
+**/project_zed.cache/
+**/project_zed.hw/
+**/project_zed.sim/
+vivado_pid*.zip
+
+# Eclipse workspace metadata
+**/workspace.zed/.metadata/
+
+# Simulation waveform dumps (regenerated locally)
+*.vcd
+
+# Bulk reference/duplicate project copies
+week3/codes/
+week3/test/
+
 # OS/editor noise
 .DS_Store
 Thumbs.db
