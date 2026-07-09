@@ -8,9 +8,9 @@ module axi4_to_apb4_s3
       ,parameter integer WIDTH_PAD     =32 // address width
       ,parameter integer WIDTH_PDA     =32 // data width
       ,parameter integer WIDTH_PDS     =(WIDTH_PDA/8) // data strobe width
-      ,parameter integer ADDR_PBASE0   =32'hC0000000, PSIZE0='h1000
-      ,parameter integer ADDR_PBASE1   =32'hC0001000, PSIZE1='h1000
-      ,parameter integer ADDR_PBASE2   =32'hC0002000, PSIZE2='h1000
+      ,parameter integer ADDR_PBASE0   =32'h60000000, PSIZE0='h1000
+      ,parameter integer ADDR_PBASE1   =32'h60001000, PSIZE1='h1000
+      ,parameter integer ADDR_PBASE2   =32'h60002000, PSIZE2='h1000
       ,parameter         CLOCK_SYNC    ="SYNC")
 (
     (* X_INTERFACE_PARAMETER = "POLARITY ACTIVE_LOW" *)
@@ -1032,9 +1032,9 @@ endmodule
 //---------------------------------------------------------------------------
 module amba_apb_s3
      #(parameter P_NUM=3 // num of slaves
-               , P_PSEL0_START=32'hC0000000, P_PSEL0_SIZE=32'h00001000
-               , P_PSEL1_START=32'hC0001000, P_PSEL1_SIZE=32'h00001000
-               , P_PSEL2_START=32'hC0002000, P_PSEL2_SIZE=32'h00001000
+               , P_PSEL0_START=32'h60000000, P_PSEL0_SIZE=32'h00001000
+               , P_PSEL1_START=32'h60001000, P_PSEL1_SIZE=32'h00001000
+               , P_PSEL2_START=32'h60002000, P_PSEL2_SIZE=32'h00001000
                )
 (
        input   wire          PRESETn
@@ -1109,11 +1109,11 @@ endmodule
 //---------------------------------------------------------------------------
 module apb_decoder_s3
      #(parameter P_NUM=3 // num of slaves
-               , P_PSEL0_START=32'hC0000000, P_PSEL0_SIZE=32'h00001000
+               , P_PSEL0_START=32'h60000000, P_PSEL0_SIZE=32'h00001000
                , P_PSEL0_END  =P_PSEL0_START+P_PSEL0_SIZE
-               , P_PSEL1_START=32'hC0001000, P_PSEL1_SIZE=32'h00001000
+               , P_PSEL1_START=32'h60001000, P_PSEL1_SIZE=32'h00001000
                , P_PSEL1_END  =P_PSEL1_START+P_PSEL1_SIZE
-               , P_PSEL2_START=32'hC0002000, P_PSEL2_SIZE=32'h00001000
+               , P_PSEL2_START=32'h60002000, P_PSEL2_SIZE=32'h00001000
                , P_PSEL2_END  =P_PSEL2_START+P_PSEL2_SIZE
                )
 (
@@ -1124,9 +1124,13 @@ module apb_decoder_s3
      , output  wire        PSEL2
      , output  wire        PSELD // decoding error
 );
-   assign PSEL0 = ((PSEL==1'b1)&&(P_NUM>0)&&(PADDR>=P_PSEL0_START)&&(PADDR<P_PSEL0_END)) ? 1'b1 : 1'b0;
-   assign PSEL1 = ((PSEL==1'b1)&&(P_NUM>1)&&(PADDR>=P_PSEL1_START)&&(PADDR<P_PSEL1_END)) ? 1'b1 : 1'b0;
-   assign PSEL2 = ((PSEL==1'b1)&&(P_NUM>2)&&(PADDR>=P_PSEL2_START)&&(PADDR<P_PSEL2_END)) ? 1'b1 : 1'b0;
+   wire sel_apb0 = (PADDR[15:12] == P_PSEL0_START[15:12]); // 0x6000_0000
+   wire sel_apb1 = (PADDR[15:12] == P_PSEL1_START[15:12]); // 0x6000_1000
+   wire sel_apb2 = (PADDR[15:12] == P_PSEL2_START[15:12]); // 0x6000_2000
+
+   assign PSEL0 = (PSEL==1'b1)&&(P_NUM>0)&&sel_apb0;
+   assign PSEL1 = (PSEL==1'b1)&&(P_NUM>1)&&sel_apb1;
+   assign PSEL2 = (PSEL==1'b1)&&(P_NUM>2)&&sel_apb2;
    assign PSELD =  (PSEL==1'b1)&~PSEL0&~PSEL1&~PSEL2;
    `ifdef RIGOR
    // synthesis translate_off
