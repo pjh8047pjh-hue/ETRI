@@ -1,0 +1,8 @@
+
+
+hw/
+hw/imple.zed/           Vivado project for ZedBoard
+
+sw.arm/                 Vitis projects
+sw.arm/workspace/       Vitis SW workspace
+sw.arm/hello_world/     C program
