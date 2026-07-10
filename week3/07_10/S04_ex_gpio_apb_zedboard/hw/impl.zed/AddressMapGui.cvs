@@ -1,0 +1,9 @@
+Cell,Slave Interface,Base Name,Offset Address,Range,High Address
+/processing_system7_0,,,,,
+Data(32 address bits : 0x40000000 [ 1G ]),,,,,
+/axi_bram_ctrl_0,S_AXI,Mem0,0x40000000,8K,0x40001FFF
+/axi4_to_apb4_s3_0,s_axi,reg0,0x60000000,64K,0x6000FFFF
+Unconnected Slaves(3),,,,,
+/mem_apb4_0,S_APB,Reg,,,
+/mem_apb4_1,S_APB,Reg,,,
+/gpio_apb_xilinx_0,S_APB,Reg,,,

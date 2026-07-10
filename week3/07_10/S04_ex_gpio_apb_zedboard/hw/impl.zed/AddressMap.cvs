@@ -1,0 +1,12 @@
+######################################################################################
+# This is a generated CSV file representing the addressing in design design_zed
+#
+# Format:
+# Master Segment Name, Address Space, Slave Segment, Offset, Range, Excluded (optional), Included (optional), Unassigned (optional)
+######################################################################################
+
+# 
+# Assignments in Address Space /processing_system7_0/Data
+#
+SEG_axi_bram_ctrl_0_Mem0,/processing_system7_0/Data,/axi_bram_ctrl_0/S_AXI/Mem0,0x40000000,8K
+SEG_axi4_to_apb4_s3_0_reg0,/processing_system7_0/Data,/axi4_to_apb4_s3_0/s_axi/reg0,0x60000000,64K
