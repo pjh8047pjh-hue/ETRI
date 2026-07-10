@@ -31,8 +31,11 @@ webtalk*
 **/project_zed.sim/
 vivado_pid*.zip
 
-# Eclipse workspace metadata
-**/workspace.zed/.metadata/
+# Eclipse/Vitis workspace (regenerated from XSA + src/ via platform.tcl)
+**/workspace.zed/
+
+# Exported hardware platform (regenerated via write_hw_platform)
+**/xsa/
 
 # Simulation waveform dumps (regenerated locally)
 *.vcd
