@@ -1,0 +1,7 @@
+verilog work \
+        -d SIM -d VCD -d VIVADO\
+	-i ../../bench/verilog\
+	-i ../../rtl/verilog\
+        ../../bench/verilog/top_trainee.sv\
+        ../../bench/verilog/tester_trainee.sv\
+        ../../rtl/verilog/mem_axi_lite_trainee.v
