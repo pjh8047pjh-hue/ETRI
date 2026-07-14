@@ -13,6 +13,13 @@ xsim.dir/
 *.pb
 *.wdb
 *.dcp
+*.edif
+*.vm
+*_stub.v
+*_stub.vhdl
+*_sim_netlist.v
+*_sim_netlist.vhdl
+*.rpt
 webtalk*
 .Rpr
 
