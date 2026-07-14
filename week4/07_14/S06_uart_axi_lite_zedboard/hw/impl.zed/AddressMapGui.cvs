@@ -1,0 +1,8 @@
+Cell,Slave Interface,Base Name,Offset Address,Range,High Address
+/axi4_to_lite_0,,,,,
+m_axil(32 address bits : 4G),,,,,
+/uart_axi_lite_0,s_axi_lite,reg0,0x60000000,1M,0x600FFFFF
+/processing_system7_0,,,,,
+Data(32 address bits : 0x40000000 [ 1G ]),,,,,
+/axi4_to_lite_0,s_axi,reg0,0x60000000,512M,0x7FFFFFFF
+/axi_bram_ctrl_0,S_AXI,Mem0,0x40000000,8K,0x40001FFF
