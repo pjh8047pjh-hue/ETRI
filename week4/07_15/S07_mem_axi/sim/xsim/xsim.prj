@@ -1,0 +1,7 @@
+sv work \
+        -i ../../bench/verilog\
+        -i ../../rtl/verilog\
+           ./sim_define.v\
+           ../../bench/verilog/top.sv\
+           ../../bench/verilog/bfm_axi.sv\
+           ../../rtl/verilog/mem_axi.v
