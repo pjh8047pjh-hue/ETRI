@@ -1,0 +1,10 @@
+sv work \
+        -d SIM -d VCD -d VIVADO\
+        -i ../../bench/verilog\
+        -i ../../rtl/verilog\
+           ../../bench/verilog/top.sv\
+           ../../bench/verilog/bfm_axi.sv\
+           ../../bench/verilog/mem_axi.v\
+           ../../bench/verilog/axi4_to_lite.v\
+           ../../bench/verilog/amba_axi_m2s2.v\
+           ../../rtl/verilog/dma_axi_simple.v
