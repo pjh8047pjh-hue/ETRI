@@ -53,12 +53,15 @@ module mem_axi
                W_DATA = 2'd1,
                W_RESP = 2'd2;
 
+//--------------------------------------------------------------------------------------------------
     reg [AXI_WIDTH_ADDR-1:0] r_addr;
     reg [AXI_WIDTH_ID-1:0]   r_id;
     reg [7:0]                r_len;
     reg [7:0]                r_count;
     reg [2:0]                r_size;
     reg [1:0]                r_burst;
+    reg [AXI_WIDTH_ADDR-1:0] r_wrap_base; // WRAP burst의 정렬된 하한 경계
+    reg [AXI_WIDTH_ADDR-1:0] r_wrap_top;  // r_wrap_base + burst 전체 byte 수 (상한 경계)
 
     reg [31:0] mem [0:255];
     reg [ 1:0] rstate;
@@ -66,9 +69,11 @@ module mem_axi
 
     wire ar_fire;
     wire r_fire;
+    wire [AXI_WIDTH_ADDR-1:0] ar_burst_bytes; // (beat_bytes) * (beat_count) = 1<<AxSIZE * (AxLEN+1)
 
     assign ar_fire = s_axi_arvalid && s_axi_arready;
     assign r_fire  = s_axi_rvalid  && s_axi_rready;
+    assign ar_burst_bytes = ({{(AXI_WIDTH_ADDR-8){1'b0}}, s_axi_arlen} + 1'b1) << s_axi_arsize;
 
     // read state logic
     always @(posedge axi_aclk or negedge axi_aresetn) begin
@@ -78,7 +83,10 @@ module mem_axi
             case (rstate)
                 R_IDLE: begin
                     if(ar_fire) begin
-                        rstate <= R_DATA;
+                        rstate      <= R_DATA;
+                        r_addr      <= s_axi_araddr;
+                        r_wrap_base <= s_axi_araddr & ~(ar_burst_bytes - 1'b1);
+                        r_wrap_top  <= (s_axi_araddr & ~(ar_burst_bytes - 1'b1)) + ar_burst_bytes;
                     end
                 end
 
@@ -101,11 +109,13 @@ module mem_axi
 
                                 2'b01: begin // INCR 다음주소 = 현재 주소 + beat_bytes(1 << AxSIZE)
                                     r_addr <= r_addr + (1 << r_size);
-                                    rstate <= R_DATA;
                                 end
 
-                                2'b10: begin
-                                    r_addr <= r_addr;
+                                2'b10: begin // WRAP: 경계 넘으면 r_wrap_base로 되감기
+                                    if((r_addr + (1 << r_size)) >= r_wrap_top)
+                                        r_addr <= r_wrap_base;
+                                    else
+                                        r_addr <= r_addr + (1 << r_size);
                                 end
                                 default: r_addr <= r_addr;
                                 endcase
@@ -114,14 +124,13 @@ module mem_axi
                         end
                     end                
                 end
-            endcase
+         endcase
         end
     end
 
     // read output logic
     always @(posedge axi_aclk or negedge axi_aresetn) begin
         if(!axi_aresetn) begin
-            r_addr  <= s_axi_araddr;
             r_id    <= s_axi_arid;
             r_len   <= s_axi_arlen;
             r_size  <= s_axi_arsize;
@@ -131,10 +140,10 @@ module mem_axi
         end else begin
             case (rstate)
                 R_IDLE: begin
-                    s_axi_rvalid <= 0;
+                    s_axi_rvalid  <= 0;
+                    s_axi_arready <= 1'b1;
 
                     if(ar_fire) begin
-                        r_addr  <= s_axi_araddr;
                         r_id    <= s_axi_arid;
                         r_len   <= s_axi_arlen;
                         r_size  <= s_axi_arsize;
@@ -144,21 +153,159 @@ module mem_axi
                 end 
 
                 R_DATA: begin
-                    s_axi_rdata  <= mem[r_addr[9:2]];
-                    s_axi_rvalid <= 1'b1;
-                    s_axi_rid    <= r_id;
-                    s_axi_rresp  <= 2'b00;
-                    s_axi_rlast  <= (r_count == r_len);
+                    s_axi_rdata   <= mem[r_addr[9:2]];
+                    s_axi_arready <= 1'b0;
+                    s_axi_rvalid  <= 1'b1;
+                    s_axi_rid     <= r_id;
+                    s_axi_rresp   <= 2'b00;
+                    s_axi_rlast   <= (r_count == r_len);
                 end
 
                 R_RESP: begin
+                    // r_fire로 이 beat가 소비된 순간 rvalid를 내려서, 다음 beat의
+                    // 실제 데이터가 R_DATA에서 새로 실릴 때까지 stale 값이 다시
+                    // 새 beat로 오인되지 않게 한다.
                     if(r_fire) begin
-                        r_count <= r_count + 1'b1;
+                        s_axi_rvalid <= 1'b0;
                     end
                 end
 
-                default: 
+                default: ;
             endcase 
         end
     end
+//--------------------------------------------------------------------------------------------------
+
+    reg [AXI_WIDTH_ADDR-1:0] w_addr;
+    reg [AXI_WIDTH_ID-1:0]   w_id;
+    reg [7:0]                w_len;
+    reg [7:0]                w_count;
+    reg [2:0]                w_size;
+    reg [1:0]                w_burst;
+    reg [AXI_WIDTH_ADDR-1:0] w_wrap_base;
+    reg [AXI_WIDTH_ADDR-1:0] w_wrap_top;  
+
+    wire aw_fire;
+    wire w_fire;
+    wire b_fire;
+    wire [AXI_WIDTH_ADDR-1:0] aw_burst_bytes; 
+
+    assign aw_fire = s_axi_awvalid && s_axi_awready;
+    assign w_fire  = s_axi_wvalid  && s_axi_wready;
+    assign b_fire  = s_axi_bvalid  && s_axi_bready;
+    assign aw_burst_bytes = ({{(AXI_WIDTH_ADDR-8){1'b0}}, s_axi_awlen} + 1'b1) << s_axi_awsize;
+
+    // write state logic
+    // AW는 W_IDLE에서만 받고(awready), W 데이터는 W_DATA에서만 받는다(wready).
+    // WLAST는 마스터가 보내주는 신호라 그대로 믿고 W_RESP로 넘어간다(RLAST처럼 슬레이브가 직접 만들 필요 없음).
+    always @(posedge axi_aclk or negedge axi_aresetn) begin
+        if(!axi_aresetn) begin
+            wstate <= W_IDLE;
+        end else begin
+            case (wstate)
+                W_IDLE: begin
+                    if(aw_fire) begin
+                        wstate      <= W_DATA;
+                        w_addr      <= s_axi_awaddr;
+                        w_count     <= 0;
+                        w_wrap_base <= s_axi_awaddr & ~(aw_burst_bytes - 1'b1);
+                        w_wrap_top  <= (s_axi_awaddr & ~(aw_burst_bytes - 1'b1)) + aw_burst_bytes;
+                    end
+                end
+
+                W_DATA: begin
+                    if(w_fire) begin
+                        w_count <= w_count + 1'b1;
+
+                        case (w_burst)
+                        2'b00: begin // fixed
+                            w_addr <= w_addr;
+                        end
+
+                        2'b01: begin // INCR 다음주소 = 현재 주소 + beat_bytes(1 << AxSIZE)
+                            w_addr <= w_addr + (1 << w_size);
+                        end
+
+                        2'b10: begin // WRAP: 경계 넘으면 w_wrap_base로 되감기
+                            if((w_addr + (1 << w_size)) >= w_wrap_top)
+                                w_addr <= w_wrap_base;
+                            else
+                                w_addr <= w_addr + (1 << w_size);
+                        end
+                        default: w_addr <= w_addr;
+                        endcase
+
+                        if(s_axi_wlast) begin
+                            wstate <= W_RESP;
+                        end
+                    end
+                end
+
+                W_RESP: begin
+                    if(b_fire) begin
+                        wstate <= W_IDLE;
+                    end
+                end
+            endcase
+        end
+    end
+
+    // write output logic
+    always @(posedge axi_aclk or negedge axi_aresetn) begin
+        integer i;
+        if(!axi_aresetn) begin
+            w_id          <= 0;
+            w_len         <= 0;
+            w_size        <= 0;
+            w_burst       <= 0;
+            s_axi_awready <= 1'b0;
+            s_axi_wready  <= 1'b0;
+            s_axi_bvalid  <= 1'b0;
+            s_axi_bresp   <= 2'b00;
+            s_axi_bid     <= 0;
+
+        end else begin
+            case (wstate)
+                W_IDLE: begin
+                    s_axi_awready <= 1'b1;
+                    s_axi_wready  <= 1'b0;
+
+                    if(aw_fire) begin
+                        w_id    <= s_axi_awid;
+                        w_len   <= s_axi_awlen;
+                        w_size  <= s_axi_awsize;
+                        w_burst <= s_axi_awburst;
+                    end
+                end
+
+                W_DATA: begin
+                    s_axi_awready <= 1'b0;
+                    s_axi_wready  <= 1'b1;
+
+                    if(w_fire) begin
+                        for(i=0; i<AXI_WIDTH_STRB; i=i+1) begin
+                            if(s_axi_wstrb[i])
+                                mem[w_addr[9:2]][8*i +: 8] <= s_axi_wdata[8*i +: 8];
+                        end
+
+                        if(s_axi_wlast) begin
+                            s_axi_wready <= 1'b0;
+                            s_axi_bvalid <= 1'b1;
+                            s_axi_bresp  <= 2'b00;
+                            s_axi_bid    <= w_id;
+                        end
+                    end
+                end
+
+                W_RESP: begin
+                    if(b_fire) begin
+                        s_axi_bvalid <= 1'b0;
+                    end
+                end
+
+                default: ;
+            endcase
+        end
+    end
 endmodule
+

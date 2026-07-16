@@ -2,6 +2,6 @@ sv work \
         -i ../../bench/verilog\
         -i ../../rtl/verilog\
            ./sim_define.v\
-           ../../bench/verilog/top.sv\
+           ../../bench/verilog/top_trainee.sv\
            ../../bench/verilog/bfm_axi.sv\
-           ../../rtl/verilog/mem_axi.v
+           ../../rtl/verilog/mem_axi_trainee.v

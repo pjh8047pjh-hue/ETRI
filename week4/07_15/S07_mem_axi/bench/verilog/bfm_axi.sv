@@ -182,7 +182,7 @@ module bfm_axi #(parameter WIDTH_ID =4         // ID width in bits
            //$finish(2);
      end
      //-----------------------------------------------------------
-     `include "bfm_axi_tasks.sv"
+     `include "bfm_axi_tasks_trainee.sv"
      //-----------------------------------------------------------
 endmodule
 //----------------------------------------------------------------

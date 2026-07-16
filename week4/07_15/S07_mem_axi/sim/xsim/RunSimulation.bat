@@ -1,6 +1,6 @@
 @ECHO OFF
 
-CALL C:\Xilinx\Vivado\2021.2\settings64.bat
+CALL C:\Xilinx\Vivado\2020.2\settings64.bat
 cmd.exe /c xelab -prj xsim.prj -debug typical top -s top
 
 IF "%~1"=="" GOTO :CMD
