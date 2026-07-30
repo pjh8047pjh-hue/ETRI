@@ -1,0 +1,4 @@
+# Vivado-generated project outputs.
+*.gen/
+*.hw/
+*.ip_user_files/
