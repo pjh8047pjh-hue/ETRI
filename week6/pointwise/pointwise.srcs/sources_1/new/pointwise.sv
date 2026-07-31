@@ -16,7 +16,10 @@
 // Revision:
 // Revision 0.01 - File Created
 // Additional Comments:
-// 
+
+/*  1. mem layer 08 out 저장하는 로직 완성
+    2. accumulator 
+*/
 //////////////////////////////////////////////////////////////////////////////////
 
 
@@ -25,8 +28,8 @@ module pointwise(
     input  logic rst,
     input  logic start,
     //----------test
-    input  logic [15:0] din_weight,
-    input  logic [15:0] din,
+    //input  logic [15:0] din_weight,
+    //input  logic [15:0] din,
     //----------
     output logic        done_w,
     output logic        done_r,
@@ -36,8 +39,9 @@ module pointwise(
 
     import pointwise_pkg::*;
 
-    logic [15:0] B;
-    logic [31:0] P;
+    logic signed [15:0] B;
+    logic signed [31:0] product;
+    logic signed [31:0] accumulator;
 
     logic start_r;
     logic start_w;
@@ -51,7 +55,7 @@ module pointwise(
                                     .rst(rst),
                                     .start_w(start_w),
                                     .start_r(done_w),
-                                    .dina(P),
+                                    .dina(accumulator),
                                     .data_out(data_out),
                                     .done_w(done_w),
                                     .done_r(done_r)
@@ -61,16 +65,23 @@ module pointwise(
     mem_weight_in  mem_weight_in (.clk(clk),
                                   .rst(rst),
                                   .start_r(start_r),
-                                  .data_out(din_weight)
+                                  .data_out(write_buf)
                                  );
  
     // width 16bit, signed
     mult_gen_0 multiply(.CLK(clk),
                         .A(din_weight),
                         .B(B),
-                        .P(P)
-                        )
- 
+                        .P(product)
+                        );
+
+    // accumulator
+    accumulator accumulator(.clk(clk),
+                            .rst(rst),
+                            .product(product),
+                            .ic_cnt(ic_cnt),
+                            .accumulator(accumulator)
+                            );
 
     logic en_mul;
 
@@ -104,10 +115,8 @@ module pointwise(
     end
 
     //-------------------pointwise logic---------------
-
-    logic [15:0] weight;
-    logic [ 8:0] weight_cnt; // count 384
-    logic [ 7:0] input_cnt;  // count 196
+    logic signed [15:0] weight;
+    logic signed [15:0] weight_buf [0:IN_CH-1]; // 곱셈기의 개수에 따라 변화함 
 
     always_ff @(posedge clk or posedge rst) begin 
         if(rst) begin
@@ -117,29 +126,30 @@ module pointwise(
         end else if(step == 8'd10) en_mul <= 0;
     end
 
-    // index calculation
+    //------------------------------------------------
+    logic [5:0] ic_cnt;   // 0~63   inner  (IN_CH        = 64)
+    logic [8:0] oc_cnt;   // 0~383  middle (WEIGHT_WIDTH = 384)
+    logic [7:0] pix_cnt;  // 0~195  outer  (CHANNEL_WIDTH= 196)
+
+    wire ic_last  = (ic_cnt  == IN_CH        - 1);
+    wire oc_last  = (oc_cnt  == WEIGHT_WIDTH - 1);
+    wire pix_last = (pix_cnt == CHANNEL_WIDTH- 1);
+
     always_ff @(posedge clk or posedge rst) begin
-        if(rst) begin
-            weight_cnt <= 0;
-            input_cnt  <= 0;
-        end else if(input_cnt != CHANNEL_WIDTH-1) begin
-                if(weight_cnt !=  WEIGHT_WIDTH-1) begin
-                    weight_cnt <= weight_cnt + 8'd1;
-                end else if(weight_cnt == WEIGHT_WIDTH-1) begin
-                    input_cnt  <= input_cnt + 9'd1;
-                    weight_cnt <= 0;
-                end     
-        end else if(input_cnt == CHANNEL_WIDTH-1) begin
-            input_cnt <= 0;
+        if (rst) begin
+            ic_cnt <= 0;  
+            oc_cnt <= 0;
+            pix_cnt <= 0;
+        end else if (en_mul) begin    
+            ic_cnt <= ic_last ? 0 : ic_cnt + 1'b1;
+            if (ic_last) begin
+                oc_cnt <= oc_last ? 0 : oc_cnt + 1'b1;
+                if (oc_last)
+                    pix_cnt <= pix_last ? 0 : pix_cnt + 1'b1;
+            end
         end
     end
-    //------------------------------------------------
 
-    //------------pointwise data out logic------------
 
-    // TODO: 미완성. 폭을 정한 뒤 선언할 것.
-    // logic [:]
-
-    //------------------------------------------------
 
 endmodule

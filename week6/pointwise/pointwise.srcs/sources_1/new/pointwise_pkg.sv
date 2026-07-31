@@ -25,5 +25,6 @@ package pointwise_pkg;
     parameter WEIGHT_WIDTH  = 384; // ?��?��?�� 384 �?금�? 5 weight [0~383][0~63][0]
     parameter CHANNEL_WIDTH = 196; // ?��?��?�� 196 �?금�? 3 input  [0~ 63][0~13][0~13]
     parameter MUL_DELAY     = 2;
+    parameter IN_CH = 64;
 
 endpackage : pointwise_pkg
