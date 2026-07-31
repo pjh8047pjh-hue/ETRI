@@ -32,6 +32,10 @@ webtalk*
 **/gtkwave64/
 
 # Vivado regenerated project trees / block-design outputs
+# generic: applies to every <project>.xpr tree, not just project_zed
+*.gen/
+*.hw/
+*.ip_user_files/
 **/project_zed.gen/
 **/project_zed.cache/
 **/project_zed.hw/
