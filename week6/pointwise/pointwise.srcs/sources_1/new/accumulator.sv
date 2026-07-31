@@ -23,7 +23,7 @@
 module accumulator(
     input  logic clk,
     input  logic rst,
-    input  logic [5:0] ic_cnt,              // ← pixel_end 대신. 0~63, product와 시점 정렬
+    input  logic [5:0] ic_cnt,       
     input  logic signed [31:0] product,
 
     output logic signed [37:0] accumulator

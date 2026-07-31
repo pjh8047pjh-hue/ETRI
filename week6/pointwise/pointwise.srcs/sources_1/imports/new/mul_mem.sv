@@ -20,7 +20,9 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module mem_layer08_out(
+module 
+    
+    (
 
     input  logic        clk,
     input  logic        rst,

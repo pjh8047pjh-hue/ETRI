@@ -41,7 +41,7 @@ module pointwise(
 
     logic signed [15:0] B;
     logic signed [31:0] product;
-    logic signed [31:0] accumulator;
+    logic signed [37:0] accumulator;
 
     logic start_r;
     logic start_w;
@@ -126,7 +126,7 @@ module pointwise(
         end else if(step == 8'd10) en_mul <= 0;
     end
 
-    //------------------------------------------------
+    //-----------------index calculate----------------
     logic [5:0] ic_cnt;   // 0~63   inner  (IN_CH        = 64)
     logic [8:0] oc_cnt;   // 0~383  middle (WEIGHT_WIDTH = 384)
     logic [7:0] pix_cnt;  // 0~195  outer  (CHANNEL_WIDTH= 196)
@@ -149,7 +149,7 @@ module pointwise(
             end
         end
     end
-
+    //-----------------------------------------------
 
 
 endmodule

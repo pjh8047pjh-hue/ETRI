@@ -17,7 +17,7 @@ module mem_weight_in(
     logic [15:0] addra;
     logic        ena;
     logic [ 1:0] rd_last;
-    logic        input_last;      // input_cnt 가 마지막 값일 때만 1 (addra step enable)
+    logic        input_last;
 
     blk_mem_gen_0 single_port_rom(.clka(clk),
                                    .ena(ena),
