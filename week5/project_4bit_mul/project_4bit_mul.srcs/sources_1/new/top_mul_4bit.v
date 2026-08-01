@@ -28,7 +28,9 @@ module top_mul_4bit #(
     input [WIDTH-1:0] a,
     input [WIDTH-1:0] b,
     output [2*WIDTH-1:0] result,
-    output done
+    output done,
+    input  rx_data,
+    output tx_data
     );
 
     wire sel_a;
@@ -42,9 +44,26 @@ module top_mul_4bit #(
     wire [2*WIDTH-1:0] mul;
     wire [2*CHUNK-1:0] mul_init;
 
-    FSM_mul FSM_mul(.clk(clk), 
-                    .rst_n(rst_n), 
-                    .start(start), 
+    wire baud_tick;
+    wire rx_done;
+    wire [7:0] rx_dout;
+    wire tx_busy;
+
+    wire ctrl_busy;
+    wire ctrl_mul_start;
+    wire [WIDTH-1:0] ctrl_mul_a, ctrl_mul_b;
+    wire ctrl_tx_start;
+    wire [7:0] ctrl_tx_din;
+
+    // ctrl(uart_mul_ctrl)가 동작 중일 때만 UART로 받은 a/b/start가 곱셈기를 구동하고,
+    // 그 외에는 top-level a/b/start 포트(테스트벤치/스위치)가 그대로 곱셈기를 구동함
+    wire [WIDTH-1:0] mux_a     = ctrl_busy ? ctrl_mul_a     : a;
+    wire [WIDTH-1:0] mux_b     = ctrl_busy ? ctrl_mul_b     : b;
+    wire             mux_start = ctrl_busy ? ctrl_mul_start : start;
+
+    FSM_mul FSM_mul(.clk(clk),
+                    .rst_n(rst_n),
+                    .start(mux_start),
                     .clr(clr),
                     .acc_en(acc_en),
                     .shift_sel(shift_sel),
@@ -54,9 +73,9 @@ module top_mul_4bit #(
                     .done(done)
                     );
 
-    selector selector(.a(a), 
-                    .b(b), 
-                    .sel_a(sel_a), 
+    selector selector(.a(mux_a),
+                    .b(mux_b),
+                    .sel_a(sel_a),
                     .sel_b(sel_b),
                     .data_a(data_a),
                     .data_b(data_b)
@@ -80,6 +99,40 @@ module top_mul_4bit #(
                 .result(result)
                 );
 
-    uart_rx uart_rx();
+    baudrate_gen baudrate_gen (.clk_in(clk),
+                            .rst_n(rst_n),
+                            .baud_tick(baud_tick));
+
+    uart_rx uart_rx(.baud_clk(baud_tick),
+                .rst_n(rst_n),
+                .rx_data(rx_data),
+                .rx_done(rx_done),
+                .dout(rx_dout)
+                );
+
+    uart_mul_ctrl #(.WIDTH(WIDTH)) uart_mul_ctrl (
+                .clk(clk),
+                .rst_n(rst_n),
+                .rx_done(rx_done),
+                .rx_dout(rx_dout),
+                .mul_start(ctrl_mul_start),
+                .mul_done(done),
+                .mul_result(result),
+                .mul_a(ctrl_mul_a),
+                .mul_b(ctrl_mul_b),
+                .busy(ctrl_busy),
+                .tx_start(ctrl_tx_start),
+                .tx_din(ctrl_tx_din),
+                .tx_busy(tx_busy)
+                );
+
+    // picocom -> rx -> a,b 캡처 -> 곱셈 -> result 상/하위 바이트 -> tx -> picocom
+    uart_tx uart_tx(.baud_tick(baud_tick),
+                .rst_n(rst_n),
+                .start(ctrl_tx_start),
+                .din(ctrl_tx_din),
+                .tx_data(tx_data),
+                .busy(tx_busy)
+                );
 
 endmodule

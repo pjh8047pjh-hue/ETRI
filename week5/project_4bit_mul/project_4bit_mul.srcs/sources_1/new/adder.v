@@ -30,7 +30,6 @@ module adder#(
     );
 
     always @(posedge clk or negedge rst_n) begin
-        strat <= 1'b1;
         if (!rst_n) result <= 0;
         else if (clr) result <= 0;
         else if (acc_en) begin

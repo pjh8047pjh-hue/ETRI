@@ -25,25 +25,24 @@ module uart_rx #(
     parameter CHUNK = 4
 )
 (
-    input           baud_clk, rst_n,
-    input 		  		rx_data,
-		output reg			rx_done,
-    output reg    [7:0] dout
+    input      baud_clk, rst_n,
+    input 	   rx_data,
+	output reg rx_done,
+    output reg [7:0] dout
     );
 
 	localparam ST_IDLE  = 2'b00,
-			ST_DATA  = 2'b01,
-			ST_DONE  = 2'b11;
+			   ST_DATA  = 2'b01,
+			   ST_DONE  = 2'b10;
 
 	reg [1:0] cstate;
 	reg [1:0] nstate;
-	reg [3:0] cnt = 4'd0;
+	reg [3:0] cnt;
 
 	// current state logic
 	always @(posedge baud_clk or negedge rst_n) begin
 		if(!rst_n) begin
 			cstate <= ST_IDLE;
-			nstate <= ST_IDLE;
 		end else begin
 			cstate <= nstate;
 		end
@@ -51,6 +50,8 @@ module uart_rx #(
 
 	// next state logic
 	always @(*) begin
+		nstate = cstate;
+
 		case (cstate)
 			ST_IDLE: begin
 				if(rx_data == 1'b0) begin
@@ -61,10 +62,13 @@ module uart_rx #(
 			end
 
 			ST_DATA: begin
-				if(cnt == 4'd8) begin
+				if(cnt == 4'd8 && rx_data == 1'b1) begin
 					nstate = ST_DONE;
-				end else begin
+				end else if (cnt < 4'd8) begin
 					nstate = ST_DATA;
+				end else if (cnt == 4'd8 && rx_data != 1'b1) begin
+					$display("unenable");
+					nstate = ST_IDLE;
 				end
 			end
 
@@ -79,24 +83,29 @@ module uart_rx #(
 	// output logic
 	always @(posedge baud_clk or negedge rst_n) begin
 		if(!rst_n) begin
-			cnt	   <= 4'd0;
+			cnt	    <= 4'd0;
+			rx_done <= 1'b0;
+			dout	<= 8'hF;
 		end else begin
 			case (cstate)
 				ST_IDLE: begin
-					dout    <= 8'd0;
+					dout    <= 8'hF;
 					cnt     <= 4'd0;
 					rx_done <= 1'b0;
 				end
+
 				ST_DATA: begin
-					dout [cnt] <= rx_data;
-					cnt		   <= cnt + 1;
+					if(cnt < 4'd8) begin
+					dout[cnt] <= rx_data;
+					cnt		  <= cnt + 1;
+					end
 				end
 
 				ST_DONE: begin
 					cnt     <= 4'd0;
 					rx_done <= 1'b1;
-
 				end
+
 				default: rx_done <= 1'b0;
 			endcase	
 		end
