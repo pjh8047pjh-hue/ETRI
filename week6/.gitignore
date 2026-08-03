@@ -2,3 +2,19 @@
 *.gen/
 *.hw/
 *.ip_user_files/
+
+# Local archive; larger than GitHub's per-file limit and reproducible locally.
+pointwise_conv.zip
+
+# Local source model dump used to generate the compact Layer08 COE files.
+pointwise_conv/mobilenetv2_parameters.h
+
+# Keep only portable Vivado IP configuration files. Generated IP products can
+# be recreated from each XCI after opening the project.
+pointwise_conv/pointwise_conv.srcs/sources_1/ip/*/*
+!pointwise_conv/pointwise_conv.srcs/sources_1/ip/*/*.xci
+
+# Detailed PPA run directories contain regenerated reports/checkpoints. Keep
+# the compact aggregate table in Git.
+pointwise_conv/ppa_results/*
+!pointwise_conv/ppa_results/summary.csv
