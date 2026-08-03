@@ -28,7 +28,7 @@ graph LR
 
 흐름: 각 `(pix, oc)`마다 **input과 weight를 같은 `mem_read_req`로 동시에 읽고 → 64개 채널을 곱-누적 → Q2.13으로 변환 → 출력 BRAM에 저장**한다.
 
-현재 테스트벤치는 input write 포트를 구동하지 않는다. 입력 BRAM은 `input_layer08.coe`, weight ROM은 `weight_layer08.coe`로 초기화되며, reset 해제 후 `start` 한 클럭 펄스만 주면 전체 연산과 출력 read가 자동으로 진행된다. 실제 시스템에서는 `input_start_w`와 `input_data`를 이용해 입력 BRAM을 덮어쓸 수도 있다.
+입력 BRAM은 `input_layer08.coe`, weight ROM은 `weight_layer08.coe`로 초기화된다. `pointwise` 내부에서 input BRAM write interface를 비활성화했으므로, reset 해제 후 `start` 한 클럭 펄스만 주면 고정 입력에 대한 전체 연산과 출력 read가 자동으로 진행된다.
 
 ## 파라미터 (`pointwise_pkg.sv`)
 
@@ -38,7 +38,7 @@ graph LR
 | `WEIGHT_WIDTH` | 384 | 출력 채널 수 (중간 루프 `oc`) |
 | `CHANNEL_WIDTH` | 196 | 픽셀 수, 14x14 (바깥 루프 `pix`) |
 | `WEIGHT_LENGTH` | 24,576 | 전체 가중치 개수 = `IN_CH x WEIGHT_WIDTH` |
-| `PARALLEL_CH` | 1 | 한 클럭에 동시에 계산할 입력 채널 수 |
+| `PARALLEL_CH` | 64 | 한 클럭에 동시에 계산할 입력 채널 수 |
 
 ## 최상위 I/O (`pointwise` 모듈)
 
@@ -47,12 +47,18 @@ graph LR
 | `clk` | in | 1 | 클럭 |
 | `rst` | in | 1 | 비동기 리셋 (active-high) |
 | `start` | in | 1 | 연산 시작 트리거 |
-| `input_start_w` | in | 1 | input BRAM write enable |
-| `input_data` | in | 1,024 | 적재할 64채널 pixel vector |
-| `input_done_w` | out | 1 | 196개 input 적재 완료 펄스 |
 | `done_w` | out | 1 | 75,264개 출력 write 완료 펄스 |
 | `done_r` | out | 1 | 75,264개 출력 read 완료 펄스 |
 | `data_out` | out | 16 | 출력 BRAM에서 읽은 값 |
+| `output_data_valid` | out | 1 | `data_out`이 유효한 read cycle 표시 |
+
+`pointwise`는 고정된 COE 입력으로 합성·구현 결과를 확인하는 최상위 모듈이다.
+input BRAM의 외부 write interface는 내부에서 비활성화하고
+`blk_mem_gen_input`에 설정된 `input_layer08.coe` 초기값만 사용한다.
+기존 최상위 포트였던 `input_start_w`, `input_data[1023:0]`, `input_done_w`는
+제거했으며, 별도의 `pointwise_top` wrapper 없이 `pointwise`를 직접 Top으로
+사용한다. 이 구성은 1,024bit 입력이 물리 IO로 합성되는 것을 방지하지만,
+실행 중 새로운 입력 데이터를 적재할 수 없는 COE 고정 입력 전용 구성이다.
 
 ## 연산 루프 구조
 
@@ -169,6 +175,7 @@ result    = final_sum >>> (13 + 15 - 13);  // >>> 15
 | `start_w` | in | 1 | write 트리거 펄스 |
 | `dina` | in | 38 (signed) | MAC에서 Q2.13으로 변환된 결과; 하위 16bit 저장 |
 | `data_out` | out | 16 | read 결과 |
+| `data_valid` | out | 1 | `data_out` 유효 표시 |
 | `done_w`, `done_r` | out | 1 | write/read 완료 |
 
 - 깊이: `WEIGHT_WIDTH x CHANNEL_WIDTH = 75,264` (oc, pix 조합마다 1워드)
@@ -190,10 +197,11 @@ result    = final_sum >>> (13 + 15 - 13);  // >>> 15
 ## 테스트벤치와 Vivado 설정
 
 - simulation top: `tb_pointwise` (`tb_mem.sv` 안에 정의)
-- input BRAM write: 테스트벤치에서는 `input_start_w=0`, `input_data=0`으로 유지하고 COE 초기값 사용
+- input BRAM: `pointwise` 내부에서 write interface를 비활성화하고 COE 초기값 사용
 - 시작 조건: reset 해제 후 `start`를 정확히 한 클럭만 인가
-- 자동 확인: write/read 각 75,264회, `done_w`/`done_r` 각 1회, 출력 X/Z 없음
+- 자동 확인: read 75,264회, `done_w`/`done_r` 각 1회, 출력 X/Z 없음
 - 출력 기록: 유효한 `data_out`을 `pointwise_output.hex`에 순서대로 저장
+- post-synthesis simulation에서도 사용할 수 있도록 `output_data_valid`를 최상위 출력 포트로 연결
 - timeout: FSM이 멈춰도 무한 시뮬레이션이 되지 않도록 전체 예상 연산량 기준 watchdog 사용
 - XSim runtime: `all`로 설정되어 테스트벤치의 `$finish`까지 실행
 - 사용하지 않는 `simple_dual_ram2.sv`는 Vivado project fileset에서 제거됨
@@ -209,11 +217,15 @@ expected[pix][oc] = signed16(
 
 ## 현재 구현 상태
 
+- `pointwise` 자체를 COE 고정 입력용 최상위 모듈로 변경 완료
+- `input_start_w`, `input_data[1023:0]`, `input_done_w` 외부 포트 제거 완료
+- input BRAM write interface를 내부에서 `start_w=0`, `dina=0`으로 고정 완료
+- post-synthesis에서도 결과 유효 신호를 확인하도록 `output_data_valid` 최상위 출력 연결 완료
 - input/weight 공통 read 제어와 input, weight, output BRAM IP 연결 완료
 - `ic=0..63` 완료마다 다음 `oc` weight를 읽는 `pix -> oc -> ic` 루프 구현 완료
 - multiplier latency에 맞춘 MAC 제어 지연 및 38bit 누적 구현 완료
 - 최종 누적값의 Q2.13 변환(`>>> 15`) 구현 완료
-- 테스트벤치의 COE 초기화, start pulse, 결과 개수·완료 펄스·X/Z 자동 검사 구현 완료
+- 테스트벤치의 COE 기반 입력, start pulse, read 결과 개수·완료 펄스·X/Z 자동 검사 구현 완료
 - Vivado 2020.2 compile 및 static elaboration 통과
 - 전체 functional simulation 통과: write/read 각 75,264회, `done_w`/`done_r` 각 1회, X/Z 0개
 - `pointwise_output.hex` 75,264개를 COE 기준 정수식과 전수 비교했으며 mismatch 0개 확인

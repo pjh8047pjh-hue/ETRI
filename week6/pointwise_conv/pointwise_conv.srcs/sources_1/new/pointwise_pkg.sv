@@ -25,6 +25,7 @@ package pointwise_pkg;
     parameter WEIGHT_WIDTH  = 384; // ?��?��?�� 384 �?금�? 5 weight [0~383][0~63][0]
     parameter CHANNEL_WIDTH = 196; // ?��?��?�� 196 �?금�? 3 input  [0~ 63][0~13][0~13]
     parameter IN_CH = 64;
-    parameter PARALLEL_CH = 4;
+    // IN_CH 의 약수여야 한다. 1, 2, 4, 8, 16, 32, 64 만 유효.
+    parameter PARALLEL_CH = 64;
 
 endpackage : pointwise_pkg

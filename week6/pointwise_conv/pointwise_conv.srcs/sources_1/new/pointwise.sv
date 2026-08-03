@@ -27,13 +27,11 @@ module pointwise(
     input  logic clk,
     input  logic rst,
     input  logic start,
-    input  logic input_start_w,
-    input  logic [pointwise_pkg::IN_CH*16-1:0] input_data,
 
-    output logic        input_done_w,
     output logic        done_w,
     output logic        done_r,
-    output logic [15:0] data_out
+    output logic [15:0] data_out,
+    output logic        output_data_valid
     );
 
     import pointwise_pkg::*;
@@ -45,11 +43,14 @@ module pointwise(
     logic mem_read_req;
     logic en_mul;
     logic mac_result_valid;
-    logic output_data_valid;
 
     logic [5:0] ic_cnt;   // 0~63   inner  (IN_CH        = 64)
     logic [8:0] oc_cnt;   // 0~383  middle (WEIGHT_WIDTH = 384)
     logic [7:0] pix_cnt;  // 0~195  outer  (CHANNEL_WIDTH= 196)
+
+    // BRAM 주소는 counter 가 아니라 FSM 이 만든 prefetch 주소를 쓴다.
+    logic [8:0] oc_addr;
+    logic [7:0] pix_addr;
 
     //----------------- module instance -----------------
 
@@ -58,21 +59,21 @@ module pointwise(
     mem_layer08_input_bram mem_layer08_input_bram(
                                   .clk(clk),
                                   .rst(rst),
-                                  .start_w(input_start_w),
-                                  .dina(input_data),
-                                  .done_w(input_done_w),
+                                  .start_w(1'b0),
+                                  .dina('0),
+                                  .done_w(),
                                   .start_r(mem_read_req),
-                                  .pix_addr(pix_cnt),
+                                  .pix_addr(pix_addr),
                                   .data_out(input_bram_data)
                                   );
 
     // width 1024bit, depth 384: output channel별 weight vector
     mem_weight_in  mem_weight_in (.clk(clk),
                                   .start_r(mem_read_req),
-                                  .oc_cnt(oc_cnt),
+                                  .oc_cnt(oc_addr),
                                   .data_out(weight_data)
                                  );
- 
+
     FSM_pointwise FSM(.clk(clk),
                       .rst(rst),
                       .start(start),
@@ -80,7 +81,9 @@ module pointwise(
                       .en_mul(en_mul),
                       .ic_cnt(ic_cnt),
                       .oc_cnt(oc_cnt),
-                      .pix_cnt(pix_cnt)
+                      .pix_cnt(pix_cnt),
+                      .oc_addr(oc_addr),
+                      .pix_addr(pix_addr)
                       );
 
     pointwise_mac pointwise_mac(.clk(clk),
