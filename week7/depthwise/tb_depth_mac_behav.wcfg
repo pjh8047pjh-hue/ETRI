@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wave_config>
+   <wave_state>
+   </wave_state>
+   <db_ref_list>
+      <db_ref path="tb_depth_mac_behav.wdb" id="1">
+         <top_modules>
+            <top_module name="glbl" />
+            <top_module name="tb_depth_mac" />
+         </top_modules>
+      </db_ref>
+   </db_ref_list>
+   <zoom_setting>
+      <ZoomStartTime time="262000fs"></ZoomStartTime>
+      <ZoomEndTime time="572801fs"></ZoomEndTime>
+      <Cursor1Time time="445000fs"></Cursor1Time>
+   </zoom_setting>
+   <column_width_setting>
+      <NameColumnWidth column_width="346"></NameColumnWidth>
+      <ValueColumnWidth column_width="169"></ValueColumnWidth>
+   </column_width_setting>
+   <WVObjectSize size="77" />
+   <wvobject fp_name="/tb_depth_mac/dut/clk" type="logic">
+      <obj_property name="ElementShortName">clk</obj_property>
+      <obj_property name="ObjectShortName">clk</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/rst" type="logic">
+      <obj_property name="ElementShortName">rst</obj_property>
+      <obj_property name="ObjectShortName">rst</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/input_data" type="array">
+      <obj_property name="ElementShortName">input_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">input_data[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/weight" type="array">
+      <obj_property name="ElementShortName">weight[143:0]</obj_property>
+      <obj_property name="ObjectShortName">weight[143:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/run" type="logic">
+      <obj_property name="ElementShortName">run</obj_property>
+      <obj_property name="ObjectShortName">run</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/line_buf_1" type="array">
+      <obj_property name="ElementShortName">line_buf_1[239:0]</obj_property>
+      <obj_property name="ObjectShortName">line_buf_1[239:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/line_buf_2" type="array">
+      <obj_property name="ElementShortName">line_buf_2[239:0]</obj_property>
+      <obj_property name="ObjectShortName">line_buf_2[239:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/top_in" type="array">
+      <obj_property name="ElementShortName">top_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">top_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mid_in" type="array">
+      <obj_property name="ElementShortName">mid_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mid_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/bot_in" type="array">
+      <obj_property name="ElementShortName">bot_in[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bot_in[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/a_top_in" type="array">
+      <obj_property name="ElementShortName">a_top_in[0:2][15:0]</obj_property>
+      <obj_property name="ObjectShortName">a_top_in[0:2][15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/a_mid_in" type="array">
+      <obj_property name="ElementShortName">a_mid_in[0:2][15:0]</obj_property>
+      <obj_property name="ObjectShortName">a_mid_in[0:2][15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/a_bot_in" type="array">
+      <obj_property name="ElementShortName">a_bot_in[0:2][15:0]</obj_property>
+      <obj_property name="ObjectShortName">a_bot_in[0:2][15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/top_out" type="array">
+      <obj_property name="ElementShortName">top_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">top_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mid_out" type="array">
+      <obj_property name="ElementShortName">mid_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">mid_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/bot_out" type="array">
+      <obj_property name="ElementShortName">bot_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">bot_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/pc_bot" type="array">
+      <obj_property name="ElementShortName">pc_bot[0:1][47:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_bot[0:1][47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/pc_mid" type="array">
+      <obj_property name="ElementShortName">pc_mid[0:1][47:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_mid[0:1][47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/pc_top" type="array">
+      <obj_property name="ElementShortName">pc_top[0:1][47:0]</obj_property>
+      <obj_property name="ObjectShortName">pc_top[0:1][47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top1/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top1/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top1/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top1/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#FF0080</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top1/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      <obj_property name="CustomSignalColor">#00FF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#800000</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top2/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#D2691E</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_top3/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="CustomSignalColor">#00FF00</obj_property>
+      <obj_property name="UseCustomSignalColor">true</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/top_out" type="array">
+      <obj_property name="ElementShortName">top_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">top_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid1/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid1/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid1/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid1/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid1/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid2/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_mid3/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot1/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot2/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/A" type="array">
+      <obj_property name="ElementShortName">A[15:0]</obj_property>
+      <obj_property name="ObjectShortName">A[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/B" type="array">
+      <obj_property name="ElementShortName">B[15:0]</obj_property>
+      <obj_property name="ObjectShortName">B[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/ACOUT" type="array">
+      <obj_property name="ElementShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="ObjectShortName">ACOUT[29:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/mac_bot3/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_depth_mac/dut/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[47:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+</wave_config>

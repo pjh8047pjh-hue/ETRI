@@ -1,0 +1,392 @@
+<title>DSP 캐스케이드 타이밍 — depth_mac top chain</title>
+
+<style>
+  :root {
+    --bg:         #f4f5f7;
+    --surface:    #ffffff;
+    --rule:       #dcdee5;
+    --grid:       #e9ebf0;
+    --text:       #171a20;
+    --muted:      #656b7a;
+    --bus-stroke: #7d879c;
+    --bus-fill:   #eef0f5;
+    --bus-text:   #2c3444;
+    --accent:     #b45f26;
+    --accent-bg:  #f8e9dd;
+    --dim:        #aeb3be;
+    --clk:        #8b93a6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg:         #101319;
+      --surface:    #171b22;
+      --rule:       #272c36;
+      --grid:       #1d212a;
+      --text:       #e6e8ee;
+      --muted:      #949cad;
+      --bus-stroke: #58627a;
+      --bus-fill:   #1e2430;
+      --bus-text:   #ccd3e0;
+      --accent:     #e0904f;
+      --accent-bg:  #37271a;
+      --dim:        #4d5462;
+      --clk:        #6b7488;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg:#101319; --surface:#171b22; --rule:#272c36; --grid:#1d212a;
+    --text:#e6e8ee; --muted:#949cad; --bus-stroke:#58627a; --bus-fill:#1e2430;
+    --bus-text:#ccd3e0; --accent:#e0904f; --accent-bg:#37271a; --dim:#4d5462; --clk:#6b7488;
+  }
+  :root[data-theme="light"] {
+    --bg:#f4f5f7; --surface:#ffffff; --rule:#dcdee5; --grid:#e9ebf0;
+    --text:#171a20; --muted:#656b7a; --bus-stroke:#7d879c; --bus-fill:#eef0f5;
+    --bus-text:#2c3444; --accent:#b45f26; --accent-bg:#f8e9dd; --dim:#aeb3be; --clk:#8b93a6;
+  }
+
+  --sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --mono: "Cascadia Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, Consolas, monospace;
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 44px 24px 72px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+  }
+
+  header { display: flex; flex-direction: column; gap: 8px; }
+  .eyebrow {
+    font-family: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, monospace;
+    font-size: 11.5px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  h1 {
+    margin: 0;
+    font-size: 27px;
+    font-weight: 650;
+    letter-spacing: -.015em;
+    text-wrap: balance;
+  }
+  .lede { margin: 0; color: var(--muted); max-width: 64ch; }
+
+  .panel {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+  }
+
+  .chartbox { overflow-x: auto; padding: 4px; }
+  svg { display: block; }
+  svg text {
+    font-family: "Cascadia Mono", "Cascadia Code", ui-monospace, Consolas, monospace;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hint {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--rule);
+    font-size: 12.5px; color: var(--muted);
+  }
+  .hint b { color: var(--accent); font-weight: 600; }
+
+  .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 18px; }
+
+  section.card { padding: 20px 22px; }
+  section.card h2 {
+    margin: 0 0 12px;
+    font-size: 12px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--muted); font-weight: 650;
+    font-family: "Cascadia Mono", ui-monospace, Consolas, monospace;
+  }
+
+  .budget { display: flex; align-items: stretch; gap: 0; margin-bottom: 14px; }
+  .seg {
+    flex: var(--w);
+    padding: 9px 10px;
+    border: 1px solid var(--rule);
+    border-right: none;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .seg:last-of-type { border-right: 1px solid var(--rule); }
+  .seg .n {
+    font-family: "Cascadia Mono", ui-monospace, Consolas, monospace;
+    font-size: 19px; font-weight: 600; color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .seg .l { font-size: 11.5px; color: var(--muted); line-height: 1.35; }
+
+  dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 7px 16px; align-items: baseline; }
+  dt {
+    font-family: "Cascadia Mono", ui-monospace, Consolas, monospace;
+    font-size: 12.5px; color: var(--bus-text); white-space: nowrap;
+  }
+  dd { margin: 0; font-size: 13.5px; color: var(--muted); }
+
+  code {
+    font-family: "Cascadia Mono", ui-monospace, Consolas, monospace;
+    font-size: .92em;
+    background: var(--grid);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .callout {
+    border-left: 2px solid var(--accent);
+    padding: 2px 0 2px 14px;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .callout strong { color: var(--text); font-weight: 600; }
+
+  footer {
+    font-size: 12.5px; color: var(--muted);
+    border-top: 1px solid var(--rule); padding-top: 16px;
+  }
+</style>
+
+<div class="wrap">
+
+  <header>
+    <div class="eyebrow">depth_mac · top chain · DSP48 Macro</div>
+    <h1>3탭 systolic 캐스케이드 타이밍</h1>
+    <p class="lede">
+      입력이 프레임 인덱스 <code>x(t) = t</code>, weight 전부 1일 때 각 신호가 담는 값.
+      한 값이 아래 행으로 내려갈수록 오른쪽으로 밀리는 폭이 곧 그 단의 지연이다.
+    </p>
+  </header>
+
+  <div class="panel">
+    <div class="chartbox"><svg id="chart" role="img" aria-label="DSP 캐스케이드 타이밍 다이어그램"></svg></div>
+    <div class="hint">
+      <span>사이클 번호를 클릭하면 그 입력 샘플이 체인을 따라 어디에 나타나는지 <b>추적</b>합니다.</span>
+      <span>현재 추적 중: <b id="tracelabel">x(3)</b></span>
+    </div>
+  </div>
+
+  <div class="cols">
+
+    <section class="card panel">
+      <h2>latency 7의 구성</h2>
+      <div class="budget">
+        <div class="seg" style="--w:4"><span class="n">4</span><span class="l">IP 내부 A→P<br>areg×2 · MREG · PREG</span></div>
+        <div class="seg" style="--w:2"><span class="n">2</span><span class="l">PCOUT→PCIN<br>홉 2번</span></div>
+        <div class="seg" style="--w:1"><span class="n">1</span><span class="l">최종<br>가산 reg</span></div>
+      </div>
+      <p class="callout">
+        <strong>latency 7만으로는 ACOUT 지연이 맞는지 알 수 없다.</strong>
+        ACOUT이 1clk이어도 7이 나온다. 값으로 확인해야 한다 —
+        <code>A</code>와 <code>ACOUT</code> 행이 2칸 어긋나야 정상.
+      </p>
+    </section>
+
+    <section class="card panel">
+      <h2>행별 수식</h2>
+      <dl id="legend"></dl>
+    </section>
+
+  </div>
+
+  <section class="card panel">
+    <h2>왜 PCOUT이 2가 아니라 3인가</h2>
+    <p class="callout" style="margin-bottom:14px">
+      <strong>A와 PCIN이 서로 다른 파이프라인 깊이에서 온다.</strong>
+      PCIN은 1clk 전 값, A*B는 4clk 전 값이다. 그 순간 곱셈기에 도달한 A는 이미 <code>2</code>였다.
+    </p>
+    <dl>
+      <dt>t = 6</dt><dd><code>top2.PCOUT = x(0) + x(1) = 0 + 1 = 1</code></dd>
+      <dt>t = 7</dt><dd><code>top2.PCOUT = x(1) + x(2) = 1 + 2 = 3</code> &nbsp;← <code>1*1+1</code>이 아님</dd>
+      <dt>t = 7</dt><dd><code>top_out = x(−1) + x(0) + x(1) = 1</code></dd>
+    </dl>
+    <p style="margin:14px 0 0; font-size:13.5px; color:var(--muted)">
+      연속한 세 샘플이 모였으므로 3×3의 한 행이 정상 누산된 것이다.
+      <code>mid</code>·<code>bot</code> 체인도 타이밍이 동일하고,
+      <code>data_out</code>은 세 결과를 더해 한 번 더 레지스터한 값이다.
+    </p>
+  </section>
+
+  <footer>
+    x(s) = 0 for s &lt; 0 · 값 출처 <code>timing_dsp_chain.csv</code> · TB의 <code>LAT = 7</code>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  const T = 21;                       // 사이클 0..20
+  const x = s => (s >= 0 ? s : 0);
+
+  const rows = [
+    { group: "STREAM" },
+    { name: "clk", kind: "clock" },
+    { name: "input_data", sub: "= top_in", expr: "x(t)", terms: t => [t] },
+
+    { group: "mac_top1", sub: "B = k2" },
+    { name: "A",     expr: "x(t)",   terms: t => [t] },
+    { name: "ACOUT", expr: "x(t−2)", terms: t => [t - 2], mark: "2clk" },
+    { name: "PCOUT", expr: "x(t−4)", terms: t => [t - 4], mark: "4clk" },
+
+    { group: "mac_top2", sub: "B = k1" },
+    { name: "A",     expr: "← top1 ACOUT", terms: t => [t - 2] },
+    { name: "PCIN",  expr: "← top1 PCOUT", terms: t => [t - 4] },
+    { name: "ACOUT", expr: "x(t−4)",       terms: t => [t - 4] },
+    { name: "PCOUT", expr: "x(t−6)+x(t−5)", terms: t => [t - 6, t - 5] },
+
+    { group: "mac_top3", sub: "B = k0" },
+    { name: "A",    expr: "← top2 ACOUT",   terms: t => [t - 4] },
+    { name: "PCIN", expr: "← top2 PCOUT",   terms: t => [t - 6, t - 5] },
+    { name: "P", sub: "= top_out", expr: "x(t−8)+x(t−7)+x(t−6)", terms: t => [t - 8, t - 7, t - 6] },
+
+    { group: "OUTPUT" },
+    { name: "data_out", expr: "top_out 를 1clk 지연", terms: t => [t - 9, t - 8, t - 7] }
+  ];
+
+  const CW = 46, RH = 26, PITCH = 34, GH = 26, LABW = 168, PAD = 12, TOP = 30;
+
+  // y 좌표 계산
+  let y = TOP, maxY = 0;
+  rows.forEach(r => {
+    if (r.group) { r._y = y; y += GH; }
+    else { r._y = y; y += PITCH; }
+  });
+  maxY = y + 6;
+
+  const W = LABW + CW * T + PAD * 2;
+  const svg = document.getElementById("chart");
+  svg.setAttribute("viewBox", `0 0 ${W} ${maxY}`);
+  svg.setAttribute("width", W);
+  svg.setAttribute("height", maxY);
+
+  const NS = "http://www.w3.org/2000/svg";
+  const el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  const cx = t => LABW + PAD + t * CW;
+
+  let trace = 3;
+
+  function render() {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+    // 세로 그리드
+    for (let t = 0; t <= T; t++) {
+      svg.appendChild(el("line", {
+        x1: cx(t), y1: TOP - 12, x2: cx(t), y2: maxY - 10,
+        stroke: "var(--grid)", "stroke-width": 1
+      }));
+    }
+
+    // 사이클 번호 (클릭 가능)
+    for (let t = 0; t < T; t++) {
+      const g = el("g", { class: "cyc", style: "cursor:pointer" });
+      g.appendChild(el("rect", { x: cx(t), y: 0, width: CW, height: TOP - 12, fill: "transparent" }));
+      const tx = el("text", {
+        x: cx(t) + CW / 2, y: 14, "text-anchor": "middle", "font-size": 11,
+        fill: t === trace ? "var(--accent)" : "var(--muted)",
+        "font-weight": t === trace ? 700 : 400
+      });
+      tx.textContent = t;
+      g.appendChild(tx);
+      g.addEventListener("click", () => { trace = t; render(); });
+      svg.appendChild(g);
+    }
+
+    rows.forEach(r => {
+      const yy = r._y;
+
+      if (r.group) {
+        const t1 = el("text", {
+          x: PAD, y: yy + 16, "font-size": 10.5, "letter-spacing": "1.4",
+          fill: "var(--muted)", "font-weight": 700
+        });
+        t1.textContent = r.group.toUpperCase();
+        svg.appendChild(t1);
+        if (r.sub) {
+          const t2 = el("text", { x: PAD + 96, y: yy + 16, "font-size": 10.5, fill: "var(--dim)" });
+          t2.textContent = r.sub;
+          svg.appendChild(t2);
+        }
+        svg.appendChild(el("line", {
+          x1: PAD, y1: yy + 21, x2: W - PAD, y2: yy + 21,
+          stroke: "var(--rule)", "stroke-width": 1
+        }));
+        return;
+      }
+
+      // 신호 이름
+      const nm = el("text", { x: LABW - 10, y: yy + 17, "text-anchor": "end", "font-size": 12, fill: "var(--text)" });
+      nm.textContent = r.name;
+      svg.appendChild(nm);
+      if (r.sub) {
+        const sb = el("text", { x: LABW - 10, y: yy + 28, "text-anchor": "end", "font-size": 9.5, fill: "var(--dim)" });
+        sb.textContent = r.sub;
+        svg.appendChild(sb);
+      }
+
+      // 클럭 파형
+      if (r.kind === "clock") {
+        let d = "";
+        for (let t = 0; t < T; t++) {
+          const a = cx(t), h = a + CW / 2, b = a + CW;
+          d += `M${a},${yy + RH} L${a},${yy + 4} L${h},${yy + 4} L${h},${yy + RH} L${b},${yy + RH} `;
+        }
+        svg.appendChild(el("path", { d, fill: "none", stroke: "var(--clk)", "stroke-width": 1.4 }));
+        return;
+      }
+
+      // 데이터 버스
+      for (let t = 0; t < T; t++) {
+        const terms = r.terms(t);
+        const val = terms.reduce((s, k) => s + x(k), 0);
+        const live = terms.some(k => k >= 0);
+        const hit = terms.includes(trace);
+
+        const a = cx(t) + 2, w = CW - 4, c = 5;
+        const path = `M${a + c},${yy} L${a + w - c},${yy} L${a + w},${yy + RH / 2} L${a + w - c},${yy + RH} L${a + c},${yy + RH} L${a},${yy + RH / 2} Z`;
+
+        svg.appendChild(el("path", {
+          d: path,
+          fill: hit ? "var(--accent-bg)" : "var(--bus-fill)",
+          stroke: hit ? "var(--accent)" : "var(--bus-stroke)",
+          "stroke-width": hit ? 1.6 : 1,
+          opacity: live ? 1 : .4
+        }));
+
+        const v = el("text", {
+          x: a + w / 2, y: yy + RH / 2 + 4.2, "text-anchor": "middle", "font-size": 11.5,
+          fill: hit ? "var(--accent)" : (live ? "var(--bus-text)" : "var(--dim)"),
+          "font-weight": hit ? 700 : 400
+        });
+        v.textContent = val;
+        svg.appendChild(v);
+      }
+    });
+
+    document.getElementById("tracelabel").textContent = `x(${trace})`;
+  }
+
+  // 범례
+  const dl = document.getElementById("legend");
+  rows.filter(r => !r.group && r.kind !== "clock").forEach(r => {
+    const dt = document.createElement("dt");
+    dt.textContent = r.name + (r.sub ? " " + r.sub : "");
+    const dd = document.createElement("dd");
+    dd.textContent = r.expr;
+    dl.appendChild(dt); dl.appendChild(dd);
+  });
+
+  render();
+})();
+</script>

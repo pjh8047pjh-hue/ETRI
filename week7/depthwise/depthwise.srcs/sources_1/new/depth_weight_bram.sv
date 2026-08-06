@@ -1,6 +1,6 @@
 `timescale 1ns / 1ps
 
-module depth_input_bram(
+module depth_weight_bram(
     input  logic                  clk,
     input  logic                  rst,
 
