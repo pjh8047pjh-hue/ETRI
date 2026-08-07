@@ -1,6 +1,9 @@
 `timescale 1ns / 1ps
 
-module depth_mac #(parameter int SP=15, DW=16) (
+module depth_mac #(
+    parameter SP = 15,
+    parameter DW = 16
+)(
     input  logic                   clk, rst,
     input  logic                   start,        // 첫 픽셀보다 한 클럭 앞
     input  logic signed [  DW-1:0] input_data,
@@ -23,6 +26,7 @@ module depth_mac #(parameter int SP=15, DW=16) (
                         → 인덱스 2, 5, 8
 
     */
+
     //import depthwise_pkg::*;
 
 
@@ -99,9 +103,9 @@ module depth_mac #(parameter int SP=15, DW=16) (
     //--------------------------------------------------------------
     localparam   PARALLEL_DEPTH = 3;
 
-    wire  signed [DW-1:0] a_top_in [0:2];
-    wire  signed [DW-1:0] a_mid_in [0:2];
-    wire  signed [DW-1:0] a_bot_in [0:2];
+    wire  signed [29:0] a_top_in [0:2];
+    wire  signed [29:0] a_mid_in [0:2];
+    wire  signed [29:0] a_bot_in [0:2];
 
     wire  signed [  47:0] pc_top   [0:1];
     wire  signed [  47:0] pc_mid   [0:1];
@@ -127,7 +131,7 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    );
 
     dsp48_mac mac_top2(.CLK(clk),
-                   .A(a_top_in[1]),
+                   .ACIN(a_top_in[1]),
                    .B(weight[16 +: 16]), //weight
                    .P(),
                    .ACOUT(a_top_in[2]),
@@ -135,12 +139,10 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    .PCIN(pc_top[0])
                    );
 
-    dsp48_mac mac_top3(.CLK(clk),
-                   .A(a_top_in[2]),
+    dsp48_mac_last mac_top3(.CLK(clk),
+                   .ACIN(a_top_in[2]),
                    .B(weight[0 +: 16]), //weight
                    .P(top_out),
-                   .ACOUT(),
-                   .PCOUT(),
                    .PCIN(pc_top[1])
                    );
     //---------------------------------------------------------------
@@ -154,7 +156,7 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    );
 
     dsp48_mac mac_mid2(.CLK(clk),
-                   .A(a_mid_in[1]),
+                   .ACIN(a_mid_in[1]),
                    .B(weight[64 +: 16]), //weight
                    .P(),
                    .ACOUT(a_mid_in[2]),
@@ -162,12 +164,10 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    .PCIN(pc_mid[0])
                    );
 
-    dsp48_mac mac_mid3(.CLK(clk),
-                   .A(a_mid_in[2]),
+    dsp48_mac_last mac_mid3(.CLK(clk),
+                   .ACIN(a_mid_in[2]),
                    .B(weight[48 +: 16]), //weight
                    .P(mid_out),
-                   .ACOUT(),
-                   .PCOUT(),
                    .PCIN(pc_mid[1])
                    );
 
@@ -182,7 +182,7 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    );
 
     dsp48_mac mac_bot2(.CLK(clk),
-                   .A(a_bot_in[1]),
+                   .ACIN(a_bot_in[1]),
                    .B(weight[112 +: 16]), //weight
                    .P(),
                    .ACOUT(a_bot_in[2]),
@@ -190,12 +190,10 @@ module depth_mac #(parameter int SP=15, DW=16) (
                    .PCIN(pc_bot[0])
                    );
 
-    dsp48_mac mac_bot3(.CLK(clk),
-                   .A(a_bot_in[2]),
+    dsp48_mac_last mac_bot3(.CLK(clk),
+                   .ACIN(a_bot_in[2]),
                    .B(weight[96 +: 16]), //weight
                    .P(bot_out),
-                   .ACOUT(),
-                   .PCOUT(),
                    .PCIN(pc_bot[1])
                    );
 

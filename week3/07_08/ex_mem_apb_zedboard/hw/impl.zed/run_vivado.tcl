@@ -19,7 +19,7 @@ set DESIGN_NAME  $::env(DESIGN_NAME)
 set DESIGN       $::env(DESIGN)
 set PART         $::env(PART)
 set BOARD        $::env(BOARD)
-#set FILE_XDC     $::env(FILE_XDC)
+set FILE_XDC     gpio.xdc
 set DIR_IP       $::env(DIR_IP)
 
 source ${DESIGN_NAME}.tcl
@@ -28,7 +28,7 @@ make_wrapper -files [get_files ${PROJECT_DIR}/${PROJECT_NAME}.srcs/sources_1/bd/
 add_files -norecurse ${PROJECT_DIR}/${PROJECT_NAME}.gen/sources_1/bd/${DESIGN_NAME}/hdl/${DESIGN_NAME}_wrapper.v
 set_property top ${DESIGN_NAME}_wrapper [current_fileset]
 update_compile_order -fileset sources_1
-#add_files -fileset constrs_1 -norecurse ${FILE_XDC}
+add_files -fileset constrs_1 -norecurse ${FILE_XDC}
 
 proc syn_impl {} {
     global PROJECT_DIR PROJECT_NAME DESIGN_NAME

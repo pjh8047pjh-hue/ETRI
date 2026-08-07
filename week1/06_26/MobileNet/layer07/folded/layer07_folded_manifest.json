@@ -1,0 +1,125 @@
+{
+  "format_version": 1,
+  "dtype": "float32",
+  "weight_layout": "OIHW",
+  "bias_layout": "output-channel",
+  "eps": 1e-05,
+  "source": {
+    "parameters": "C:\\Users\\user\\Documents\\JH\\week1\\06_26\\MobileNet\\mobilenetv2_parameters.h",
+    "parameters_sha256": "79200cbd173a4a1fe18e75f40da039d2fbf57d16631efdd1045aaa369a0448c0",
+    "input": "C:\\Users\\user\\Documents\\JH\\week1\\06_26\\MobileNet\\MobileNet_v2\\mobilenetv2_result_layer06.bin",
+    "input_sha256": "5849ee103d2cbf3f9a356a53867c9fd9af1f1dbfa10f2a11ca64696e5b5882da",
+    "golden": "C:\\Users\\user\\Documents\\JH\\week1\\06_26\\MobileNet\\MobileNet_v2\\mobilenetv2_result_layer07.bin",
+    "golden_sha256": "776992b7cb7068784949de50fb621c48e51847a077b70f7b0002009b7c254ee7"
+  },
+  "checkpoint": "layer07_folded.pt",
+  "tensors": {
+    "features_7_conv_0_0_weight_folded": {
+      "shape": [
+        192,
+        32,
+        1,
+        1
+      ],
+      "elements": 6144,
+      "file": "features_7_conv_0_0_weight_folded_f32.bin",
+      "sha256": "7dc64a7c9877494134241e38b1929d924983c40eb5fd3cb68b0846a3d2bd020e"
+    },
+    "features_7_conv_0_0_bias_folded": {
+      "shape": [
+        192
+      ],
+      "elements": 192,
+      "file": "features_7_conv_0_0_bias_folded_f32.bin",
+      "sha256": "31e5860e6dbba0ad3374f598e03d31301c4377b3c51d726fb040437699ed2a01"
+    },
+    "features_7_conv_1_0_weight_folded": {
+      "shape": [
+        192,
+        1,
+        3,
+        3
+      ],
+      "elements": 1728,
+      "file": "features_7_conv_1_0_weight_folded_f32.bin",
+      "sha256": "e09ea482b4350c513641ef53c0d0a95fa6d74795fd2809ef083db64a79bd1570"
+    },
+    "features_7_conv_1_0_bias_folded": {
+      "shape": [
+        192
+      ],
+      "elements": 192,
+      "file": "features_7_conv_1_0_bias_folded_f32.bin",
+      "sha256": "133058661fae3f001d5adf52cd2bb33c5fd05e0a8e15b1333ddc7ff1276993b3"
+    },
+    "features_7_conv_2_weight_folded": {
+      "shape": [
+        64,
+        192,
+        1,
+        1
+      ],
+      "elements": 12288,
+      "file": "features_7_conv_2_weight_folded_f32.bin",
+      "sha256": "c5f9ee72d9cc7fa401e9952ecd9babdb0b4cb3be67a916e985cb3402bfd6ba55"
+    },
+    "features_7_conv_2_bias_folded": {
+      "shape": [
+        64
+      ],
+      "elements": 64,
+      "file": "features_7_conv_2_bias_folded_f32.bin",
+      "sha256": "f4c053f70048b3ca23f7859e9982396c9aad4c80fecdef2a3be3b4afccef339e"
+    }
+  },
+  "comparisons": {
+    "folded_vs_original": {
+      "max_abs_error": 1.2516975402832031e-06,
+      "mean_abs_error": 1.7627124699564384e-07,
+      "rmse": 2.3332480703599635e-07,
+      "cosine_similarity": 0.9999999999998653,
+      "tolerance": 0.0001,
+      "pass": true
+    },
+    "original_vs_golden": {
+      "max_abs_error": 0.00027877092361450195,
+      "mean_abs_error": 2.1262196122825812e-05,
+      "rmse": 2.9725796200164685e-05,
+      "cosine_similarity": 0.9999999978345827,
+      "tolerance": 0.001,
+      "pass": true
+    },
+    "folded_vs_golden": {
+      "max_abs_error": 0.0002785921096801758,
+      "mean_abs_error": 2.125916004390013e-05,
+      "rmse": 2.9724792625165516e-05,
+      "cosine_similarity": 0.9999999978347363,
+      "tolerance": 0.001,
+      "pass": true
+    },
+    "stage_expand_folded_vs_original": {
+      "max_abs_error": 2.980232238769531e-07,
+      "mean_abs_error": 1.4283988250710711e-08,
+      "rmse": 2.5865944640118965e-08,
+      "cosine_similarity": 0.9999999999999603,
+      "tolerance": 0.0001,
+      "pass": true
+    },
+    "stage_depthwise_folded_vs_original": {
+      "max_abs_error": 4.1350722312927246e-07,
+      "mean_abs_error": 2.939618892070234e-08,
+      "rmse": 4.8909011506178556e-08,
+      "cosine_similarity": 0.9999999999999778,
+      "tolerance": 0.0001,
+      "pass": true
+    },
+    "stage_project_folded_vs_original": {
+      "max_abs_error": 1.2516975402832031e-06,
+      "mean_abs_error": 1.7627124699564384e-07,
+      "rmse": 2.3332480703599635e-07,
+      "cosine_similarity": 0.9999999999998653,
+      "tolerance": 0.0001,
+      "pass": true
+    }
+  }
+}

@@ -2030,22 +2030,40 @@
       }
     },
     "interface_nets": {
-      "processing_system7_0_M_AXI_GP0": {
+      "smartconnect_0_M00_AXI": {
         "interface_ports": [
-          "processing_system7_0/M_AXI_GP0",
-          "smartconnect_0/S00_AXI"
+          "axi_bram_ctrl_0/S_AXI",
+          "smartconnect_0/M00_AXI"
         ]
       },
-      "smartconnect_0_M01_AXI": {
+      "axi4_to_apb4_s3_0_M1_APB": {
         "interface_ports": [
-          "axi4_to_apb4_s3_0/s_axi",
-          "smartconnect_0/M01_AXI"
+          "axi4_to_apb4_s3_0/M1_APB",
+          "mem_apb4_1/S_APB"
         ]
       },
       "processing_system7_0_FIXED_IO": {
         "interface_ports": [
           "FIXED_IO",
           "processing_system7_0/FIXED_IO"
+        ]
+      },
+      "processing_system7_0_DDR": {
+        "interface_ports": [
+          "DDR",
+          "processing_system7_0/DDR"
+        ]
+      },
+      "processing_system7_0_M_AXI_GP0": {
+        "interface_ports": [
+          "processing_system7_0/M_AXI_GP0",
+          "smartconnect_0/S00_AXI"
+        ]
+      },
+      "axi_bram_ctrl_0_BRAM_PORTB": {
+        "interface_ports": [
+          "axi_bram_ctrl_0/BRAM_PORTB",
+          "axi_bram_ctrl_0_bram/BRAM_PORTB"
         ]
       },
       "axi4_to_apb4_s3_0_M2_APB": {
@@ -2060,34 +2078,16 @@
           "axi_bram_ctrl_0_bram/BRAM_PORTA"
         ]
       },
-      "axi4_to_apb4_s3_0_M1_APB": {
+      "smartconnect_0_M01_AXI": {
         "interface_ports": [
-          "axi4_to_apb4_s3_0/M1_APB",
-          "mem_apb4_1/S_APB"
-        ]
-      },
-      "processing_system7_0_DDR": {
-        "interface_ports": [
-          "DDR",
-          "processing_system7_0/DDR"
+          "axi4_to_apb4_s3_0/s_axi",
+          "smartconnect_0/M01_AXI"
         ]
       },
       "axi4_to_apb4_s3_0_M0_APB": {
         "interface_ports": [
           "axi4_to_apb4_s3_0/M0_APB",
           "mem_apb4_0/S_APB"
-        ]
-      },
-      "axi_bram_ctrl_0_BRAM_PORTB": {
-        "interface_ports": [
-          "axi_bram_ctrl_0/BRAM_PORTB",
-          "axi_bram_ctrl_0_bram/BRAM_PORTB"
-        ]
-      },
-      "smartconnect_0_M00_AXI": {
-        "interface_ports": [
-          "axi_bram_ctrl_0/S_AXI",
-          "smartconnect_0/M00_AXI"
         ]
       }
     },

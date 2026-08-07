@@ -37,12 +37,12 @@ module gpio_apb #(
 // | write REG_POL            | r_pol  -> GPIO_I 감지 로직 | level: low/high, edge: falling/rising 기준 결정                 |
 // | (자동, APB 접근 아님)     | GPIO_I -> r_flag -> IRQ   | 감지 로직이 조건 성립 시 r_flag를 세팅하고, mask 통과 시 IRQ assert |
 
-    localparam REG_LINE = 6'h04; // Line Register: 현재 GPIO 핀 level 또는 출력값 제어.
-    localparam REG_CTRL = 6'h00; // Line Control Registor: 0이면 input, 1이면 output.
-    localparam REG_MASK = 6'h08; // Interrupt Mask Register: interrupt 발생 여부.
-    localparam REG_FLAG = 6'h0C; // Interrupt Flag: interrupt 발생 여부.
-    localparam REG_EDGE = 6'h10; // Edge/Level Register: 0이면 level, 1이면 edge.
-    localparam REG_POL  = 6'h14; // Polarity Register: level이면 low/high 선택, edge면 falling/rising 선택.
+    localparam REG_LINE = 8'h04; // Line Register: 현재 GPIO 핀 level 또는 출력값 제어.
+    localparam REG_CTRL = 8'h00; // Line Control Registor: 0이면 input, 1이면 output.
+    localparam REG_MASK = 8'h08; // Interrupt Mask Register: interrupt 발생 여부.
+    localparam REG_FLAG = 8'h0C; // Interrupt Flag: interrupt 발생 여부.
+    localparam REG_EDGE = 8'h10; // Edge/Level Register: 0이면 level, 1이면 edge.
+    localparam REG_POL  = 8'h14; // Polarity Register: level이면 low/high 선택, edge면 falling/rising 선택.
 
     reg [GPIO_WIDTH-1:0] r_line;
     reg [GPIO_WIDTH-1:0] r_ctrl;
@@ -54,8 +54,8 @@ module gpio_apb #(
     assign GPIO_T = ~r_ctrl;
     assign GPIO_O =  r_line;
 
-    wire write = PSEL & PWRITE  & PENABLE;
-    wire read  = PSEL & ~PWRITE;
+    wire write = PSEL &  PWRITE &  PENABLE;
+    wire read  = PSEL & ~PWRITE & ~PENABLE;
 
     always @(posedge PCLK or negedge PRESETn) begin
         if(!PRESETn) begin
@@ -69,7 +69,7 @@ module gpio_apb #(
         end
 
         else if (write) begin
-            case (PADDR[5:0])
+            case (PADDR[7:0])
                 REG_LINE: r_line <= PWDATA[GPIO_WIDTH-1:0];
                 REG_CTRL: r_ctrl <= PWDATA[GPIO_WIDTH-1:0];
                 REG_MASK: r_mask <= PWDATA[GPIO_WIDTH-1:0];
@@ -80,7 +80,7 @@ module gpio_apb #(
         end
 
         else if(read) begin
-            case (PADDR[5:0])
+            case (PADDR[7:0])
                 REG_LINE: PRDATA[GPIO_WIDTH-1:0] <= (r_ctrl & r_line) | (~r_ctrl & GPIO_I);
                 REG_CTRL: PRDATA[GPIO_WIDTH-1:0] <= r_ctrl;
                 REG_MASK: PRDATA[GPIO_WIDTH-1:0] <= r_mask;

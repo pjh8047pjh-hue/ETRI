@@ -1,9 +1,9 @@
 #include <stdio.h>
 
-#define CIN 10
-#define COUT 5
-#define H 3
-#define W 3
+#define CIN 3
+#define COUT 2
+#define H 2
+#define W 2
 
 int main(void) {
     float input[CIN][H][W];

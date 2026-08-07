@@ -8,8 +8,7 @@ module tb_depth_mac;
     localparam integer SP = 15;     // 행 주기 = 라인버퍼 깊이
     localparam integer W  = 14;     // 실제 IFM 폭
 
-    // input_data -> data_out 지연.  DSP 구성 바꾸면 이 값만 고치면 된다
-    //   4 : IP 내부 A->P (areg x2 + MREG + PREG)
+    // input_data -> data_out 지연.  DSP 구성 바꾸면 이 값만 고치기
     //   2 : PCOUT->PCIN 홉 2번 (체인 3개)
     //   1 : 최종 가산 레지스터
     localparam integer LAT = 7;
@@ -23,6 +22,7 @@ module tb_depth_mac;
 
     integer f, n, i;
 
+
     depth_mac #(.SP(SP), .DW(DW)) dut (
         .clk        (clk),
         .rst        (rst),
@@ -31,6 +31,7 @@ module tb_depth_mac;
         .weight     (weight),
         .data_out   (data_out)
     );
+
 
     always #(CLK_PERIOD_NS/2) clk = ~clk;
 
@@ -58,9 +59,8 @@ module tb_depth_mac;
     //   exp_p[0]   : input_data 를 넣는 시점
     //   exp_p[LAT] : data_out 이 나오는 시점
     //--------------------------------------------------------------------
-    integer exp_p [0:LAT];
-    logic   vld_p [0:LAT];
-    integer err, chk;
+
+
 
     always @(posedge clk) begin
         if (vld_p[LAT]) begin
