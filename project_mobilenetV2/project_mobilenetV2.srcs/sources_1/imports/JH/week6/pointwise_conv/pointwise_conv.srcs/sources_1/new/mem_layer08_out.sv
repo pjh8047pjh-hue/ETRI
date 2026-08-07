@@ -10,7 +10,7 @@ module mem_layer08_out #(
 
     // result_valid 한 pulse당 MAC 결과 한 개를 저장한다.
     input  logic                        start_w,
-    input  logic signed [37:0]           dina,
+    input  logic signed [37:0]          dina,
     output logic                        done_w,
 
     // start_r 한 pulse로 주소 0부터 전체 결과를 순서대로 읽는다.

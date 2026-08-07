@@ -23,7 +23,7 @@
 module ReLU6(
     input  logic clk,
     input  logic rst,
-    input  logic din,
+    input  logic signed [din,
 
     output logic [15:0] data_out_relu
     );
@@ -33,7 +33,7 @@ module ReLU6(
             data_out_relu <= 0;
         end else if(din <= 16'd6 && din >= 16'd0) begin
             data_out_relu <= din;
-        end else if(din > 16d'6) begin
+        end else if(din > 16'd6) begin
             data_out_relu <= 16'd6;
         end else if(din < 16'd0) begin
             data_out_relu <= 16'd0;

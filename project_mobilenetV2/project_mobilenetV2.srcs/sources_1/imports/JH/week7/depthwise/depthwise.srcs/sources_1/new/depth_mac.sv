@@ -81,24 +81,6 @@ module depth_mac #(
         line_buf_1 <= {line_buf_1[(SP-1)*DW-1:0], bot};
         line_buf_2 <= {line_buf_2[(SP-1)*DW-1:0], mid};
     end
-
-    /*
-    //------------- 3*3 Convolution kernel logic ---------------------
-    // index 곱셈 변경
-    logic signed [DW-1:0] w [0:8];
-    logic 
-
-    always_ff @(posedge clk) begin
-        for(int i = 0; i < 3; i++) begin
-            w[i*3+0] <= w[i*3+1]; // 각 row의 0번 자리에 1번 내용으로 옮김
-            w[i*3+1] <= w[i*3+2]; // 각 row의 1번 자리에 2번 내용으로 옮김
-        end
-
-        w[2] <= top_in; // 오른쪽으로 shift
-        w[5] <= mid_in; 
-        w[8] <= bot_in;
-    end
-    */
     
     //--------------------------------------------------------------
     localparam   PARALLEL_DEPTH = 3;
@@ -197,27 +179,9 @@ module depth_mac #(
                    .PCIN(pc_bot[1])
                    );
 
+    //---------- output logic --------------------
     always_ff @(posedge clk) begin 
         data_out <= top_out + mid_out + bot_out;
     end
-    
-    /*
-    //------------------------- Multiply ---------------------------
-    // 추후에 DSP 9개로 교체하여 한 번에 accumulation까지 진행할 예정
-    logic signed [3*DW-1:0] sum;
-
-    always_comb begin
-        sum = 0;
-        for(int i = 0; i < 9; i++) begin
-            sum = sum + w[i] * $signed(weight[i*DW +: DW]);
-        end
-    end
-
-    always_ff @(posedge clk) begin
-        data_out <= sum;
-    end
-    //--------------------------------------------------------------
-    */
-
     
 endmodule
