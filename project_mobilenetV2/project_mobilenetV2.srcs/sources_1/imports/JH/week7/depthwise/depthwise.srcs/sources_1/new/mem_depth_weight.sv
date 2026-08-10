@@ -47,9 +47,9 @@ module mem_depth_weight(
         if(rst) begin
             in_cnt  <= 0;
             channel <= 0;    
-        end else if(in_cnt != 8'd383) begin
+        end else if(in_cnt != 9'd383) begin
             in_cnt <= in_cnt + 1'b1;
-        end else if(in_cnt == 8'd383) begin
+        end else if(in_cnt == 9'd383) begin
             in_cnt  <= 0;
             channel <= channel + 9'd1;
         end

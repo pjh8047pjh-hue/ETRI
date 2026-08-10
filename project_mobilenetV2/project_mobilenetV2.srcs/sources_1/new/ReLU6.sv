@@ -20,23 +20,26 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 
-module ReLU6(
-    input  logic clk,
-    input  logic rst,
-    input  logic signed [din,
+module ReLU6 #(
+    parameter DIN_W = 16,
+    parameter int UPPER = 6
+)(
+    input  logic                    clk,
+    input  logic                    rst,
+    input  logic signed [DIN_W-1:0] din,
 
     output logic [15:0] data_out_relu
     );
 
     always_ff @(posedge clk or posedge rst) begin
         if(rst) begin
-            data_out_relu <= 0;
-        end else if(din <= 16'd6 && din >= 16'd0) begin
-            data_out_relu <= din;
-        end else if(din > 16'd6) begin
-            data_out_relu <= 16'd6;
-        end else if(din < 16'd0) begin
             data_out_relu <= 16'd0;
+        end else if(din > UPPER) begin
+            data_out_relu <= UPPER[15:0];
+        end else if(din < 0) begin
+            data_out_relu <= 16'd0;
+        end else begin
+            data_out_relu <= din[15:0];
         end
     end
 

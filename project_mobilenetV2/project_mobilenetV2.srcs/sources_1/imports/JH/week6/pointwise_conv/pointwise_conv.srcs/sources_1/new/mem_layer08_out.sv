@@ -2,7 +2,7 @@
 
 module mem_layer08_out #(
     // MAC이 마지막 누적에서 Q2.13으로 변환하므로 하위 16bit를 저장한다.
-    // 별도의 반올림 또는 포화 처리는 수행하지 않는다.
+    // 하위 16bit로 표현 안 되는 값(오버플로)은 saturate 처리한다.
     parameter integer QUANT_LSB  = 0
 )(
     input  logic                        clk,
@@ -30,14 +30,33 @@ module mem_layer08_out #(
     logic [ADDR_WIDTH-1:0] wr_addr;
     logic [ADDR_WIDTH-1:0] rd_addr;
     logic                  reading;
+
     logic [DATA_WIDTH-1:0] quantized_data;
     logic [0:0]            wea;
 
-    assign quantized_data = dina[QUANT_LSB +: DATA_WIDTH];
+    // dina[QUANT_LSB +: DATA_WIDTH]를 그대로 자르면 16bit로 안 들어가는 값은
+    // 부호까지 랩어라운드된다. 상위 확장 비트가 전부 부호비트와 같을 때만
+    // (=16bit로 표현 가능할 때만) 그대로 자르고, 아니면 saturate한다.
+    localparam integer EXT_BITS = ACC_WIDTH - QUANT_LSB - DATA_WIDTH + 1;
+    localparam logic signed [DATA_WIDTH-1:0] MAX = {1'b0, {(DATA_WIDTH-1){1'b1}}};
+    localparam logic signed [DATA_WIDTH-1:0] MIN = {1'b1, {(DATA_WIDTH-1){1'b0}}};
+
+    wire in_range = &(dina[ACC_WIDTH-1 -: EXT_BITS] ~^ {EXT_BITS{dina[ACC_WIDTH-1]}});
+
+    always_comb begin
+        if(in_range) begin
+            quantized_data = dina[QUANT_LSB +: DATA_WIDTH];
+        end else if(dina[ACC_WIDTH-1]) begin
+            quantized_data = MIN;
+        end else begin
+            quantized_data = MAX;
+        end
+    end
+
     assign wea[0]          = start_w;
 
     // Block Memory Generator: Simple Dual Port RAM, 16-bit x 75,264.
-    blk_mem_gen_output output_bram_ip (
+    output_bram_ip output_bram_ip (
         .clka  (clk),
         .ena   (start_w),
         .wea   (wea),

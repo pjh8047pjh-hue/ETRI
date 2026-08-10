@@ -53,7 +53,7 @@ module depth_mac #(
             end else begin
                 col_cnt <= col_cnt + 4'd1;
             end
-        end else if(run == )
+        end
     end
     //--------------------------------------------------------------
 
@@ -183,5 +183,5 @@ module depth_mac #(
     always_ff @(posedge clk) begin 
         data_out <= top_out + mid_out + bot_out;
     end
-    
+
 endmodule

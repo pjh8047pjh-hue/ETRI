@@ -26,7 +26,7 @@ module mem_layer08_input_bram(
     assign wea[0] = start_w;
 
     // Block Memory Generator: Simple Dual Port RAM, 1024-bit x 196.
-    blk_mem_gen_input input_bram_ip (
+    input_bram_ip input_bram_ip (
         .clka  (clk),
         .ena   (start_w),
         .wea   (wea),

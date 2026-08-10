@@ -1,0 +1,429 @@
+<title>UART 기반 8×8 곱셈기 — Ultra96</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface-2: #eceff3;
+    --text: #1a2130;
+    --text-muted: #5b6472;
+    --accent: #b5601f;
+    --accent-soft: #f1ddc7;
+    --line: #dadfe6;
+    --mono-bg: #171c25;
+    --mono-text: #e7eaf0;
+    --mono-accent: #e2a35c;
+    --ok: #2f7a4f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #10141b;
+      --surface: #171c25;
+      --surface-2: #1d232e;
+      --text: #e7eaf0;
+      --text-muted: #9aa4b2;
+      --accent: #e08a4e;
+      --accent-soft: rgba(224, 138, 78, 0.14);
+      --line: #2a313d;
+      --mono-bg: #0b0e13;
+      --mono-text: #e7eaf0;
+      --mono-accent: #f0a869;
+      --ok: #5fbf85;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #10141b;
+    --surface: #171c25;
+    --surface-2: #1d232e;
+    --text: #e7eaf0;
+    --text-muted: #9aa4b2;
+    --accent: #e08a4e;
+    --accent-soft: rgba(224, 138, 78, 0.14);
+    --line: #2a313d;
+    --mono-bg: #0b0e13;
+    --mono-text: #e7eaf0;
+    --mono-accent: #f0a869;
+    --ok: #5fbf85;
+  }
+  :root[data-theme="light"] {
+    --bg: #f5f6f8;
+    --surface: #ffffff;
+    --surface-2: #eceff3;
+    --text: #1a2130;
+    --text-muted: #5b6472;
+    --accent: #b5601f;
+    --accent-soft: #f1ddc7;
+    --line: #dadfe6;
+    --mono-bg: #171c25;
+    --mono-text: #e7eaf0;
+    --mono-accent: #e2a35c;
+    --ok: #2f7a4f;
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: ui-sans-serif, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+  }
+  body {
+    padding: 3rem 1.25rem 5rem;
+  }
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2.75rem;
+  }
+
+  .mono {
+    font-family: ui-monospace, "SF Mono", "Cascadia Mono", Consolas, "Roboto Mono", monospace;
+  }
+
+  header.page {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .eyebrow {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.15;
+    margin: 0;
+    text-wrap: balance;
+  }
+  .lede {
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    line-height: 1.6;
+    max-width: 62ch;
+    margin: 0;
+  }
+
+  section {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  section > h2 {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin: 0;
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--line);
+  }
+  section > h2 .num {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    font-weight: 600;
+  }
+  section > p {
+    color: var(--text-muted);
+    line-height: 1.65;
+    margin: 0;
+    max-width: 65ch;
+  }
+
+  /* flow diagram */
+  .flow {
+    display: flex;
+    align-items: stretch;
+    flex-wrap: wrap;
+    gap: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem;
+  }
+  .flow-step {
+    flex: 1 1 auto;
+    min-width: 108px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 0.3rem;
+    padding: 0.75rem 0.5rem;
+  }
+  .flow-step .label {
+    font-weight: 600;
+    font-size: 0.88rem;
+    line-height: 1.3;
+  }
+  .flow-step .sub {
+    font-size: 0.74rem;
+    color: var(--text-muted);
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+  }
+  .flow-step.accent {
+    background: var(--accent-soft);
+    border-radius: 8px;
+  }
+  .flow-arrow {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    padding: 0 0.15rem;
+  }
+
+  /* clock diagram, reuse flow styles with different sizing */
+  .clockflow {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 1.1rem 1.25rem;
+  }
+  .clock-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    background: var(--surface-2);
+  }
+  .clock-chip.accent {
+    background: var(--accent-soft);
+  }
+  .clock-chip .freq {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--accent);
+  }
+  .clock-chip .name {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+  .clock-arrow {
+    color: var(--text-muted);
+  }
+
+  /* terminal example */
+  .terminal {
+    background: var(--mono-bg);
+    color: var(--mono-text);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 1px 0 var(--line);
+  }
+  .terminal .chrome {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+  .terminal .dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+  }
+  .terminal .body {
+    padding: 1rem 1.1rem 1.2rem;
+    font-family: ui-monospace, "SF Mono", Consolas, "Roboto Mono", monospace;
+    font-size: 0.9rem;
+    line-height: 1.9;
+    overflow-x: auto;
+  }
+  .terminal .in { color: var(--mono-text); opacity: 0.55; }
+  .terminal .out { color: var(--mono-accent); font-weight: 600; }
+  .terminal .comment { color: var(--mono-text); opacity: 0.4; font-size: 0.8rem; }
+
+  .protocol-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+  .protocol-cell {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.55rem 0.4rem;
+    text-align: center;
+    background: var(--surface);
+  }
+  .protocol-cell .k {
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-weight: 700;
+    font-size: 1rem;
+  }
+  .protocol-cell .v {
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-top: 0.15rem;
+  }
+
+  /* module table */
+  .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.9rem; background: var(--surface); }
+  th, td { text-align: left; padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--line); }
+  thead th {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    background: var(--surface-2);
+    font-weight: 600;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.file { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 0.83rem; color: var(--accent); white-space: nowrap; }
+
+  footer.page {
+    padding-top: 1rem;
+    border-top: 1px solid var(--line);
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 560px) {
+    .flow { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); padding: 0.2rem 0; }
+    .protocol-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+
+<main>
+
+  <header class="page">
+    <span class="eyebrow">Ultra96-V2 · Inipro Pmod96</span>
+    <h1>UART 기반 8×8 곱셈기</h1>
+    <p class="lede">
+      picocom에서 hex 문자로 두 개의 바이트 값을 입력하면, PL(Programmable Logic)에
+      새로 설계한 UART와 4bit 부분곱 곱셈기가 이를 받아 곱셈을 수행하고, 결과를
+      다시 hex 문자로 돌려보낸다.
+    </p>
+  </header>
+
+  <section>
+    <h2><span class="num">01</span> 클럭 구조</h2>
+    <p>
+      Pmod96 보드의 온보드 오실레이터는 40&nbsp;MHz다. 모든 UART/곱셈기 타이밍 파라미터가
+      100&nbsp;MHz 기준으로 설계되어 있어, Clocking Wizard로 한 번 변환한 뒤 그 결과를
+      내부 시스템 클럭으로 통일해서 쓴다.
+    </p>
+    <div class="clockflow">
+      <div class="clock-chip">
+        <span class="freq">40 MHz</span>
+        <span class="name">온보드 오실레이터 (clk)</span>
+      </div>
+      <span class="clock-arrow">→</span>
+      <div class="clock-chip">
+        <span class="freq">clk_wiz_0</span>
+        <span class="name">MMCM/PLL</span>
+      </div>
+      <span class="clock-arrow">→</span>
+      <div class="clock-chip accent">
+        <span class="freq">100 MHz</span>
+        <span class="name">sys_clk (내부 시스템 클럭)</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">02</span> 데이터 흐름</h2>
+    <p>
+      RX와 TX 모두 <span class="mono">sys_clk</span> 도메인에서 동작하고, <span class="mono">baudrate_gen</span>이
+      만드는 1클럭짜리 <span class="mono">baud_tick</span>을 enable로 받아 115200 baud
+      타이밍을 맞춘다.
+    </p>
+    <div class="flow">
+      <div class="flow-step">
+        <span class="label">picocom</span>
+        <span class="sub">hex 입력</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="label">uart_rx</span>
+        <span class="sub">mid-bit 샘플링</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step accent">
+        <span class="label">uart_mul_ctrl</span>
+        <span class="sub">니블 조립 · 시퀀싱</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="label">FSM_mul + shifter + adder</span>
+        <span class="sub">4bit 부분곱 누산</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="label">uart_tx</span>
+        <span class="sub">결과 프레이밍</span>
+      </div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">
+        <span class="label">picocom</span>
+        <span class="sub">hex 출력</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">03</span> 통신 프로토콜</h2>
+    <p>
+      한 바이트를 hex 두 자리로, 두 바이트(a, b)를 이어서 총 네 글자 입력한다.
+      줄바꿈은 필요 없다 — 네 번째 문자가 들어오는 순간 곱셈이 시작된다.
+    </p>
+    <div class="protocol-grid">
+      <div class="protocol-cell"><div class="k">1</div><div class="v">a 상위 니블</div></div>
+      <div class="protocol-cell"><div class="k">2</div><div class="v">a 하위 니블</div></div>
+      <div class="protocol-cell"><div class="k">3</div><div class="v">b 상위 니블</div></div>
+      <div class="protocol-cell"><div class="k">4</div><div class="v">b 하위 니블</div></div>
+    </div>
+    <div class="terminal">
+      <div class="chrome"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      <div class="body"><span class="comment"># picocom -b 115200 /dev/ttyUSBx</span><br />
+<span class="in">1234</span><span class="out">=03A8</span>  <span class="comment">0x12 × 0x34 = 0x03A8</span><br />
+<span class="in">ffff</span><span class="out">=FE01</span>  <span class="comment">0xFF × 0xFF = 0xFE01</span><br />
+<span class="in">ab02</span><span class="out">=0156</span>  <span class="comment">0xAB × 0x02 = 0x0156</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">04</span> 모듈 구성</h2>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>파일</th><th>역할</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="file">top_mul_4bit.v</td><td>최상위 — clk_wiz_0, POR 리셋, 전체 배선</td></tr>
+          <tr><td class="file">uart_rx.v</td><td>mid-bit 샘플링 UART 수신, 메타스터빌리티 동기화</td></tr>
+          <tr><td class="file">uart_tx.v</td><td>enable 기반 UART 송신, busy 핸드셰이크</td></tr>
+          <tr><td class="file">baudrate_gen.v</td><td>sys_clk을 나눠 115200 baud tick 생성</td></tr>
+          <tr><td class="file">uart_mul_ctrl.v</td><td>hex 니블 조립 → 곱셈 트리거 → 결과 hex 포맷팅</td></tr>
+          <tr><td class="file">FSM_mul.v</td><td>CALC_0~3 상태로 4bit 부분곱 시퀀스 제어</td></tr>
+          <tr><td class="file">selector.v / mul_4bit.v / shifter.v</td><td>니블 선택 · 부분곱 계산 · 시프트</td></tr>
+          <tr><td class="file">adder.v</td><td>부분곱 누산 → 16bit 결과</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="page">
+    WIDTH = 8, CHUNK = 4 · Pmod A: rx_data (F7) / tx_data (F8), Bank 26 @ 1.8V
+  </footer>
+
+</main>

@@ -108,9 +108,7 @@ module pointwise(
                                     .done_r(done_r)
                                     );
 
-    ReLU6 ReLU6(.clk(clk),
-                .rst(rst),
-                .din(din),
-                .data_out_relu(data_out)
-                );
+    // ReLU6는 이 모듈 밖(mobilenetV2 top)에서 적용한다.
+    // 예전에는 여기서 ReLU6를 바로 붙였는데, data_out을
+    // mem_layer08_out과 동시에 두 번 구동하게 되어 제거함.
 endmodule

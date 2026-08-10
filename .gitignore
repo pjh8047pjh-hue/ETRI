@@ -59,6 +59,11 @@ week3/test/
 .DS_Store
 Thumbs.db
 
+# Local week5 reference photos and duplicate project archives
+week5/KakaoTalk_*.jpg
+week5/mul_4bit_uart.zip
+week5/mul_4bit_uart.tar.xz
+
 # Secrets - never commit
 .env
 .secrets/

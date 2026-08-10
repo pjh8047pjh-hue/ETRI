@@ -9,7 +9,9 @@ module depth_top #(
 
 	output logic signed [3*DW-1:0] data_out
 );
- 
+
+	logic signed [9*DW-1:0] weight;
+
 	mem_depth_weight u1(.clk(clk),
 						.rst(rst),
 						.start_r(start),
