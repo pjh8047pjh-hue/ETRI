@@ -56,7 +56,7 @@ module tb_mobilenet(
         @(posedge clk); start <= 1'b0;
 
         repeat (170_000) @(posedge clk);
-        
+
         $finish;
     end
 

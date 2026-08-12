@@ -29,7 +29,6 @@ module depth_mac #(
 
     //import depthwise_pkg::*;
 
-
     //--------------------- streaming counter ----------------------
     localparam int ROW_LEN = 15;
     
@@ -53,10 +52,9 @@ module depth_mac #(
             end else begin
                 col_cnt <= col_cnt + 4'd1;
             end
-        end
+        end 
     end
     //--------------------------------------------------------------
-
 
     // data logic
     logic [SP*DW-1:0] line_buf_1;
@@ -73,7 +71,6 @@ module depth_mac #(
     wire signed [DW-1:0] bot_in = (col_zero | bot_zero) ? '0 : bot;
     wire signed [DW-1:0] mid_in = (col_zero           ) ? '0 : mid;
     wire signed [DW-1:0] top_in = (col_zero | top_zero) ? '0 : top;
-
 
     //------------------- line_buf_logic------------------------------
 
@@ -96,6 +93,7 @@ module depth_mac #(
     /*
     logic        run_dsp;
     logic        line_buf_valid;
+
     */
 
     logic signed [47:0] top_out, mid_out, bot_out;
@@ -111,7 +109,7 @@ module depth_mac #(
                    .ACOUT(a_top_in[1]),
                    .PCOUT(pc_top[0])
                    );
-
+    
     dsp48_mac mac_top2(.CLK(clk),
                    .ACIN(a_top_in[1]),
                    .B(weight[16 +: 16]), //weight
@@ -183,5 +181,5 @@ module depth_mac #(
     always_ff @(posedge clk) begin 
         data_out <= top_out + mid_out + bot_out;
     end
-
+    
 endmodule

@@ -20,11 +20,13 @@ module mem_layer08_out #(
     output logic                        done_r
     );
 
+    import pointwise_pkg::*;
+
     localparam integer ACC_WIDTH  = 38;
     localparam integer DATA_WIDTH = 16;
     localparam integer DEPTH      = pointwise_pkg::WEIGHT_WIDTH
                                   * pointwise_pkg::CHANNEL_WIDTH;
-    localparam integer ADDR_WIDTH = $clog2(DEPTH);
+    localparam integer ADDR_WIDTH = $clog2(DEPTH); // 75_264
     localparam logic [ADDR_WIDTH-1:0] LAST_ADDR = DEPTH - 1;
 
     logic [ADDR_WIDTH-1:0] wr_addr;
@@ -65,24 +67,50 @@ module mem_layer08_out #(
         .clkb  (clk),
         .enb   (reading),
         .addrb (rd_addr),
-        .doutb (data_out)
+        .doutb (bram_data_out)
     );
 
-    // pointwise의 loop 순서가 pixel -> output channel이므로 저장 주소는
-    // 순서대로 address = pix_cnt * WEIGHT_WIDTH + oc_cnt가 된다.
+    //----------------- wrtie address logic --------------------------
+    /* pointwise의 loop 순서가 pixel -> output channel이므로 저장 주소는
+    순서대로 address = pix_cnt * WEIGHT_WIDTH + oc_cnt가 된다.
+
+    output channel의 순서로 저장되므로 depthwise를 위해 위치를 변환해야한다.
+    따라서 첫 번째 주소에 값을 저장한 후, 다음 채널까지의 주소인 196을 더해주면 된다.
+
+    wr_addr <= w_pix(196) + w_oc(384)
+    */
+    logic start_enable;
+    always_ff @(posedge clk) begin
+        if(start_w) start_enable <= 1'b1;
+        else if(done_w) start_enable <= '0;
+    end
+
+    logic [ADDR_WIDTH-1:0] wr_pix;
+    logic [ADDR_WIDTH-1:0] wr_oc;
+
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             wr_addr <= '0;
+            wr_pix  <= '0;
+            wr_oc   <= '0;
             done_w  <= 1'b0;
         end else begin
             done_w <= 1'b0;
 
-            if (start_w) begin
-                if (wr_addr == LAST_ADDR) begin
+            if (start_enable) begin
+                if (wr_addr == LAST_ADDR) begin                    
                     wr_addr <= '0;
+                    wr_pix  <= '0;
+                    wr_oc   <= '0;
                     done_w  <= 1'b1;
-                end else begin
-                    wr_addr <= wr_addr + 1'b1;
+                end else if (wr_pix != CHANNEL_WIDTH) begin
+                    wr_addr <= wr_pix + 1'b1;
+                    wr_oc   <= '0;
+
+                    if(wr_oc != WEIGHT_WIDTH-1) begin
+                        wr_addr <= wr_addr + CHANNEL_WIDTH;
+                        wr_oc   <= wr_oc + 1'b1;
+                    end else wr_pix <= wr_pix + 1'b1;
                 end
             end
         end
@@ -90,6 +118,31 @@ module mem_layer08_out #(
 
     // 전체 결과 read. data_valid는 읽는 각 cycle에, done_r은 마지막
     // data_out이 유효한 cycle에 각각 올라온다.
+
+    logic [15:0] bram_data_out;
+
+    wire real_slot = (rd_row_cnt < 14) && (rd_col_cnt < 14);
+    
+    logic real_slot_d1;
+    logic real_slot_d2;
+    logic reading_d1;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            real_slot_d1 <= 1'b0;
+            real_slot_d2 <= 1'b0;
+            reading_d1   <= 1'b0;
+        end else begin
+            real_slot_d1 <= reading && real_slot;
+            real_slot_d2 <= real_slot_d1;
+            reading_d1   <= reading;
+        end
+    end
+
+    assign data_out = real_slot_d2
+                    ? bram_data_out
+                    : 16'd0;
+
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             rd_addr    <= '0;
@@ -107,11 +160,33 @@ module mem_layer08_out #(
                 if (rd_addr == LAST_ADDR) begin
                     rd_addr <= '0;
                     reading <= 1'b0;
-                end else begin
-                    rd_addr <= rd_addr + 1'b1;
+                end else if(real_slot) begin  
+                        rd_addr <= rd_addr + 1'b1;
                 end
             end
         end
     end
+
+
+//---------------------------------------------------------------------------
+    localparam int ROW_LEN = 15;
+    
+    logic [3:0] rd_col_cnt;
+    logic [3:0] rd_row_cnt;
+
+    always_ff @(posedge clk) begin
+        if(rst || start_r) begin   
+            rd_col_cnt <= 0;
+            rd_row_cnt <= 0;
+        end else if (reading) begin
+            if (rd_col_cnt == 14) begin
+                rd_col_cnt <= 0;
+                rd_row_cnt <= (rd_row_cnt == 14) ? 0 : rd_row_cnt + 1'b1;
+            end else begin
+                rd_col_cnt <= rd_col_cnt + 1'b1;
+            end
+        end
+    end
+
 
 endmodule

@@ -61,14 +61,25 @@ module mobilenetV2(
     // Interconnect BRAM 필요 - 나중에 pointwise를 채널별로 계산하면 필요 X
     // 지금은 pointwise 출력 1개를 바로 depthwise에 흘려보내는 직결 구조.
 
+    logic output_data_valid_d;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst)
+            output_data_valid_d <= 1'b0;
+        else
+            output_data_valid_d <= output_data_valid;
+    end
+
+    assign start_depth = output_data_valid && !output_data_valid_d;
+
     //------------------- depthwise ---------------------
     wire signed [47:0] depthwise_data_out;
     wire        [15:0] depthwise_relu_out;
 
     depth_top depthwise(.clk(clk),
 	                        .rst(rst),
-                            .start(start),
-                            .input_data(pointwise_relu_out),
+                            .start(start_depth),
+                            .input_data(pointwise_data_out),
                             .data_out(depthwise_data_out)
                             );
 

@@ -101,14 +101,11 @@ module pointwise(
                                     .rst(rst),
                                     .start_w(mac_result_valid),
                                     .start_r(done_w),
-                                    .dina(mac_result),
+                                    .dina(mac_result),  
                                     .data_out(data_out),
                                     .data_valid(output_data_valid),
                                     .done_w(done_w),
                                     .done_r(done_r)
                                     );
 
-    // ReLU6는 이 모듈 밖(mobilenetV2 top)에서 적용한다.
-    // 예전에는 여기서 ReLU6를 바로 붙였는데, data_out을
-    // mem_layer08_out과 동시에 두 번 구동하게 되어 제거함.
 endmodule
