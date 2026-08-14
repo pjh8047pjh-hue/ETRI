@@ -75,6 +75,13 @@ module top_pointwise_after_depth(
     logic [BRAM_LATENCY-1:0] first_d;
     logic [BRAM_LATENCY-1:0] last_d;
     logic [BRAM_LATENCY-1:0] done_d;
+    logic signed [ 31:0] bias_data_d [13:0];
+
+    wire  signed [ 31:0] bias_data;
+
+    always_ff @(posedge clk) begin
+        if(run) bias_data_d <= {bias_data_d[12:0], bias_data};
+    end
 
     always_ff @(posedge clk) begin
         if(rst) begin
@@ -96,7 +103,6 @@ module top_pointwise_after_depth(
 
     wire  signed [511:0] input_data;
     wire  signed [511:0] weight_data;
-    wire  signed [ 31:0] bias_data;
     
     // 상수이기 때문에 shift로 구현 됨
     assign input_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
@@ -141,7 +147,7 @@ module top_pointwise_after_depth(
         .last_all(done_d[BRAM_LATENCY-1]),
         .input_data(input_data),
         .weight_data(weight_data),
-        .bias_data(bias_data),
+        .bias_data(bias_data_d[13]),
         .done(done),
         .output_valid(output_valid),
         .pointwise_after_depth_out(pointwise_after_depth_out)

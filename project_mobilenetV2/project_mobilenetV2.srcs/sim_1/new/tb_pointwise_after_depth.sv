@@ -21,7 +21,7 @@
 
 
 module tb_pointwise_after_depth();
-    logic clk_in;
+    logic clk;
     logic rst;
     logic start;
 
@@ -29,11 +29,11 @@ module tb_pointwise_after_depth();
     logic        output_valid;
     logic signed [50:0] pointwise_after_depth_out;
 
-    always #12.5 clk_in = ~clk_in; // 실제 board의 input
+   // always #12.5 clk_in = ~clk_in; // 실제 board의 input
 
-    wire clk = dut.clk;
+    // wire clk = dut.clk;
 
-    top_pointwise_after_depth dut(.clk_in(clk_in),
+    top_pointwise_after_depth dut(.clk(clk),
                             .rst(rst),
                             .start(start),
                             .done(done),
@@ -42,6 +42,7 @@ module tb_pointwise_after_depth();
     );
 
 
+    always #10 clk = ~clk;
 
     //------------------- checker -------------------
     // 출력 순서는 (ch0,p0)...(ch0,p195), (ch1,p0)... 이므로 픽셀은 k % 196.
@@ -72,7 +73,7 @@ module tb_pointwise_after_depth();
 
 
     initial begin
-        clk_in     = 1'b0;
+        clk        = 1'b0;
         rst        = 1'b1;
         start      = 1'b0;
 

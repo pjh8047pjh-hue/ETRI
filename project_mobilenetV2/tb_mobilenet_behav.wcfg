@@ -11,15 +11,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="378000fs"></ZoomStartTime>
-      <ZoomEndTime time="752601fs"></ZoomEndTime>
-      <Cursor1Time time="630000fs"></Cursor1Time>
+      <ZoomStartTime time="311000fs"></ZoomStartTime>
+      <ZoomEndTime time="1249501fs"></ZoomEndTime>
+      <Cursor1Time time="550000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="160"></NameColumnWidth>
-      <ValueColumnWidth column_width="69"></ValueColumnWidth>
+      <ValueColumnWidth column_width="65"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="60" />
+   <WVObjectSize size="65" />
    <wvobject fp_name="/tb_pointwise_after_depth/dut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
@@ -43,17 +43,29 @@
    <wvobject fp_name="/tb_pointwise_after_depth/dut/chunk_cnt" type="array">
       <obj_property name="ElementShortName">chunk_cnt[2:0]</obj_property>
       <obj_property name="ObjectShortName">chunk_cnt[2:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_pointwise_after_depth/dut/pixel_cnt" type="array">
       <obj_property name="ElementShortName">pixel_cnt[7:0]</obj_property>
       <obj_property name="ObjectShortName">pixel_cnt[7:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_pointwise_after_depth/dut/channel_cnt" type="array">
       <obj_property name="ElementShortName">channel_cnt[5:0]</obj_property>
       <obj_property name="ObjectShortName">channel_cnt[5:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/first_output" type="array">
+      <obj_property name="ElementShortName">first_output[13:0]</obj_property>
+      <obj_property name="ObjectShortName">first_output[13:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/last_output" type="array">
+      <obj_property name="ElementShortName">last_output[13:0]</obj_property>
+      <obj_property name="ObjectShortName">last_output[13:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/done_delay" type="array">
+      <obj_property name="ElementShortName">done_delay[14:0]</obj_property>
+      <obj_property name="ObjectShortName">done_delay[14:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_pointwise_after_depth/dut/first_d" type="array">
       <obj_property name="ElementShortName">first_d[1:0]</obj_property>
@@ -107,6 +119,16 @@
    <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/adder_third_tree" type="array">
       <obj_property name="ElementShortName">adder_third_tree[50:0]</obj_property>
       <obj_property name="ObjectShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/bias_data_d" type="array">
+      <obj_property name="ElementShortName">bias_data_d[13:0][31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data_d[13:0][31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/bias_data" type="array">
+      <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_pointwise_after_depth/dut/pointwise_after_depth_out" type="array">

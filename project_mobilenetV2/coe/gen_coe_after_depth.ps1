@@ -60,7 +60,7 @@ function Write-Both([string]$name, [System.Collections.Generic.List[string]]$row
     }
     Set-Content -Path (Join-Path $outDir "$name.coe") -Value $coe -Encoding ascii
     Set-Content -Path (Join-Path $outDir "$name.mem") -Value $rows -Encoding ascii
-    Write-Host ("{0,-28} {1,5} lines x 512-bit" -f $name, $rows.Count)
+    Write-Host ("{0,-30} {1,5} lines x {2}-bit" -f $name, $rows.Count, ($rows[0].Length * 4))
 }
 
 # ---------------- input feature map (p*6 + g) ----------------
@@ -106,14 +106,31 @@ for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
 Write-Both 'weight_after_depth_all1' $rows
 
 # ---------------- bias : 채널마다 다른 값 ----------------
-# 출력채널당 1개, int32. 정렬 버그를 드러내려면 채널마다 값이 달라야 한다.
-# 전부 같은 상수로 두면 bias 타이밍이 어긋나도 결과가 같아서 안 보인다.
-#   bias[oc] = oc * 1000   -> 기대값 = 768 + 384*(pix%8) + 1000*oc
+# 출력채널당 1개, int32.
+#
+# bias[oc] = (oc+1) * 10000  으로 두면 십진수로 읽을 때 자릿수가 분리된다.
+#   MAC 부분 최대값이 768 + 384*7 = 3456 (네 자리) 이므로
+#   전체값 = (oc+1)"0000" + MAC  ->  앞자리가 채널, 뒤 네 자리가 MAC
+#   예) oc=0,pix=0 -> 10768   (1 / 0768)
+#       oc=63,pix=7 -> 643456 (64 / 3456)
+#
+# oc=0 을 0 으로 두면 bias 가 연결됐는지조차 안 보이므로 (oc+1) 로 시작한다.
 $rows = New-Object System.Collections.Generic.List[string]
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
-    $v = $oc * 1000
+    $v = ($oc + 1) * 10000
     [void]$rows.Add('{0:X8}' -f ($v -band 0xFFFFFFFF))   # int32, 2의 보수
 }
 Write-Both 'bias_after_depth' $rows
+
+# ---------------- bias : 부호 섞기 ----------------
+# 홀수 채널을 음수로 만들어 signed 처리를 검증한다.
+# bias_data 가 unsigned 로 선언돼 있으면 음수가 40억대 양수로 나와서 즉시 드러난다.
+$rows = New-Object System.Collections.Generic.List[string]
+for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
+    $v = ($oc + 1) * 10000
+    if ($oc % 2 -eq 1) { $v = -$v }
+    [void]$rows.Add('{0:X8}' -f ($v -band 0xFFFFFFFF))
+}
+Write-Both 'bias_after_depth_signed' $rows
 
 Write-Host "generated in $outDir"
