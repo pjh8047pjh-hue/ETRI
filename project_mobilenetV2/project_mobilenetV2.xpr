@@ -45,20 +45,20 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="ultra96v2"/>
-    <Option Name="WTXSimLaunchSim" Val="100"/>
+    <Option Name="WTXSimLaunchSim" Val="137"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="22"/>
-    <Option Name="WTModelSimExportSim" Val="22"/>
-    <Option Name="WTQuestaExportSim" Val="22"/>
-    <Option Name="WTIesExportSim" Val="22"/>
-    <Option Name="WTVcsExportSim" Val="22"/>
-    <Option Name="WTRivieraExportSim" Val="22"/>
-    <Option Name="WTActivehdlExportSim" Val="22"/>
+    <Option Name="WTXSimExportSim" Val="32"/>
+    <Option Name="WTModelSimExportSim" Val="32"/>
+    <Option Name="WTQuestaExportSim" Val="32"/>
+    <Option Name="WTIesExportSim" Val="32"/>
+    <Option Name="WTVcsExportSim" Val="32"/>
+    <Option Name="WTRivieraExportSim" Val="32"/>
+    <Option Name="WTActivehdlExportSim" Val="32"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -74,8 +74,31 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sources_1/new/pointwise_after_depth.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/top_pointwise_after_depth.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/ip/clk_wiz_0_1/clk_wiz_0.xci">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/ip/blk_mem_gen_0_1/blk_mem_gen_0.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -83,6 +106,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise_pkg.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise_pkg.sv"/>
           <Attr Name="ImportTime" Val="1785731334"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -92,6 +116,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/FSM_pointwise.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/FSM_pointwise.sv"/>
           <Attr Name="ImportTime" Val="1785731372"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -101,6 +126,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/new/ReLU6.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -108,6 +134,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week7/depthwise/depthwise.srcs/sources_1/new/depth_mac.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week7/depthwise/depthwise.srcs/sources_1/new/depth_mac.sv"/>
           <Attr Name="ImportTime" Val="1786079201"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -117,6 +144,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week7/depthwise/depthwise.srcs/sources_1/new/depth_top.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week7/depthwise/depthwise.srcs/sources_1/new/depth_top.sv"/>
           <Attr Name="ImportTime" Val="1786081030"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -126,6 +154,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week7/depthwise/depthwise.srcs/sources_1/new/mem_depth_weight.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week7/depthwise/depthwise.srcs/sources_1/new/mem_depth_weight.sv"/>
           <Attr Name="ImportTime" Val="1786077682"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -135,6 +164,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_in.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_in.sv"/>
           <Attr Name="ImportTime" Val="1785720630"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -144,6 +174,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_input_bram.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_input_bram.sv"/>
           <Attr Name="ImportTime" Val="1785720630"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -153,6 +184,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_out.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/mem_layer08_out.sv"/>
           <Attr Name="ImportTime" Val="1786067573"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -162,6 +194,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise.sv"/>
           <Attr Name="ImportTime" Val="1785739714"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -171,6 +204,7 @@
       </File>
       <File Path="$PSRCDIR/sources_1/imports/JH/week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise_mac.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="ImportPath" Val="$PPRDIR/../week6/pointwise_conv/pointwise_conv.srcs/sources_1/new/pointwise_mac.sv"/>
           <Attr Name="ImportTime" Val="1785720630"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -180,6 +214,15 @@
       </File>
       <File Path="$PSRCDIR/sources_1/new/mobilenetV2.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/ReLU6_pw.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -229,7 +272,7 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/ReLU6_pw.sv">
+      <File Path="$PSRCDIR/sources_1/new/mem_pointwise_after_weight.sv">
         <FileInfo>
           <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -237,18 +280,21 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/new/pointwise_after_depth.sv">
+      <File Path="$PPRDIR/coe/weight_after_depth_all1.coe">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PPRDIR/coe/input_after_depth.coe">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="mobilenetV2"/>
-        <Option Name="TopAutoSet" Val="TRUE"/>
+        <Option Name="TopModule" Val="top_pointwise_after_depth"/>
       </Config>
     </FileSet>
     <FileSet Name="constrs_1" Type="Constrs" RelSrcDir="$PSRCDIR/constrs_1" RelGenDir="$PGENDIR/constrs_1">
@@ -259,8 +305,16 @@
     </FileSet>
     <FileSet Name="sim_1" Type="SimulationSrcs" RelSrcDir="$PSRCDIR/sim_1" RelGenDir="$PGENDIR/sim_1">
       <Filter Type="Srcs"/>
+      <File Path="$PSRCDIR/sim_1/new/tb_pointwise_after_depth.sv">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sim_1/new/tb_mobilenet.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -293,11 +347,12 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="tb_mobilenet"/>
+        <Option Name="TopModule" Val="tb_pointwise_after_depth"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TransportPathDelay" Val="0"/>
         <Option Name="TransportIntDelay" Val="0"/>
         <Option Name="SelectedSimModel" Val="rtl"/>
+        <Option Name="SimMode" Val="post-implementation"/>
         <Option Name="PamDesignTestbench" Val=""/>
         <Option Name="PamDutBypassFile" Val="xil_dut_bypass"/>
         <Option Name="PamSignalDriverFile" Val="xil_bypass_driver"/>
@@ -305,6 +360,7 @@
         <Option Name="SrcSet" Val="sources_1"/>
         <Option Name="XSimWcfgFile" Val="$PPRDIR/tb_mobilenet_behav.wcfg"/>
         <Option Name="xsim.elaborate.mt_level" Val="32"/>
+        <Option Name="NLNetlistMode" Val="funcsim"/>
       </Config>
     </FileSet>
     <FileSet Name="utils_1" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
@@ -316,6 +372,7 @@
     <FileSet Name="input_bram_ip" Type="BlockSrcs" RelSrcDir="$PSRCDIR/input_bram_ip" RelGenDir="$PGENDIR/input_bram_ip">
       <File Path="$PSRCDIR/sources_1/ip/input_bram_ip/input_bram_ip.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -329,6 +386,7 @@
     <FileSet Name="mult_gen_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/mult_gen_0" RelGenDir="$PGENDIR/mult_gen_0">
       <File Path="$PSRCDIR/sources_1/ip/mult_gen_0/mult_gen_0.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -342,6 +400,7 @@
     <FileSet Name="output_bram_ip" Type="BlockSrcs" RelSrcDir="$PSRCDIR/output_bram_ip" RelGenDir="$PGENDIR/output_bram_ip">
       <File Path="$PSRCDIR/sources_1/ip/output_bram_ip/output_bram_ip.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -355,6 +414,7 @@
     <FileSet Name="dsp48_mac_last" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_mac_last" RelGenDir="$PGENDIR/dsp48_mac_last">
       <File Path="$PSRCDIR/sources_1/ip/dsp48_mac_last/dsp48_mac_last.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -368,6 +428,7 @@
     <FileSet Name="dsp48_mac" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_mac" RelGenDir="$PGENDIR/dsp48_mac">
       <File Path="$PSRCDIR/sources_1/ip/dsp48_mac/dsp48_mac.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -381,6 +442,7 @@
     <FileSet Name="dsp48_mul" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_mul" RelGenDir="$PGENDIR/dsp48_mul">
       <File Path="$PSRCDIR/sources_1/ip/dsp48_mul/dsp48_mul.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -391,22 +453,10 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="clk_wiz_0" Type="BlockSrcs" RelSrcDir="$PSRCDIR/clk_wiz_0" RelGenDir="$PGENDIR/clk_wiz_0">
-      <File Path="$PSRCDIR/sources_1/ip/clk_wiz_0_1/clk_wiz_0.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="clk_wiz_0"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
     <FileSet Name="pointwise_weight" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pointwise_weight" RelGenDir="$PGENDIR/pointwise_weight">
       <File Path="$PSRCDIR/sources_1/ip/pointwise_weight/pointwise_weight.xci">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -414,6 +464,84 @@
       </File>
       <Config>
         <Option Name="TopModule" Val="pointwise_weight"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="dsp48_first_point" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_first_point" RelGenDir="$PGENDIR/dsp48_first_point">
+      <File Path="$PSRCDIR/sources_1/ip/dsp48_first_point/dsp48_first_point.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="dsp48_first_point"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="dsp48_middle_point" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_middle_point" RelGenDir="$PGENDIR/dsp48_middle_point">
+      <File Path="$PSRCDIR/sources_1/ip/dsp48_middle_point/dsp48_middle_point.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="dsp48_middle_point"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="dsp48_last_point" Type="BlockSrcs" RelSrcDir="$PSRCDIR/dsp48_last_point" RelGenDir="$PGENDIR/dsp48_last_point">
+      <File Path="$PSRCDIR/sources_1/ip/dsp48_last_point/dsp48_last_point.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="dsp48_last_point"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="pointwise_after_depth_weight" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pointwise_after_depth_weight" RelGenDir="$PGENDIR/pointwise_after_depth_weight">
+      <File Path="$PSRCDIR/sources_1/ip/pointwise_after_depth_weight/pointwise_after_depth_weight.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="pointwise_after_depth_weight"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="pointwise_after_depth_input" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pointwise_after_depth_input" RelGenDir="$PGENDIR/pointwise_after_depth_input">
+      <File Path="$PSRCDIR/sources_1/ip/pointwise_after_depth_input/pointwise_after_depth_input.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="pointwise_after_depth_input"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="pointwise_after_depth_bias" Type="BlockSrcs" RelSrcDir="$PSRCDIR/pointwise_after_depth_bias" RelGenDir="$PGENDIR/pointwise_after_depth_bias">
+      <File Path="$PSRCDIR/sources_1/ip/pointwise_after_depth_bias/pointwise_after_depth_bias.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="pointwise_after_depth_bias"/>
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
@@ -437,12 +565,11 @@
     </Simulator>
   </Simulators>
   <Runs Version="1" Minor="15">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/synth_1">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
       </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
@@ -507,7 +634,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="clk_wiz_0_synth_1" Type="Ft3:Synth" SrcSet="clk_wiz_0" Part="xczu3eg-sbva484-1-e" ConstrsSet="clk_wiz_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/clk_wiz_0_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/clk_wiz_0_synth_1">
+    <Run Id="pointwise_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -517,9 +644,61 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_synth_1">
+    <Run Id="dsp48_first_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_first_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_first_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_first_point_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="dsp48_middle_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_middle_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_middle_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_middle_point_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="dsp48_last_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_last_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_last_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_last_point_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_weight_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_input_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_input" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_input_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_input_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_bias_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_bias" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_bias_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_bias_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -646,7 +825,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="clk_wiz_0_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="clk_wiz_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="clk_wiz_0_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/clk_wiz_0_impl_1">
+    <Run Id="pointwise_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -663,9 +842,96 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_impl_1">
+    <Run Id="dsp48_first_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_first_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_first_point_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="dsp48_middle_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_middle_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_middle_point_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="dsp48_last_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_last_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_last_point_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_weight_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_input_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_input_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_input_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="pointwise_after_depth_bias_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_bias_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_bias_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

@@ -3,160 +3,308 @@
    <wave_state>
    </wave_state>
    <db_ref_list>
-      <db_ref path="tb_mobilenet_behav.wdb" id="1">
+      <db_ref path="tb_pointwise_after_depth_behav.wdb" id="1">
          <top_modules>
             <top_module name="glbl" />
-            <top_module name="pointwise_pkg" />
-            <top_module name="tb_mobilenet" />
+            <top_module name="tb_pointwise_after_depth" />
          </top_modules>
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1274800fs"></ZoomStartTime>
-      <ZoomEndTime time="1561001fs"></ZoomEndTime>
-      <Cursor1Time time="1322500fs"></Cursor1Time>
+      <ZoomStartTime time="378000fs"></ZoomStartTime>
+      <ZoomEndTime time="752601fs"></ZoomEndTime>
+      <Cursor1Time time="630000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="160"></NameColumnWidth>
-      <ValueColumnWidth column_width="77"></ValueColumnWidth>
+      <ValueColumnWidth column_width="69"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="30" />
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/clk" type="logic">
+   <WVObjectSize size="60" />
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
       <obj_property name="ObjectShortName">clk</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/rst" type="logic">
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/rst" type="logic">
       <obj_property name="ElementShortName">rst</obj_property>
       <obj_property name="ObjectShortName">rst</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/start" type="logic">
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/start" type="logic">
       <obj_property name="ElementShortName">start</obj_property>
       <obj_property name="ObjectShortName">start</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/done_w" type="logic">
-      <obj_property name="ElementShortName">done_w</obj_property>
-      <obj_property name="ObjectShortName">done_w</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/en_mul" type="logic">
-      <obj_property name="ElementShortName">en_mul</obj_property>
-      <obj_property name="ObjectShortName">en_mul</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/output_valid" type="logic">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/done_r" type="logic">
-      <obj_property name="ElementShortName">done_r</obj_property>
-      <obj_property name="ObjectShortName">done_r</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/chunk_cnt" type="array">
+      <obj_property name="ElementShortName">chunk_cnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">chunk_cnt[2:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/ReLU6_pw/data_out_relu" type="array">
-      <obj_property name="ElementShortName">data_out_relu[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out_relu[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pixel_cnt" type="array">
+      <obj_property name="ElementShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mac_result" type="array">
-      <obj_property name="ElementShortName">mac_result[37:0]</obj_property>
-      <obj_property name="ObjectShortName">mac_result[37:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/channel_cnt" type="array">
+      <obj_property name="ElementShortName">channel_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">channel_cnt[5:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/start_w" type="logic">
-      <obj_property name="ElementShortName">start_w</obj_property>
-      <obj_property name="ObjectShortName">start_w</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/dina" type="array">
-      <obj_property name="ElementShortName">dina[37:0]</obj_property>
-      <obj_property name="ObjectShortName">dina[37:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/wr_addr" type="array">
-      <obj_property name="ElementShortName">wr_addr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_addr[16:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/pointwise_mac/product_sum" type="array">
-      <obj_property name="ElementShortName">product_sum[37:0]</obj_property>
-      <obj_property name="ObjectShortName">product_sum[37:0]</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/first_d" type="array">
+      <obj_property name="ElementShortName">first_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">first_d[1:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise_data_out" type="array">
-      <obj_property name="ElementShortName">pointwise_data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">pointwise_data_out[15:0]</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/last_d" type="array">
+      <obj_property name="ElementShortName">last_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">last_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/done_d" type="array">
+      <obj_property name="ElementShortName">done_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">done_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/input_addr" type="array">
+      <obj_property name="ElementShortName">input_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">input_addr[10:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/reading" type="logic">
-      <obj_property name="ElementShortName">reading</obj_property>
-      <obj_property name="ObjectShortName">reading</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/input_point" type="array">
+      <obj_property name="ElementShortName">input_point[0:63][7:0]</obj_property>
+      <obj_property name="ObjectShortName">input_point[0:63][7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/real_slot" type="logic">
-      <obj_property name="ElementShortName">real_slot</obj_property>
-      <obj_property name="ObjectShortName">real_slot</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/weight_addr" type="array">
+      <obj_property name="ElementShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/rd_addr" type="array">
-      <obj_property name="ElementShortName">rd_addr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_addr[16:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/weight_point" type="array">
+      <obj_property name="ElementShortName">weight_point[0:63][7:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_point[0:63][7:0]</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/group_sum" type="array">
+      <obj_property name="ElementShortName">group_sum[0:7][47:0]</obj_property>
+      <obj_property name="ObjectShortName">group_sum[0:7][47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/rd_col_cnt" type="array">
-      <obj_property name="ElementShortName">rd_col_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_col_cnt[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/adder_first_tree" type="array">
+      <obj_property name="ElementShortName">adder_first_tree[0:3][48:0]</obj_property>
+      <obj_property name="ObjectShortName">adder_first_tree[0:3][48:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/rd_row_cnt" type="array">
-      <obj_property name="ElementShortName">rd_row_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_row_cnt[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/adder_second_tree" type="array">
+      <obj_property name="ElementShortName">adder_second_tree[0:1][49:0]</obj_property>
+      <obj_property name="ObjectShortName">adder_second_tree[0:1][49:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/output_data_valid" type="logic">
-      <obj_property name="ElementShortName">output_data_valid</obj_property>
-      <obj_property name="ObjectShortName">output_data_valid</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/adder_third_tree" type="array">
+      <obj_property name="ElementShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="ObjectShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pointwise_after_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_after_depth_out[50:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_out[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/run" type="logic">
-      <obj_property name="ElementShortName">run</obj_property>
-      <obj_property name="ObjectShortName">run</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_first/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/input_data" type="array">
-      <obj_property name="ElementShortName">input_data[15:0]</obj_property>
-      <obj_property name="ObjectShortName">input_data[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_first/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bot_in" type="array">
-      <obj_property name="ElementShortName">bot_in[15:0]</obj_property>
-      <obj_property name="ObjectShortName">bot_in[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_first/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/mid_in" type="array">
-      <obj_property name="ElementShortName">mid_in[15:0]</obj_property>
-      <obj_property name="ObjectShortName">mid_in[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_first/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/top_in" type="array">
-      <obj_property name="ElementShortName">top_in[15:0]</obj_property>
-      <obj_property name="ObjectShortName">top_in[15:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_first/P" type="array">
+      <obj_property name="ElementShortName">P[15:0]</obj_property>
+      <obj_property name="ObjectShortName">P[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bot_out" type="array">
-      <obj_property name="ElementShortName">bot_out[47:0]</obj_property>
-      <obj_property name="ObjectShortName">bot_out[47:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/mid_out" type="array">
-      <obj_property name="ElementShortName">mid_out[47:0]</obj_property>
-      <obj_property name="ObjectShortName">mid_out[47:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/top_out" type="array">
-      <obj_property name="ElementShortName">top_out[47:0]</obj_property>
-      <obj_property name="ObjectShortName">top_out[47:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[47:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[47:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[1].u_middle/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[2].u_middle/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[3].u_middle/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[4].u_middle/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[5].u_middle/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[6].u_middle/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[6].u_middle/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[6].u_middle/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[6].u_middle/PCOUT" type="array">
+      <obj_property name="ElementShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCOUT[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].genblk1[6].u_middle/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_last/CLK" type="logic">
+      <obj_property name="ElementShortName">CLK</obj_property>
+      <obj_property name="ObjectShortName">CLK</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_last/PCIN" type="array">
+      <obj_property name="ElementShortName">PCIN[47:0]</obj_property>
+      <obj_property name="ObjectShortName">PCIN[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_last/A" type="array">
+      <obj_property name="ElementShortName">A[7:0]</obj_property>
+      <obj_property name="ObjectShortName">A[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_last/B" type="array">
+      <obj_property name="ElementShortName">B[7:0]</obj_property>
+      <obj_property name="ObjectShortName">B[7:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_pointwise_after_depth/dut/pad1/genblk2[0].u_last/P" type="array">
+      <obj_property name="ElementShortName">P[47:0]</obj_property>
+      <obj_property name="ObjectShortName">P[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>
