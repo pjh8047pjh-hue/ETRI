@@ -21,14 +21,27 @@
 
 
 module top_pointwise_after_depth(
+    // input  logic         clk_in,
     input  logic         clk,
     input  logic         rst,
     input  logic         start,
+    input  logic [  7:0] depth_relu_data,
+    input  logic         depth_relu_valid,
 
+    output logic [ 10:0] input_rd_addr,
     output logic         done,
     output logic         output_valid,
     output logic signed [50:0] pointwise_after_depth_out
     );
+
+    /*
+    wire clk;
+
+    clk_wiz_0 clk_gen(.clk_in1(clk_in),
+                  .locked(),
+                  .clk_out1(clk)
+                  );
+                  */
 
     //------------------------- point count logic -----------------------------
     logic [2:0] chunk_cnt;   // 0~5, 384채널을 64 lane씩 6번 나눠 읽는 카운트
@@ -96,18 +109,16 @@ module top_pointwise_after_depth(
         end
     end
     //------------------------- index count logic -----------------------------
-    logic [  8:0] addr;
-    logic [ 10:0] input_addr;
-    logic [  8:0] weight_addr;
-    logic [  5:0] bias_addr;
+    logic [  8:0] weight_addr,
+    logic [  5:0] bias_addr,
 
-    wire  signed [511:0] input_data;
+    wire  signed [511:0] input_rd_data;
     wire  signed [511:0] weight_data;
     
     // 상수이기 때문에 shift로 구현 됨
-    assign input_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
-    assign weight_addr = channel_cnt * CHUNK + chunk_cnt;
-    assign bias_addr   = channel_cnt;
+    assign input_rd_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
+    assign weight_addr    = channel_cnt * CHUNK + chunk_cnt;
+    assign bias_addr      = channel_cnt;
 
     pointwise_after_depth_input u_in (
         // 쓰기 (depthwise 붙일 때 연결)
@@ -119,7 +130,7 @@ module top_pointwise_after_depth(
         // 읽기
         .clkb (clk),
         .enb  (run),
-        .addrb(input_addr),
+        .addrb(input_rd_addr),
         .doutb(input_data)
     );
 

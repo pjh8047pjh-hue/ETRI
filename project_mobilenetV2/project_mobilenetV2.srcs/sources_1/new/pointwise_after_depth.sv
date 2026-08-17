@@ -193,11 +193,10 @@ module pointwise_after_depth(
         // first_output가 들어와서 시작할 때는 sum을 adder_third_tree의 값으로 초기화
         else if(first_output[TOTAL_LATENCY-1]) sum <= adder_third_tree;
         // 아닐 때에는 누적합 진행
-        else if(last_output [TOTAL_LATENCY-1]) begin
-            sum <= $signed(sum + adder_third_tree + bias_data);
-        end
+        else if(done_delay[TOTAL_LATENCY]) sum <= '0;
+        else sum <= $signed(sum + adder_third_tree);
     end
 
-    assign pointwise_after_depth_out = sum;
+    assign pointwise_after_depth_out = output_valid ? $signed(sum + bias_data) : sum;
 
 endmodule

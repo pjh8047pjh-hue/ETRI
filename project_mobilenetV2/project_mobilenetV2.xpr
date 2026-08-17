@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2020 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="54" Path="C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.xpr">
+<Project Version="7" Minor="54" Path="/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="2d9566f1307f4373b246d9cf16c1a841"/>
@@ -45,20 +45,20 @@
     <Option Name="IPStaticSourceDir" Val="$PIPUSERFILESDIR/ipstatic"/>
     <Option Name="EnableBDX" Val="FALSE"/>
     <Option Name="DSABoardId" Val="ultra96v2"/>
-    <Option Name="WTXSimLaunchSim" Val="143"/>
+    <Option Name="WTXSimLaunchSim" Val="159"/>
     <Option Name="WTModelSimLaunchSim" Val="0"/>
     <Option Name="WTQuestaLaunchSim" Val="0"/>
     <Option Name="WTIesLaunchSim" Val="0"/>
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="35"/>
-    <Option Name="WTModelSimExportSim" Val="35"/>
-    <Option Name="WTQuestaExportSim" Val="35"/>
-    <Option Name="WTIesExportSim" Val="35"/>
-    <Option Name="WTVcsExportSim" Val="35"/>
-    <Option Name="WTRivieraExportSim" Val="35"/>
-    <Option Name="WTActivehdlExportSim" Val="35"/>
+    <Option Name="WTXSimExportSim" Val="42"/>
+    <Option Name="WTModelSimExportSim" Val="42"/>
+    <Option Name="WTQuestaExportSim" Val="42"/>
+    <Option Name="WTIesExportSim" Val="42"/>
+    <Option Name="WTVcsExportSim" Val="42"/>
+    <Option Name="WTRivieraExportSim" Val="42"/>
+    <Option Name="WTActivehdlExportSim" Val="42"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -295,6 +295,14 @@
       <File Path="$PPRDIR/coe/bias_after_depth.coe">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/new/interconnect_bram_d2p.sv">
+        <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
@@ -562,24 +570,21 @@
     <Simulator Name="Questa">
       <Option Name="Description" Val="Questa Advanced Simulator"/>
     </Simulator>
+    <Simulator Name="IES">
+      <Option Name="Description" Val="Incisive Enterprise Simulator (IES)"/>
+    </Simulator>
+    <Simulator Name="Xcelium">
+      <Option Name="Description" Val="Xcelium Parallel Simulator"/>
+    </Simulator>
+    <Simulator Name="VCS">
+      <Option Name="Description" Val="Verilog Compiler Simulator (VCS)"/>
+    </Simulator>
     <Simulator Name="Riviera">
       <Option Name="Description" Val="Riviera-PRO Simulator"/>
     </Simulator>
-    <Simulator Name="ActiveHDL">
-      <Option Name="Description" Val="Active-HDL Simulator"/>
-    </Simulator>
   </Simulators>
   <Runs Version="1" Minor="15">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="input_bram_ip_synth_1" Type="Ft3:Synth" SrcSet="input_bram_ip" Part="xczu3eg-sbva484-1-e" ConstrsSet="input_bram_ip" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/input_bram_ip_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/input_bram_ip_synth_1">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -589,7 +594,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="mult_gen_0_synth_1" Type="Ft3:Synth" SrcSet="mult_gen_0" Part="xczu3eg-sbva484-1-e" ConstrsSet="mult_gen_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/mult_gen_0_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/mult_gen_0_synth_1">
+    <Run Id="input_bram_ip_synth_1" Type="Ft3:Synth" SrcSet="input_bram_ip" Part="xczu3eg-sbva484-1-e" ConstrsSet="input_bram_ip" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/input_bram_ip_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/input_bram_ip_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -599,7 +604,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="output_bram_ip_synth_1" Type="Ft3:Synth" SrcSet="output_bram_ip" Part="xczu3eg-sbva484-1-e" ConstrsSet="output_bram_ip" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/output_bram_ip_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/output_bram_ip_synth_1">
+    <Run Id="mult_gen_0_synth_1" Type="Ft3:Synth" SrcSet="mult_gen_0" Part="xczu3eg-sbva484-1-e" ConstrsSet="mult_gen_0" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/mult_gen_0_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/mult_gen_0_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -609,7 +614,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mac_last_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mac_last" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac_last" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mac_last_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_last_synth_1">
+    <Run Id="output_bram_ip_synth_1" Type="Ft3:Synth" SrcSet="output_bram_ip" Part="xczu3eg-sbva484-1-e" ConstrsSet="output_bram_ip" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/output_bram_ip_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/output_bram_ip_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -619,7 +624,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mac_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mac" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mac_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_synth_1">
+    <Run Id="dsp48_mac_last_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mac_last" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac_last" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mac_last_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_last_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -629,7 +634,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mul_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mul" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mul" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mul_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mul_synth_1">
+    <Run Id="dsp48_mac_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mac" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mac_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -639,7 +644,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_synth_1">
+    <Run Id="dsp48_mul_synth_1" Type="Ft3:Synth" SrcSet="dsp48_mul" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mul" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_mul_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mul_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -649,7 +654,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_first_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_first_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_first_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_first_point_synth_1">
+    <Run Id="pointwise_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_weight_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -659,7 +664,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_middle_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_middle_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_middle_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_middle_point_synth_1">
+    <Run Id="dsp48_first_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_first_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_first_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_first_point_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -669,7 +674,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_last_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_last_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_last_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_last_point_synth_1">
+    <Run Id="dsp48_middle_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_middle_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_middle_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_middle_point_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -679,7 +684,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_after_depth_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_weight_synth_1">
+    <Run Id="dsp48_last_point_synth_1" Type="Ft3:Synth" SrcSet="dsp48_last_point" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/dsp48_last_point_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_last_point_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -689,7 +694,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_after_depth_input_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_input" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_input_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_input_synth_1">
+    <Run Id="pointwise_after_depth_weight_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_weight" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_weight_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_weight_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -699,7 +704,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_after_depth_bias_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_bias" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_bias_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_bias_synth_1">
+    <Run Id="pointwise_after_depth_input_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_input" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_input_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_input_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
         <Step Id="synth_design"/>
@@ -709,7 +714,35 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/impl_1">
+    <Run Id="pointwise_after_depth_bias_synth_1" Type="Ft3:Synth" SrcSet="pointwise_after_depth_bias" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/pointwise_after_depth_bias_synth_1" IncludeInArchive="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_bias_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2020"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="input_bram_ip_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="input_bram_ip" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="input_bram_ip_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/input_bram_ip_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -726,7 +759,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="input_bram_ip_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="input_bram_ip" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="input_bram_ip_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/input_bram_ip_impl_1">
+    <Run Id="mult_gen_0_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="mult_gen_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="mult_gen_0_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/mult_gen_0_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -743,7 +776,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="mult_gen_0_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="mult_gen_0" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="mult_gen_0_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/mult_gen_0_impl_1">
+    <Run Id="output_bram_ip_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="output_bram_ip" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="output_bram_ip_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/output_bram_ip_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -760,7 +793,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="output_bram_ip_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="output_bram_ip" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="output_bram_ip_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/output_bram_ip_impl_1">
+    <Run Id="dsp48_mac_last_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac_last" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mac_last_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_last_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -777,7 +810,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mac_last_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac_last" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mac_last_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_last_impl_1">
+    <Run Id="dsp48_mac_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mac_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -794,7 +827,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mac_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mac" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mac_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mac_impl_1">
+    <Run Id="dsp48_mul_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mul" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mul_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mul_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -811,7 +844,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_mul_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_mul" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_mul_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../home/jh/Documents/ETRI/ETRI/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_mul_impl_1">
+    <Run Id="pointwise_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_weight_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -828,7 +861,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_weight_impl_1">
+    <Run Id="dsp48_first_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_first_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_first_point_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -845,7 +878,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_first_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_first_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_first_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_first_point_impl_1">
+    <Run Id="dsp48_middle_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_middle_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_middle_point_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -862,7 +895,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_middle_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_middle_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_middle_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_middle_point_impl_1">
+    <Run Id="dsp48_last_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_last_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/dsp48_last_point_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -879,7 +912,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="dsp48_last_point_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="dsp48_last_point" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="dsp48_last_point_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/dsp48_last_point_impl_1">
+    <Run Id="pointwise_after_depth_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_weight_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -896,7 +929,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_after_depth_weight_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_weight" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_weight_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_weight_impl_1">
+    <Run Id="pointwise_after_depth_input_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_input_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_input_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>
@@ -913,24 +946,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="pointwise_after_depth_input_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_input" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_input_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_input_impl_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
-        <Step Id="init_design"/>
-        <Step Id="opt_design"/>
-        <Step Id="power_opt_design"/>
-        <Step Id="place_design"/>
-        <Step Id="post_place_power_opt_design"/>
-        <Step Id="phys_opt_design"/>
-        <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
-        <Step Id="write_bitstream"/>
-      </Strategy>
-      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2020"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="pointwise_after_depth_bias_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_bias_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/pointwise_after_depth_bias_impl_1">
+    <Run Id="pointwise_after_depth_bias_impl_1" Type="Ft2:EntireDesign" Part="xczu3eg-sbva484-1-e" ConstrsSet="pointwise_after_depth_bias" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="pointwise_after_depth_bias_synth_1" IncludeInArchive="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.srcs/utils_1/imports/pointwise_after_depth_bias_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2020"/>
         <Step Id="init_design"/>

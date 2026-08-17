@@ -80,6 +80,7 @@ module mobilenetV2(
 	                        .rst(rst),
                             .start(start_depth),
                             .input_data(pointwise_data_out),
+                            .output_valid(),
                             .data_out(depthwise_data_out)
                             );
 
@@ -88,7 +89,43 @@ module mobilenetV2(
                 .din(depthwise_data_out),
                 .data_out_relu(depthwise_relu_out)
                 );
-    //----------------------------------------------------
+ //------------------- interconnect bram ---------------------
+    wire  [ 10:0] input_rd_addr;
+    wire  [511:0] input_rd_data;
+    
+    // BRAM의 write, read를 비대칭으로 설정. byte lane을 사용
+       pointwise_after_depth_input u_in (
+        // 쓰기 (depthwise 붙일 때 연결)
+        .clka (clk),
+        .ena  (1'b0),
+        .wea  (1'b0),
+        .addra(),
+        .dina ('0),
+        // 읽기
+        .clkb (clk),
+        .enb  (run),
+        .addrb(input_rd_addr),
+        .doutb(input_rd_data)
+    );
+    //------------------- pointwise after depthwise ---------------------
+
+    top_pointwise_after_depth pad(
+    // input  logic         clk_in,
+        .clk(clk),
+        .rst(rst),
+        .start(start),
+        .depth_relu_data(depthwise_relu_out),
+        .depth_relu_valid(),
+        .input_rd_data(input_rd_data),
+        .input_rd_addr(input_rd_addr),
+        .done(done),
+        .output_valid(output_valid),
+        .pointwise_after_depth_out()
+    );
+
+
+   
+    //-----------------------------------------------------------------
 
     assign result = depthwise_relu_out;
     // depth_top이 아직 완료 신호를 내보내지 않아 done은 임시로 0 고정.

@@ -21,7 +21,7 @@
 
 
 module tb_pointwise_after_depth();
-    logic clk;
+    logic clk_in;
     logic rst;
     logic start;
 
@@ -29,20 +29,17 @@ module tb_pointwise_after_depth();
     logic        output_valid;
     logic signed [50:0] pointwise_after_depth_out;
 
-   // always #12.5 clk_in = ~clk_in; // 실제 board의 input
+    always #12.5 clk_in = ~clk_in; // 실제 board의 input (40MHz)
 
-    // wire clk = dut.clk;
+    wire clk = dut.clk; // clk_wiz_0가 만든 내부 100MHz 클럭
 
-    top_pointwise_after_depth dut(.clk(clk),
+    top_pointwise_after_depth dut(.clk_in(clk_in),
                             .rst(rst),
                             .start(start),
                             .done(done),
                             .output_valid(output_valid),
                             .pointwise_after_depth_out(pointwise_after_depth_out)
     );
-
-
-    always #10 clk = ~clk;
 
     //------------------- checker -------------------
     // 출력 순서는 (ch0,p0)...(ch0,p195), (ch1,p0)... 이므로 픽셀은 k % 196.
@@ -73,13 +70,13 @@ module tb_pointwise_after_depth();
 
 
     initial begin
-        clk        = 1'b0;
+        clk_in     = 1'b0;
         rst        = 1'b1;
         start      = 1'b0;
 
-        repeat (5) @(posedge clk);
+        repeat (50) @(posedge clk);
         @(posedge clk); rst <= 1'b0;
-        repeat (2) @(posedge clk);
+        repeat (10) @(posedge clk);
 
         @(posedge clk); start <= 1'b1;
         @(posedge clk); start <= 1'b0;
