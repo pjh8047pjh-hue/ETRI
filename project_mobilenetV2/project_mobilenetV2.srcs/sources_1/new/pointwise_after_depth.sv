@@ -19,7 +19,9 @@
 // 64개의 dsp로 6 clk 동안 연산할 것. 6clk이 지나면 하나의 output channel 완성
 //////////////////////////////////////////////////////////////////////////////////
 
-module pointwise_after_depth(
+module pointwise_after_depth #(
+    parameter int RELU_UPPER = 6
+)(
     input  logic         clk,
     input  logic         rst,
     input  logic         first,
@@ -37,6 +39,7 @@ module pointwise_after_depth(
 
     localparam PARALLEL_DSP = 64;
     localparam DATA_WIDTH   = 8;
+    localparam FRAC_BITS    = 4;
 
     //------------------- output delay logic ------------------
     // dsp에서 나오는 데 11 clk, adder tree 3clk = 14clk
@@ -193,10 +196,26 @@ module pointwise_after_depth(
         // first_output가 들어와서 시작할 때는 sum을 adder_third_tree의 값으로 초기화
         else if(first_output[TOTAL_LATENCY-1]) sum <= adder_third_tree;
         // 아닐 때에는 누적합 진행
-        else if(done_delay[TOTAL_LATENCY]) sum <= '0;
         else sum <= $signed(sum + adder_third_tree);
     end
 
-    assign pointwise_after_depth_out = output_valid ? $signed(sum + bias_data) : sum;
+    //-------------------- bias add + ReLU6 --------------------
+    localparam logic signed [50:0] RELU_UPPER_VALUE = RELU_UPPER <<< FRAC_BITS;
+
+    wire signed [50:0] bias_extended = {{(51-32){bias_data[31]}}, bias_data};
+    wire signed [50:0] sum_q34 = sum >>> FRAC_BITS;
+    wire signed [50:0] biased_sum = sum_q34 + bias_extended;
+
+    always_comb begin
+        if (!output_valid)
+            pointwise_after_depth_out = '0;
+        else if (biased_sum <= 0)
+            pointwise_after_depth_out = '0;
+        else if (biased_sum >= RELU_UPPER_VALUE)
+            pointwise_after_depth_out = RELU_UPPER_VALUE;
+        else
+            pointwise_after_depth_out = biased_sum;
+    end
+    //----------------------------------------------------------
 
 endmodule

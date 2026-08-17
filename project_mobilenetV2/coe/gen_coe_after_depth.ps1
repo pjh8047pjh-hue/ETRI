@@ -77,7 +77,7 @@ for ($p = 0; $p -lt $PIX; $p++) {
 }
 Write-Both 'input_after_depth' $rows
 
-# ---------------- weight : one-hot (+1) ----------------
+# ---------------- weight : one-hot (+1.0 = 0x10, Q3.4) ----------------
 # addr = oc*6 + g (oc-major). 픽셀을 최상위 루프에 두면 weight 주소가
 # 0~383 단순 증가가 되도록 하는 배치다.
 # hot 채널 c = 6*oc -> chunk g_hot = c/64, lane = c%64
@@ -89,7 +89,7 @@ for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
         $hot   = $c % $LANES
         $sb = New-Object System.Text.StringBuilder
         for ($i = $LANES - 1; $i -ge 0; $i--) {
-            if (($g -eq $gHot) -and ($i -eq $hot)) { [void]$sb.Append('01') }
+            if (($g -eq $gHot) -and ($i -eq $hot)) { [void]$sb.Append('10') }
             else                                   { [void]$sb.Append('00') }
         }
         [void]$rows.Add($sb.ToString())
@@ -97,27 +97,21 @@ for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
 }
 Write-Both 'weight_after_depth_onehot' $rows
 
-# ---------------- weight : all +1 ----------------
+# ---------------- weight : all +1.0 (= 0x10, Q3.4) ----------------
 $rows = New-Object System.Collections.Generic.List[string]
-$all1 = '01' * $LANES
+$all1 = '10' * $LANES
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
     for ($g = 0; $g -lt $CHUNK; $g++) { [void]$rows.Add($all1) }
 }
 Write-Both 'weight_after_depth_all1' $rows
 
-# ---------------- bias : 채널마다 다른 값 ----------------
-# 출력채널당 1개, int32.
-#
-# bias[oc] = (oc+1) * 10000  으로 두면 십진수로 읽을 때 자릿수가 분리된다.
-#   MAC 부분 최대값이 768 + 384*7 = 3456 (네 자리) 이므로
-#   전체값 = (oc+1)"0000" + MAC  ->  앞자리가 채널, 뒤 네 자리가 MAC
-#   예) oc=0,pix=0 -> 10768   (1 / 0768)
-#       oc=63,pix=7 -> 643456 (64 / 3456)
-#
-# oc=0 을 0 으로 두면 bias 가 연결됐는지조차 안 보이므로 (oc+1) 로 시작한다.
+# ---------------- bias : Q3.4 debug pattern ----------------
+# 출력채널마다 0, 1, 2, ... 6, -1을 반복한다. int32에도 Q3.4 raw 값을 저장한다.
 $rows = New-Object System.Collections.Generic.List[string]
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
-    $v = ($oc + 1) * 10000
+    $biasReal = $oc % 8
+    if ($biasReal -eq 7) { $biasReal = -1 }
+    $v = $biasReal * 16
     [void]$rows.Add('{0:X8}' -f ($v -band 0xFFFFFFFF))   # int32, 2의 보수
 }
 Write-Both 'bias_after_depth' $rows

@@ -53,12 +53,37 @@ for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
     $hot = $oc % $IN_CH
     $sb = New-Object System.Text.StringBuilder
     for ($ic = $IN_CH - 1; $ic -ge 0; $ic--) {
-        if ($ic -eq $hot) { [void]$sb.Append('4000') }   # Q1.15의 0.5
+        if ($ic -eq $hot) { [void]$sb.Append('0800') }   # Q3.12의 0.5
         else              { [void]$sb.Append('0000') }
     }
     $term = if ($oc -eq $OUT_CH - 1) { ';' } else { ',' }
     $lines.Add($sb.ToString() + $term)
 }
 Set-Content -Path (Join-Path $outDir 'weight_pointwise_identity.coe') -Value $lines -Encoding ascii
+
+# ---------------- depthwise weight (3x3 all +1.0, Q3.12) ----------------
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add('memory_initialization_radix=16;')
+$lines.Add('memory_initialization_vector=')
+$depthRow = '1000' * 9
+for ($ch = 0; $ch -lt 384; $ch++) {
+    $term = if ($ch -eq 383) { ';' } else { ',' }
+    $lines.Add($depthRow + $term)
+}
+Set-Content -Path (Join-Path $outDir 'weight_depthwise_all1.coe') -Value $lines -Encoding ascii
+
+# ---------------- depthwise bias (Q3.12 debug pattern) ----------------
+# 채널마다 0, 1, 2, ... 6, -1을 반복한다.
+$lines = New-Object System.Collections.Generic.List[string]
+$lines.Add('memory_initialization_radix=16;')
+$lines.Add('memory_initialization_vector=')
+for ($ch = 0; $ch -lt 384; $ch++) {
+    $biasReal = $ch % 8
+    if ($biasReal -eq 7) { $biasReal = -1 }
+    $biasRaw = $biasReal * 4096
+    $term = if ($ch -eq 383) { ';' } else { ',' }
+    $lines.Add(('{0:X8}' -f ($biasRaw -band 0xFFFFFFFF)) + $term)
+}
+Set-Content -Path (Join-Path $outDir 'depth_bias_debug.coe') -Value $lines -Encoding ascii
 
 Write-Host "generated in $outDir"

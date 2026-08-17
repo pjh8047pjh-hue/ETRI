@@ -35,6 +35,10 @@ module mem_layer08_out #(
 
     logic [DATA_WIDTH-1:0] quantized_data;
     logic [0:0]            wea;
+    logic [15:0]           bram_data_out;
+    logic                  bram_wr_en;
+    logic [ADDR_WIDTH-1:0] bram_wr_addr;
+    logic [DATA_WIDTH-1:0] bram_wr_data;
 
     // dina[QUANT_LSB +: DATA_WIDTH]를 그대로 자르면 16bit로 안 들어가는 값은
     // 부호까지 랩어라운드된다. 상위 확장 비트가 전부 부호비트와 같을 때만
@@ -55,15 +59,29 @@ module mem_layer08_out #(
         end
     end
 
-    assign wea[0]          = start_w;
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            bram_wr_en   <= 1'b0;
+            bram_wr_addr <= '0;
+            bram_wr_data <= '0;
+        end else begin
+            bram_wr_en <= start_w;
+            if (start_w) begin
+                bram_wr_addr <= wr_addr;
+                bram_wr_data <= quantized_data;
+            end
+        end
+    end
+
+    assign wea[0] = bram_wr_en;
 
     // Block Memory Generator: Simple Dual Port RAM, 16-bit x 75,264.
     output_bram_ip output_bram_ip (
         .clka  (clk),
-        .ena   (start_w),
+        .ena   (bram_wr_en),
         .wea   (wea),
-        .addra (wr_addr),
-        .dina  (quantized_data),
+        .addra (bram_wr_addr),
+        .dina  (bram_wr_data),
         .clkb  (clk),
         .enb   (reading),
         .addrb (rd_addr),
@@ -79,12 +97,6 @@ module mem_layer08_out #(
 
     wr_addr <= w_pix(196) + w_oc(384)
     */
-    logic start_enable;
-    always_ff @(posedge clk) begin
-        if(start_w) start_enable <= 1'b1;
-        else if(done_w) start_enable <= '0;
-    end
-
     logic [ADDR_WIDTH-1:0] wr_pix;
     logic [ADDR_WIDTH-1:0] wr_oc;
 
@@ -97,20 +109,19 @@ module mem_layer08_out #(
         end else begin
             done_w <= 1'b0;
 
-            if (start_enable) begin
+            if (start_w) begin
                 if (wr_addr == LAST_ADDR) begin                    
                     wr_addr <= '0;
                     wr_pix  <= '0;
                     wr_oc   <= '0;
                     done_w  <= 1'b1;
-                end else if (wr_pix != CHANNEL_WIDTH) begin
+                end else if (wr_oc == WEIGHT_WIDTH-1) begin
+                    wr_pix  <= wr_pix + 1'b1;
                     wr_addr <= wr_pix + 1'b1;
                     wr_oc   <= '0;
-
-                    if(wr_oc != WEIGHT_WIDTH-1) begin
-                        wr_addr <= wr_addr + CHANNEL_WIDTH;
-                        wr_oc   <= wr_oc + 1'b1;
-                    end else wr_pix <= wr_pix + 1'b1;
+                end else begin
+                    wr_addr <= wr_addr + CHANNEL_WIDTH;
+                    wr_oc   <= wr_oc + 1'b1;
                 end
             end
         end
@@ -119,23 +130,45 @@ module mem_layer08_out #(
     // 전체 결과 read. data_valid는 읽는 각 cycle에, done_r은 마지막
     // data_out이 유효한 cycle에 각각 올라온다.
 
-    logic [15:0] bram_data_out;
+    localparam int ROW_LEN = 16;
+    logic [3:0] rd_col_cnt;
+    logic [3:0] rd_row_cnt;
+    logic [8:0] rd_channel_cnt;
 
-    wire real_slot = (rd_row_cnt < 14) && (rd_col_cnt < 14);
+    // 14x14 데이터의 상/하/좌/우에 1칸씩 zero padding을 붙여 16x16으로 출력한다.
+    wire real_slot = (rd_row_cnt >= 1) && (rd_row_cnt <= 14)
+                  && (rd_col_cnt >= 1) && (rd_col_cnt <= 14);
+    wire last_slot = reading
+                  && (rd_channel_cnt == WEIGHT_WIDTH-1)
+                  && (rd_row_cnt == ROW_LEN-1)
+                  && (rd_col_cnt == ROW_LEN-1);
     
     logic real_slot_d1;
     logic real_slot_d2;
     logic reading_d1;
+    logic reading_d2;
+    logic last_slot_d1;
+    logic last_slot_d2;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             real_slot_d1 <= 1'b0;
             real_slot_d2 <= 1'b0;
             reading_d1   <= 1'b0;
+            reading_d2   <= 1'b0;
+            last_slot_d1 <= 1'b0;
+            last_slot_d2 <= 1'b0;
+            data_valid   <= 1'b0;
+            done_r       <= 1'b0;
         end else begin
             real_slot_d1 <= reading && real_slot;
             real_slot_d2 <= real_slot_d1;
             reading_d1   <= reading;
+            reading_d2   <= reading_d1;
+            last_slot_d1 <= last_slot;
+            last_slot_d2 <= last_slot_d1;
+            data_valid   <= reading_d2;
+            done_r       <= last_slot_d2;
         end
     end
 
@@ -147,21 +180,16 @@ module mem_layer08_out #(
         if (rst) begin
             rd_addr    <= '0;
             reading    <= 1'b0;
-            data_valid <= 1'b0;
-            done_r     <= 1'b0;
         end else begin
-            data_valid <= reading;
-            done_r     <= reading && (rd_addr == LAST_ADDR);
-
             if (start_r && !reading) begin
                 rd_addr <= '0;
                 reading <= 1'b1;
             end else if (reading) begin
-                if (rd_addr == LAST_ADDR) begin
+                if (last_slot) begin
                     rd_addr <= '0;
                     reading <= 1'b0;
-                end else if(real_slot) begin  
-                        rd_addr <= rd_addr + 1'b1;
+                end else if (real_slot && (rd_addr != LAST_ADDR)) begin
+                    rd_addr <= rd_addr + 1'b1;
                 end
             end
         end
@@ -169,19 +197,21 @@ module mem_layer08_out #(
 
 
 //---------------------------------------------------------------------------
-    localparam int ROW_LEN = 15;
-    
-    logic [3:0] rd_col_cnt;
-    logic [3:0] rd_row_cnt;
-
     always_ff @(posedge clk) begin
         if(rst || start_r) begin   
-            rd_col_cnt <= 0;
-            rd_row_cnt <= 0;
+            rd_col_cnt     <= '0;
+            rd_row_cnt     <= '0;
+            rd_channel_cnt <= '0;
         end else if (reading) begin
-            if (rd_col_cnt == 14) begin
-                rd_col_cnt <= 0;
-                rd_row_cnt <= (rd_row_cnt == 14) ? 0 : rd_row_cnt + 1'b1;
+            if (rd_col_cnt == ROW_LEN-1) begin
+                rd_col_cnt <= '0;
+                if (rd_row_cnt == ROW_LEN-1) begin
+                    rd_row_cnt <= '0;
+                    rd_channel_cnt <= (rd_channel_cnt == WEIGHT_WIDTH-1)
+                                    ? '0 : rd_channel_cnt + 1'b1;
+                end else begin
+                    rd_row_cnt <= rd_row_cnt + 1'b1;
+                end
             end else begin
                 rd_col_cnt <= rd_col_cnt + 1'b1;
             end

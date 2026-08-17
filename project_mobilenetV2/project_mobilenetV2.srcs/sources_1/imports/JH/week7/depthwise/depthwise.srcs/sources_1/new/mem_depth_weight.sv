@@ -39,19 +39,33 @@ module mem_depth_weight(
                                    .addra(channel)
                                    );
 
-    always_ff @(posedge clk) begin : blockName
-        if(start_r) run <= 1;
-    end
-
-    always_ff @(posedge clk or posedge rst) begin
-        if(rst) begin
-            in_cnt  <= 0;
-            channel <= 0;    
-        end else if(in_cnt != 9'd383) begin
-            in_cnt <= in_cnt + 1'b1;
-        end else if(in_cnt == 9'd383) begin
-            in_cnt  <= 0;
-            channel <= channel + 9'd1;
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            in_cnt  <= '0;
+            channel <= '0;
+            run     <= 1'b0;
         end
-    end                                   
+        else if (start_r) begin
+            in_cnt  <= '0;
+            channel <= '0;
+            run     <= 1'b1;
+        end
+        else if (run) begin
+            // 한 depthwise 채널 = 16 × 16 = 256클록
+            if (in_cnt == 9'd255) begin
+                in_cnt <= '0;
+
+                if (channel == 9'd383) begin
+                    channel <= '0;
+                    run     <= 1'b0;
+                end
+                else begin
+                    channel <= channel + 1'b1;
+                end
+            end
+            else begin
+                in_cnt <= in_cnt + 1'b1;
+            end
+        end
+    end
 endmodule

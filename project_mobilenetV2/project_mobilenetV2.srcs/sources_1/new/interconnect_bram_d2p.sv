@@ -22,12 +22,15 @@
 
 module interconnect_bram_d2p(
     input  logic                clk,
+    input  logic                rst,
+    input  logic                start,
     input  logic signed [  7:0] wr_data,
     input  logic                wr_valid,
-    input  logic                input_rd_addr,
-    input  logic         
+    input  logic        [ 10:0] input_rd_addr,
+    input  logic                input_rd_en,
 
-    output logic signed [511:0] input_rd_data
+    output logic signed [511:0] input_rd_data,
+    output logic                write_done
 );
 
 /* 
@@ -46,55 +49,72 @@ module interconnect_bram_d2p(
         주소 수  = 6 chunk × 196 pixel = 1,176
         lane 수  = 64
         전체 값  = 1,176 × 64 = 75,264
-
 */
     
-    logic [10:0] wr_addr;
-    logic [ 5:0] wr_lane;
-    logic [ 7:0] wr_pixel_cnt;    // 0~195
-    logic [ 8:0] wr_channel_cnt;  // 0~383
+    localparam int PIXEL = 196;
+    localparam int CHUNK = 6;    // 384ch / 64lane
+    localparam int LANE  = 64;
 
+    logic [   10:0] wr_addr;
+    logic [    5:0] wr_lane;
+    logic [    7:0] wr_pixel_cnt;    // 0~195
+    logic [    8:0] wr_channel_cnt;  // 0~383
+    logic [LANE-1:0] wr_wea;
+
+    //----------- index calculator --------------------
     always_ff @(posedge clk) begin
         if (rst || start) begin
             wr_pixel_cnt   <= '0;
             wr_channel_cnt <= '0;
-            wr_lane        <= '0;
-        end 
-        else if(depthwise_relu_valid) begin
-            if(wr_pixel_cnt == 195) begin
-                wr_pixel_cnt <= '0;
+            write_done     <=  0;
+        end else begin
+            write_done <= 0;
 
-                if(wr_channel_cnt == 383) wr_channel_cnt <= '0;
-                else begin
-                    wr_channel_cnt <= wr_channel_cnt + 1'b1;
+            if(wr_valid) begin
+                if(wr_pixel_cnt == 195) begin
+                    wr_pixel_cnt <= '0;
+
+                    if(wr_channel_cnt == 383) begin
+                        wr_channel_cnt <= '0;
+                        write_done     <= 1;
+                    end else begin
+                        wr_channel_cnt <= wr_channel_cnt + 1'b1;
+                    end
+                end else begin
+                    wr_pixel_cnt <= wr_pixel_cnt + 1'b1;
                 end
-            end else begin
-                wr_pixel_cnt <= wr_pixel_cnt + 1'b1;
             end
         end
     end
 
     // wr_channel_cnt[8:6] = channel / 64 -> chunk
     // wr_channel_cnt[5:0] = channel % 64 -> lane
-    assign wr_addr = wr_pixel_cnt + wr_channel_cnt[8:6] * 196;
+    // 주소 배치는 top_pointwise_after_depth 의 input_rd_addr 과 반드시 동일해야 함
+    //   top : input_rd_addr = pixel_cnt * CHUNK + chunk_cnt   (pixel-major)
+    assign wr_addr = wr_pixel_cnt * CHUNK + wr_channel_cnt[8:6];
     assign wr_lane = wr_channel_cnt[5:0];
 
-       pointwise_after_depth_input u_in (
+    // 실제로 메모리에서 바뀌는 건 wr_lane 이 가리키는 8bit 한 칸뿐.
+    // dina 는 512bit 전체를 요구하므로 같은 값을 복제해두고 wea 가 골라가게 함.
+    always_comb begin
+        wr_wea           = '0;
+        wr_wea[wr_lane]  = 1'b1;   // one-hot decoder
+    end
+
+    wire [8*LANE-1:0] wr_dina = {LANE{wr_data}};
+
+    pointwise_after_depth_input u_in (
         // 쓰기 (depthwise 붙일 때 연결)
         .clka (clk),
         .ena  (wr_valid),
-        .wea  (wr_lane),
+        .wea  (wr_wea),
         .addra(wr_addr),
-        .dina (wr_data),
+        .dina (wr_dina),
         // 읽기
         .clkb (clk),
-        .enb  (run),
+        .enb  (input_rd_en),
         .addrb(input_rd_addr),
         .doutb(input_rd_data)
     );
-
-
-
-
 
 endmodule

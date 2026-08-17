@@ -24,9 +24,9 @@ module ReLU6_pw #(
     parameter DIN_W = 16,
     parameter int UPPER = 6
 )(
-    input  logic                    clk,
-    input  logic                    rst,
-    input  logic signed [DIN_W-1:0] din,
+    input  logic                      clk,
+    input  logic                      rst,
+    input  logic signed [3*DIN_W-1:0] din,
 
     output logic [15:0] data_out_relu
     );

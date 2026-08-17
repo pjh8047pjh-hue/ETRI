@@ -15,9 +15,9 @@ module pointwise_mac(
 
     import pointwise_pkg::*;
 
-    localparam integer INPUT_FRAC_BITS  = 13;
-    localparam integer WEIGHT_FRAC_BITS = 15;
-    localparam integer OUTPUT_FRAC_BITS = 13;
+    localparam integer INPUT_FRAC_BITS  = 12;
+    localparam integer WEIGHT_FRAC_BITS = 12;
+    localparam integer OUTPUT_FRAC_BITS = 12;
     localparam integer QUANT_SHIFT      = INPUT_FRAC_BITS
                                            + WEIGHT_FRAC_BITS
                                            - OUTPUT_FRAC_BITS;

@@ -52,6 +52,21 @@ module pointwise(
     logic [8:0] oc_addr;
     logic [7:0] pix_addr;
 
+    // input BRAM은 1clk, weight BRAM은 2clk latency이다.
+    // 빠른 input과 해당 제어를 1clk 늦춰 같은 주소의 weight와 맞춘다.
+    logic                en_mul_aligned;
+    logic [5:0]          ic_cnt_aligned;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            en_mul_aligned          <= 1'b0;
+            ic_cnt_aligned          <= '0;
+        end else begin
+            en_mul_aligned          <= en_mul;
+            ic_cnt_aligned          <= ic_cnt;
+        end
+    end
+
     //----------------- module instance -----------------
 
 
@@ -88,8 +103,8 @@ module pointwise(
 
     pointwise_mac pointwise_mac(.clk(clk),
                                 .rst(rst),
-                                .en_mul(en_mul),
-                                .ic_cnt(ic_cnt),
+                                .en_mul(en_mul_aligned),
+                                .ic_cnt(ic_cnt_aligned),
                                 .weight_data(weight_data),
                                 .input_data(input_bram_data),
                                 .result(mac_result),

@@ -29,11 +29,11 @@ module mobilenetV2(
     output logic [15:0] result
     );
 
-    //------------------- pointwise ----------------------
     wire        done_w, done_r;
     wire        output_data_valid;
     wire [15:0] pointwise_data_out;
     wire [15:0] pointwise_relu_out;
+    wire        start_depth;
 
     wire clk;
 
@@ -42,6 +42,7 @@ module mobilenetV2(
                   .clk_out1(clk)
                   );
 
+    //------------------- pointwise ----------------------
     pointwise pointwise(.clk(clk),
                         .rst(rst),
                         .start(start),
@@ -51,7 +52,7 @@ module mobilenetV2(
                         .output_data_valid(output_data_valid)
                         );
 
-    ReLU6 #(.UPPER(32767)) ReLU6_pw(.clk(clk),
+    ReLU6 #(.UPPER(16'h6000)) ReLU6_pw(.clk(clk),
                 .rst(rst),
                 .din(pointwise_data_out),
                 .data_out_relu(pointwise_relu_out)
@@ -73,39 +74,40 @@ module mobilenetV2(
     assign start_depth = output_data_valid && !output_data_valid_d;
 
     //------------------- depthwise ---------------------
-    wire signed [47:0] depthwise_data_out;
-    wire        [15:0] depthwise_relu_out;
+    // depth_mac에서 bias add와 ReLU6까지 처리된 결과가 출력된다.
+    wire signed [15:0] depthwise_data_out;
+    wire               depthwise_output_valid;
+    wire               pointwise_after_depth_valid;
 
-    depth_top depthwise(.clk(clk),
-	                        .rst(rst),
-                            .start(start_depth),
-                            .input_data(pointwise_data_out),
-                            .output_valid(),
-                            .data_out(depthwise_data_out)
-                            );
-
-    ReLU6 #(.DIN_W(48)) ReLU6_dw(.clk(clk),
-                .rst(rst),
-                .din(depthwise_data_out),
-                .data_out_relu(depthwise_relu_out)
-                );
+    depth_top #(
+        .SP         (16),
+        .DW         (16)
+    ) depthwise(
+        .clk          (clk),
+        .rst          (rst),
+        .start        (start_depth),
+        .input_data   (pointwise_relu_out),
+        .depth_output_valid (depthwise_output_valid),
+        .data_out     (depthwise_data_out)
+    );
  //------------------- interconnect bram ---------------------
     wire  [ 10:0] input_rd_addr;
     wire  [511:0] input_rd_data;
+    wire          input_rd_en;
+    wire          write_done;
+    wire signed [50:0] pointwise_after_depth_out_full;
     
     // BRAM의 write, read를 비대칭으로 설정. byte lane을 사용
-       pointwise_after_depth_input u_in (
-        // 쓰기 (depthwise 붙일 때 연결)
-        .clka (clk),
-        .ena  (1'b0),
-        .wea  (1'b0),
-        .addra(),
-        .dina ('0),
-        // 읽기
-        .clkb (clk),
-        .enb  (run),
-        .addrb(input_rd_addr),
-        .doutb(input_rd_data)
+    interconnect_bram_d2p bram_d2p(
+        .clk(clk),
+        .rst(rst),
+        .start(start),
+        .wr_data(depthwise_data_out[15:8]),
+        .wr_valid(depthwise_output_valid),
+        .input_rd_addr(input_rd_addr),
+        .input_rd_en(input_rd_en),
+        .input_rd_data(input_rd_data),
+        .write_done(write_done)
     );
     //------------------- pointwise after depthwise ---------------------
 
@@ -113,23 +115,19 @@ module mobilenetV2(
     // input  logic         clk_in,
         .clk(clk),
         .rst(rst),
-        .start(start),
-        .depth_relu_data(depthwise_relu_out),
-        .depth_relu_valid(),
+        .start(write_done),
+        .depth_relu_data(depthwise_data_out[7:0]),
+        .depth_relu_valid(depthwise_output_valid),
         .input_rd_data(input_rd_data),
         .input_rd_addr(input_rd_addr),
+        .input_rd_en(input_rd_en),
         .done(done),
-        .output_valid(output_valid),
-        .pointwise_after_depth_out()
+        .output_valid(pointwise_after_depth_valid),
+        .pointwise_after_depth_out(pointwise_after_depth_out_full)
     );
 
+    assign result = pointwise_after_depth_out_full[15:0];
 
-   
     //-----------------------------------------------------------------
-
-    assign result = depthwise_relu_out;
-    // depth_top이 아직 완료 신호를 내보내지 않아 done은 임시로 0 고정.
-    // depth_top에 done 포트가 추가되면 연결할 것.
-    assign done   = 1'b0;
 
 endmodule

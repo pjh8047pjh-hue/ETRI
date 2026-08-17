@@ -1,5 +1,5 @@
 module depth_top #(
-    parameter SP = 15,
+    parameter SP = 16,
     parameter DW = 16
 )(
 	input  logic 				   clk,
@@ -7,7 +7,8 @@ module depth_top #(
     input  logic                   start,
     input  logic signed [  DW-1:0] input_data,
 
-	output logic signed [3*DW-1:0] data_out
+	output logic 				   depth_output_valid,
+	output logic signed [15:0] data_out
 );
 
 	logic signed [9*DW-1:0] weight;
@@ -18,11 +19,15 @@ module depth_top #(
 						.data_out(weight)
 						);
 
-	depth_mac depth_mac(.clk(clk),
+	depth_mac #(
+                        .SP(SP),
+                        .DW(DW)
+                    ) depth_mac(.clk(clk),
 						.rst(rst),
 						.start(start),
 						.input_data(input_data),
 						.weight(weight),
+						.depth_output_valid(depth_output_valid),
 						.data_out(data_out)
 						);
 
