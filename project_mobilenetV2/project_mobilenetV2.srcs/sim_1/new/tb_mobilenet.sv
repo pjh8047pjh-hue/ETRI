@@ -40,23 +40,21 @@ module tb_mobilenet(
 
     always #12.5 clk_in = ~clk_in; // 실제 board의 input
 
-    wire clk = dut.clk;
-
     initial begin
         clk_in     = 1'b0;
-        rst        = 1'b1;
+        rst        = 1'b0;
         start      = 1'b0;
 
 
-        repeat (5) @(posedge clk);
-        @(posedge clk); rst <= 1'b0;
-        repeat (2) @(posedge clk);
+        repeat (50) @(posedge clk_in); rst <= 1'b1;
+        @(posedge clk_in); rst <= 1'b0;
+        repeat (50) @(posedge clk_in);
 
-        @(posedge clk); start <= 1'b1;
-        @(posedge clk); start <= 1'b0;
+        @(posedge clk_in); start <= 1'b1;
+        @(posedge clk_in); start <= 1'b0;
 
         wait(done === 1'b1);
-        repeat (20) @(posedge clk);
+        repeat (20) @(posedge clk_in);
         $finish;
     end
 

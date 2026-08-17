@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+  <defs>
+    <marker id="ctrlArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#df7777"/>
+    </marker>
+  </defs>
+
+  <rect width="1600" height="900" fill="#ffffff"/>
+
+  <!-- slide title -->
+  <text x="62" y="82" font-family="Arial" font-size="48" font-weight="800" fill="#08648a">02</text>
+  <text x="130" y="82" font-family="Arial" font-size="44" font-weight="700" fill="#202124">System architecture</text>
+  <text x="610" y="80" font-family="Malgun Gothic" font-size="27" font-weight="400" fill="#7b8a96">시스템 구성도</text>
+  <text x="70" y="140" font-family="Arial" font-size="21" font-weight="600" fill="#465461">Layer08 Pointwise Conv: 14×14 pixels, 64 input channels → 384 output channels</text>
+
+  <!-- outer frame -->
+  <rect x="55" y="170" width="1490" height="670" fill="#ffffff" stroke="#172027" stroke-width="2.2"/>
+
+  <!-- FSM controller -->
+  <rect x="120" y="220" width="1360" height="105" rx="2" fill="#f2b7b7" stroke="#172027" stroke-width="2.2"/>
+  <text x="800" y="282" text-anchor="middle" font-family="Arial" font-size="26" font-weight="700" fill="#16191c">FSM Controller</text>
+  <text x="800" y="309" text-anchor="middle" font-family="Arial" font-size="16" font-weight="600" fill="#33485c">Address sequencing · valid timing · read/write control</text>
+
+  <!-- controller fanout -->
+  <path d="M 390 325 L 390 365" fill="none" stroke="#df7777" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ctrlArrow)"/>
+  <path d="M 790 325 L 790 365" fill="none" stroke="#df7777" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ctrlArrow)"/>
+  <path d="M 1205 325 L 1205 365" fill="none" stroke="#df7777" stroke-width="2" stroke-dasharray="8 7" marker-end="url(#ctrlArrow)"/>
+
+  <!-- left memories -->
+  <rect x="120" y="380" width="300" height="135" fill="#cfe0f2" stroke="#172027" stroke-width="2.2"/>
+  <text x="270" y="435" text-anchor="middle" font-family="Arial" font-size="26" font-weight="700" fill="#16191c">Weight ROM</text>
+  <text x="270" y="470" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">384 rows × 1024 bits</text>
+  <text x="270" y="496" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">64 weights/row · Signed Q3.12</text>
+
+  <rect x="120" y="595" width="300" height="135" fill="#cfe0f2" stroke="#172027" stroke-width="2.2"/>
+  <text x="270" y="650" text-anchor="middle" font-family="Arial" font-size="26" font-weight="700" fill="#16191c">Input Feature RAM</text>
+  <text x="270" y="685" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">196 rows × 1024 bits</text>
+  <text x="270" y="711" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">64 channels/row · Signed Q3.12</text>
+
+  <!-- arrows into MAC -->
+  <path d="M 420 426 L 500 426 L 500 408 L 545 448 L 500 488 L 500 470 L 420 470 Z" fill="#9dc5e5" stroke="#142531" stroke-width="2.2"/>
+  <path d="M 420 641 L 500 641 L 500 623 L 545 663 L 500 703 L 500 685 L 420 685 Z" fill="#9dc5e5" stroke="#142531" stroke-width="2.2"/>
+
+  <!-- MAC module -->
+  <rect x="545" y="365" width="410" height="405" fill="#fff0a8" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="415" text-anchor="middle" font-family="Arial" font-size="26" font-weight="700" fill="#16191c">Pointwise MAC Module</text>
+
+  <rect x="605" y="447" width="290" height="49" fill="#ffe1a0" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="478" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">Index / Address Calculator</text>
+
+  <rect x="605" y="516" width="290" height="49" fill="#ffe1a0" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="547" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">64 × 16-bit Multiplier IP</text>
+
+  <rect x="605" y="585" width="290" height="49" fill="#ffe1a0" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="616" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">Adder Tree / Product Sum</text>
+
+  <rect x="605" y="654" width="290" height="49" fill="#ffe1a0" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="685" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">38-bit Accumulator</text>
+
+  <rect x="605" y="723" width="290" height="30" fill="#f9cd78" stroke="#172027" stroke-width="2.2"/>
+  <text x="750" y="744" text-anchor="middle" font-family="Arial" font-size="16" font-weight="600" fill="#33485c">Quantize: arithmetic &gt;&gt;&gt; 12</text>
+
+  <!-- MAC to output RAM -->
+  <path d="M 955 535 L 1018 535 L 1018 515 L 1062 557 L 1018 599 L 1018 579 L 955 579 Z" fill="#9dc5e5" stroke="#142531" stroke-width="2.2"/>
+  <text x="1008" y="505" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">16-bit Q3.12</text>
+
+  <!-- output memory -->
+  <rect x="1062" y="430" width="255" height="255" fill="#cfe0f2" stroke="#172027" stroke-width="2.2"/>
+  <text x="1189" y="490" text-anchor="middle" font-family="Arial" font-size="26" font-weight="700" fill="#16191c">Output BRAM</text>
+  <text x="1189" y="530" text-anchor="middle" font-family="Arial" font-size="17" font-weight="600" fill="#344554">75,264 rows × 16 bits</text>
+  <line x1="1100" y1="553" x2="1278" y2="553" stroke="#8298aa" stroke-width="1.5"/>
+  <text x="1189" y="585" text-anchor="middle" font-family="Arial" font-size="16" font-weight="600" fill="#33485c">384 × 14 × 14</text>
+  <text x="1189" y="615" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">16-bit saturation</text>
+  <text x="1189" y="643" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">Channel-major storage</text>
+
+  <!-- output RAM to final stream -->
+  <path d="M 1317 535 L 1350 535 L 1350 518 L 1384 557 L 1350 596 L 1350 579 L 1317 579 Z" fill="#9dc5e5" stroke="#142531" stroke-width="2.2"/>
+
+  <!-- padding and ReLU -->
+  <rect x="1384" y="430" width="130" height="255" rx="3" fill="#d9ead3" stroke="#172027" stroke-width="2.2"/>
+  <text x="1449" y="482" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#16191c">16×16</text>
+  <text x="1449" y="516" text-anchor="middle" font-family="Arial" font-size="16" font-weight="600" fill="#33485c">Zero Padding</text>
+  <line x1="1402" y1="545" x2="1496" y2="545" stroke="#829b84" stroke-width="1.5"/>
+  <text x="1449" y="582" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#16191c">ReLU6</text>
+  <text x="1449" y="614" text-anchor="middle" font-family="Arial" font-size="16" font-weight="600" fill="#33485c">0 ~ 0x6000</text>
+  <text x="1449" y="642" text-anchor="middle" font-family="Arial" font-size="14" font-weight="500" fill="#566672">98,304 samples</text>
+
+  <!-- footer -->
+  <text x="70" y="815" font-family="Arial" font-size="14" font-weight="500" fill="#566672">Total computation: 64 × 384 × 14 × 14 = 4,816,896 MACs</text>
+</svg>
