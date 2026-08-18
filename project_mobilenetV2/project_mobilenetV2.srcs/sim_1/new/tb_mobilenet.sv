@@ -41,20 +41,28 @@ module tb_mobilenet(
     always #12.5 clk_in = ~clk_in; // 실제 board의 input
 
     initial begin
-        clk_in     = 1'b0;
-        rst        = 1'b0;
-        start      = 1'b0;
+        clk_in = 1'b0;
+        rst    = 1'b1;
+        start  = 1'b0;
 
-
-        repeat (50) @(posedge clk_in); rst <= 1'b1;
-        @(posedge clk_in); rst <= 1'b0;
+        // 40 MHz 입력 기준 50클럭 = 1.25 us
+        // 이 시간 동안 Clock Wizard가 안정화됨
         repeat (50) @(posedge clk_in);
 
-        @(posedge clk_in); start <= 1'b1;
-        @(posedge clk_in); start <= 1'b0;
+        // 내부 450 MHz 클럭에 맞춰 reset 해제
+        @(posedge dut.clk);
+        rst <= 1'b0;
 
-        wait(done === 1'b1);
-        repeat (20) @(posedge clk_in);
+        repeat (5) @(posedge dut.clk);
+
+        // start는 내부 클럭 기준 정확히 1클럭
+        @(posedge dut.clk);
+        start <= 1'b1;
+        @(posedge dut.clk);
+        start <= 1'b0;
+
+        wait (done === 1'b1);
+        repeat (20) @(posedge dut.clk);
         $finish;
     end
 

@@ -1,0 +1,133 @@
+{
+  "format_version": 1,
+  "scope": "MobileNetV2 features[8] expand 1x1 convolution + folded BN + ReLU6",
+  "source": {
+    "input": "MobileNet_v2/mobilenetv2_result_layer07.bin",
+    "input_sha256": "776992b7cb7068784949de50fb621c48e51847a077b70f7b0002009b7c254ee7",
+    "parameters_header": "mobilenetv2_parameters.h",
+    "parameters_header_sha256": "79200cbd173a4a1fe18e75f40da039d2fbf57d16631efdd1045aaa369a0448c0"
+  },
+  "shapes": {
+    "input_chw": [
+      64,
+      14,
+      14
+    ],
+    "weight_oc_ic": [
+      384,
+      64
+    ],
+    "bias": [
+      384
+    ],
+    "output_chw": [
+      384,
+      14,
+      14
+    ]
+  },
+  "fixed_point": {
+    "input": "signed Q3.12 int16",
+    "weight": "signed Q3.12 int16 (BN-folded)",
+    "product": "signed int32, 24 fractional bits",
+    "bias": "signed int32, 24 fractional bits",
+    "accumulator": "signed int32, 24 fractional bits",
+    "output": "signed Q3.12 int16",
+    "relu6_upper_raw": 24576,
+    "relu6_upper_hex": "6000",
+    "rounding": "nearest, ties away from zero for quantization; positive half-up for output shift"
+  },
+  "packing": {
+    "lanes": 64,
+    "chunks": 6,
+    "lane_rule": "lane j = word[16*j +: 16]; lane 0 is LSB",
+    "packed_bin_byte_order": "little-endian bytes per word; lane 0 is stored first",
+    "ifm_word_address": "h*14+w; lanes are input channels 0..63",
+    "weight_word_address": "chunk*64+ic; lanes are output channels chunk*64..chunk*64+63",
+    "weight_oc_rows_alternative": "address=oc; lanes are input channels 0..63",
+    "bias_chunk_word_address": "chunk; 64 signed int32 lanes, lane 0 is LSB",
+    "output_chunk_word_address": "chunk*196+h*14+w; lanes are output channels in the chunk"
+  },
+  "diagnostics": {
+    "input_saturation_count": 0,
+    "weight_saturation_count": 0,
+    "bias_saturation_count": 0,
+    "accumulator_raw_min": -10237421,
+    "accumulator_raw_max": 12758340,
+    "output_raw_min": 0,
+    "output_raw_max": 3115,
+    "max_abs_error": 0.0013565890152465454,
+    "mean_abs_error": 0.00016090865223275348,
+    "rmse": 0.00023003876905492777
+  },
+  "files": {
+    "q312_input_chw_int16.bin": {
+      "bytes": 25088,
+      "sha256": "1cf23dd55d3fed494ec9cec0a159d2f287ffcf9e0e927bff0f57d86fb5c32be0"
+    },
+    "q312_expand_weight_oc_ic_int16.bin": {
+      "bytes": 49152,
+      "sha256": "044268e4774cf748f527e5ae3e3c00d5a3615c8f14f96843940307758badd98d"
+    },
+    "q312_expand_bias_int32.bin": {
+      "bytes": 1536,
+      "sha256": "d39399f208dbb42034e9073669c91e7b948a5545d22c65f0f417a44f9f9e57fb"
+    },
+    "q312_expand_output_chw_int16.bin": {
+      "bytes": 150528,
+      "sha256": "aa0fb960a4932830c8b2d6371e91970a822c72831e54fb77a870fafffca8a495"
+    },
+    "expand_float_golden_chw_f32.bin": {
+      "bytes": 301056,
+      "sha256": "7a92b595162418c51342d0fd6a5c3f517fb601e7528771ae719d189e01b3d26a"
+    },
+    "q312_ifm_1024.coe": {
+      "bytes": 50828,
+      "sha256": "9906f414e5eaba5e362a24d0d6ec29ed674c9e7ee8ed6635129b5105979f28cc"
+    },
+    "q312_weight_1024.coe": {
+      "bytes": 99520,
+      "sha256": "9414c383e63e25bbc24b213d14e24823293eddc0fda6ce392654eda1b724f1ed"
+    },
+    "q312_weight_oc_rows_1024.coe": {
+      "bytes": 99520,
+      "sha256": "dd483907a0e97f2e808c2710e2adfa1b6563a38b725b95c0b5a6638144474067"
+    },
+    "q312_bias_32.coe": {
+      "bytes": 4288,
+      "sha256": "8ada0c3152d2026acd294fa0cdae4d037ee28f470e6ad470bce85ebddd5887f2"
+    },
+    "q312_bias_chunks_2048.coe": {
+      "bytes": 3154,
+      "sha256": "34ae969f8aa352b14e9af7bde4837482ca9cb518a480143156ee9d8e4ee37026"
+    },
+    "q312_golden_output_16.coe": {
+      "bytes": 526912,
+      "sha256": "e936b43ea9b4d124b15380a6ce57ee1b6969cd9f25522abaf3bd903741b1a17e"
+    },
+    "q312_golden_output_chunks_1024.coe": {
+      "bytes": 304648,
+      "sha256": "46d6c6e02613caa44f89bfbeee8c9ac0c39b755d71241fac334a38a35c732132"
+    },
+    "q312_ifm_1024.bin": {
+      "bytes": 25088,
+      "sha256": "4ae04cda9677f19b867f3e594b39a27021ed2dc54a918e186980ea080c069a02"
+    },
+    "q312_weight_1024.bin": {
+      "bytes": 49152,
+      "sha256": "f85fe1d4976ff1f91e472d1fab757e5a65eaf108acc59b539f0b23b659993255"
+    },
+    "q312_weight_oc_rows_1024.bin": {
+      "bytes": 49152,
+      "sha256": "044268e4774cf748f527e5ae3e3c00d5a3615c8f14f96843940307758badd98d"
+    },
+    "q312_bias_chunks_2048.bin": {
+      "bytes": 1536,
+      "sha256": "d39399f208dbb42034e9073669c91e7b948a5545d22c65f0f417a44f9f9e57fb"
+    },
+    "q312_golden_output_chunks_1024.bin": {
+      "bytes": 150528,
+      "sha256": "7ae1c62084cfb7fd9e3b17fe1eba9013aa46ba5abf97018a18594ec4d8194a66"
+    }
+  }
+}

@@ -1,89 +1,102 @@
-# =============================================================================
-# pointwise/depthwise 디버깅용 .coe 생성 스크립트
+# Layer 08 Expand Pointwise / Depthwise waveform-debug COE generator.
 #
-#   input_pointwise_ramp.coe      1024-bit x 196  (입력 feature map)
-#   weight_pointwise_identity.coe 1024-bit x 384  (pointwise weight, 항등)
+# Current RTL formats:
+#   Expand input/weight : signed Q3.12, 16-bit
+#   Expand bias         : signed Q24,    32-bit (before >>> 12)
+#   Depthwise weight    : signed Q3.12, 16-bit x 9
+#   Depthwise bias      : signed Q3.12, 32-bit container (after MAC >>> 12)
 #
-# 설계 의도
-#   x[p][ic] = 2 * (p*64 + ic)                     ... 짝수 램프
-#   w[oc][ic] = 0.5(0x4000) if ic == oc%64 else 0  ... 항등 + 1/2
-#   => out[p][oc] = (x[p][oc%64] * 0x4000) >>> 15 = p*64 + (oc%64)
-#
-#   p = r*14 + c 이므로 out = 896*r + 64*c + k (k = oc%64).
-#   r, c에 대해 선형이라 depthwise 3x3 all-1 결과는 내부 픽셀에서
-#   정확히 9 * (중심값)이 된다. 가장자리는 빠진 padding 개수가 바로 보인다.
-#
-# 비트 순서
-#   RTL이 data[ic*16 +: 16]로 채널을 뽑으므로 ic=0이 LSB다.
-#   .coe 한 줄은 MSB가 왼쪽이므로 ch63 ... ch0 순으로 적는다.
-# =============================================================================
+# COE words are MSB first. RTL lane 0 is the rightmost 16-bit value.
 
 $ErrorActionPreference = 'Stop'
 $outDir = $PSScriptRoot
 
-# PowerShell 변수는 대소문자를 구분하지 않는다. 루프 변수 $oc 와 겹치지 않도록
-# 출력 채널 수는 $OUT_CH 로 둔다.
-$IN_CH  = 64     # pointwise_pkg::IN_CH
-$PIX    = 196    # pointwise_pkg::CHANNEL_WIDTH (14 x 14)
-$OUT_CH = 384    # pointwise_pkg::WEIGHT_WIDTH
+function Write-CoeAndMem(
+    [string]$Name,
+    [System.Collections.Generic.List[string]]$Rows
+) {
+    $coe = New-Object System.Collections.Generic.List[string]
+    $coe.Add('memory_initialization_radix=16;')
+    $coe.Add('memory_initialization_vector=')
+    for ($i = 0; $i -lt $Rows.Count; $i++) {
+        $term = if ($i -eq $Rows.Count - 1) { ';' } else { ',' }
+        $coe.Add($Rows[$i] + $term)
+    }
 
-# ---------------- input feature map ----------------
-$lines = New-Object System.Collections.Generic.List[string]
-$lines.Add('memory_initialization_radix=16;')
-$lines.Add('memory_initialization_vector=')
+    Set-Content -LiteralPath (Join-Path $outDir "$Name.coe") -Value $coe -Encoding ascii
+    Set-Content -LiteralPath (Join-Path $outDir "$Name.mem") -Value $Rows -Encoding ascii
+    Write-Host ("{0,-36} {1,6} rows x {2,4} bits" -f $Name, $Rows.Count, ($Rows[0].Length * 4))
+}
 
+function Hex16([int]$Value) {
+    return '{0:X4}' -f ($Value -band 0xFFFF)
+}
+
+function Hex32([long]$Value) {
+    return '{0:X8}' -f ($Value -band 0xFFFFFFFFL)
+}
+
+$IN_CH  = 64
+$PIX    = 196
+$OUT_CH = 384
+
+# x_raw[p][ic] = 2*(p*64+ic). With the 0.5 identity weight below,
+# the result after >>>12 is exactly p*64+(oc mod 64).
+$rows = New-Object System.Collections.Generic.List[string]
 for ($p = 0; $p -lt $PIX; $p++) {
     $sb = New-Object System.Text.StringBuilder
-    # ch63 -> ch0 (MSB first)
     for ($ic = $IN_CH - 1; $ic -ge 0; $ic--) {
-        $val = 2 * ($p * $IN_CH + $ic)     # 최대 2*12543 = 25086, 16-bit 부호 안전
-        [void]$sb.Append('{0:X4}' -f $val)
+        [void]$sb.Append((Hex16 (2 * ($p * $IN_CH + $ic))))
     }
-    $term = if ($p -eq $PIX - 1) { ';' } else { ',' }
-    $lines.Add($sb.ToString() + $term)
+    [void]$rows.Add($sb.ToString())
 }
-Set-Content -Path (Join-Path $outDir 'input_pointwise_ramp.coe') -Value $lines -Encoding ascii
+Write-CoeAndMem 'input_pointwise_ramp' $rows
 
-# ---------------- pointwise weight (identity x 0.5) ----------------
-$lines = New-Object System.Collections.Generic.List[string]
-$lines.Add('memory_initialization_radix=16;')
-$lines.Add('memory_initialization_vector=')
-
+# One 0.5(Q3.12=0x0800) lane per output channel.
+$rows = New-Object System.Collections.Generic.List[string]
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
     $hot = $oc % $IN_CH
     $sb = New-Object System.Text.StringBuilder
     for ($ic = $IN_CH - 1; $ic -ge 0; $ic--) {
-        if ($ic -eq $hot) { [void]$sb.Append('0800') }   # Q3.12의 0.5
-        else              { [void]$sb.Append('0000') }
+        [void]$sb.Append($(if ($ic -eq $hot) { '0800' } else { '0000' }))
     }
-    $term = if ($oc -eq $OUT_CH - 1) { ';' } else { ',' }
-    $lines.Add($sb.ToString() + $term)
+    [void]$rows.Add($sb.ToString())
 }
-Set-Content -Path (Join-Path $outDir 'weight_pointwise_identity.coe') -Value $lines -Encoding ascii
+Write-CoeAndMem 'weight_pointwise_identity' $rows
+Write-CoeAndMem 'weight_pointwise_copy' $rows
 
-# ---------------- depthwise weight (3x3 all +1.0, Q3.12) ----------------
-$lines = New-Object System.Collections.Generic.List[string]
-$lines.Add('memory_initialization_radix=16;')
-$lines.Add('memory_initialization_vector=')
+# Default zero Q24 bias keeps the end-to-end expected value simple.
+$rows = New-Object System.Collections.Generic.List[string]
+for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
+    [void]$rows.Add('00000000')
+}
+Write-CoeAndMem 'bias_pointwise_before_zero' $rows
+
+# Optional signed Q24 test pattern: 0,+0.25,+0.5,+0.75,+1,-0.25,-0.5,-1.
+$biasQ24 = @(0x00000000L, 0x00400000L, 0x00800000L, 0x00C00000L,
+             0x01000000L, -0x00400000L, -0x00800000L, -0x01000000L)
+$rows = New-Object System.Collections.Generic.List[string]
+for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
+    [void]$rows.Add((Hex32 $biasQ24[$oc % $biasQ24.Count]))
+}
+Write-CoeAndMem 'bias_pointwise_before_debug' $rows
+
+# All nine depthwise taps are +1.0 (Q3.12=0x1000).
+$rows = New-Object System.Collections.Generic.List[string]
 $depthRow = '1000' * 9
-for ($ch = 0; $ch -lt 384; $ch++) {
-    $term = if ($ch -eq 383) { ';' } else { ',' }
-    $lines.Add($depthRow + $term)
+for ($ch = 0; $ch -lt $OUT_CH; $ch++) {
+    [void]$rows.Add($depthRow)
 }
-Set-Content -Path (Join-Path $outDir 'weight_depthwise_all1.coe') -Value $lines -Encoding ascii
+Write-CoeAndMem 'weight_depthwise_all1' $rows
 
-# ---------------- depthwise bias (Q3.12 debug pattern) ----------------
-# 채널마다 0, 1, 2, ... 6, -1을 반복한다.
-$lines = New-Object System.Collections.Generic.List[string]
-$lines.Add('memory_initialization_radix=16;')
-$lines.Add('memory_initialization_vector=')
-for ($ch = 0; $ch -lt 384; $ch++) {
-    $biasReal = $ch % 8
-    if ($biasReal -eq 7) { $biasReal = -1 }
-    $biasRaw = $biasReal * 4096
-    $term = if ($ch -eq 383) { ';' } else { ',' }
-    $lines.Add(('{0:X8}' -f ($biasRaw -band 0xFFFFFFFF)) + $term)
+# Depthwise bias is added after MAC >>>12, hence sign-extended Q3.12.
+# Values repeat 0,1,...,6,-1.
+$rows = New-Object System.Collections.Generic.List[string]
+for ($ch = 0; $ch -lt $OUT_CH; $ch++) {
+    $integerBias = $ch % 8
+    if ($integerBias -eq 7) { $integerBias = -1 }
+    [void]$rows.Add((Hex32 ([long]$integerBias * 4096L)))
 }
-Set-Content -Path (Join-Path $outDir 'depth_bias_debug.coe') -Value $lines -Encoding ascii
+Write-CoeAndMem 'depth_bias_debug' $rows
 
-Write-Host "generated in $outDir"
+Write-Host "Generated Layer 08 Expand/Depthwise debug files in $outDir"

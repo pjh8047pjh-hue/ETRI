@@ -88,23 +88,12 @@ module mem_layer08_out #(
         .doutb (bram_data_out)
     );
 
-    //----------------- wrtie address logic --------------------------
-    /* pointwise의 loop 순서가 pixel -> output channel이므로 저장 주소는
-    순서대로 address = pix_cnt * WEIGHT_WIDTH + oc_cnt가 된다.
-
-    output channel의 순서로 저장되므로 depthwise를 위해 위치를 변환해야한다.
-    따라서 첫 번째 주소에 값을 저장한 후, 다음 채널까지의 주소인 196을 더해주면 된다.
-
-    wr_addr <= w_pix(196) + w_oc(384)
-    */
-    logic [ADDR_WIDTH-1:0] wr_pix;
-    logic [ADDR_WIDTH-1:0] wr_oc;
-
+    //----------------- write address logic --------------------------
+    // New pointwise output order is output-channel outer / pixel inner.
+    // It already matches the channel-major order used by the reader.
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             wr_addr <= '0;
-            wr_pix  <= '0;
-            wr_oc   <= '0;
             done_w  <= 1'b0;
         end else begin
             done_w <= 1'b0;
@@ -112,16 +101,9 @@ module mem_layer08_out #(
             if (start_w) begin
                 if (wr_addr == LAST_ADDR) begin                    
                     wr_addr <= '0;
-                    wr_pix  <= '0;
-                    wr_oc   <= '0;
                     done_w  <= 1'b1;
-                end else if (wr_oc == WEIGHT_WIDTH-1) begin
-                    wr_pix  <= wr_pix + 1'b1;
-                    wr_addr <= wr_pix + 1'b1;
-                    wr_oc   <= '0;
                 end else begin
-                    wr_addr <= wr_addr + CHANNEL_WIDTH;
-                    wr_oc   <= wr_oc + 1'b1;
+                    wr_addr <= wr_addr + 1'b1;
                 end
             end
         end

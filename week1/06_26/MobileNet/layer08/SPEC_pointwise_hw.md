@@ -5,6 +5,11 @@
 >
 > **범위**: 1×1 conv + BN(weight에 fold) + ReLU6
 > **검증 목표**: 시뮬레이션 골든 매칭 + Vivado 합성·타이밍 (AXI 실장은 이번 주 범위 밖)
+>
+> **2026-08-18 Q3.12/64-lane 갱신**: [generate_layer08_q312.py](generate_layer08_q312.py)와
+> `q312_hw/` 산출물은 IFM과 BN-fold weight를 모두 signed Q3.12로 사용하고, bias/누산기는
+> 소수부 24비트 INT32를 사용한다. 이 산출물에 대해서는 아래 §2의 기존 Q0.15 weight/Q4.27 bias
+> 설명보다 `q312_hw/q312_manifest.json`의 규격을 우선한다.
 
 ---
 

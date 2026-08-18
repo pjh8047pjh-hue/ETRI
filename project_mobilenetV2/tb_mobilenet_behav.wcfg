@@ -12,26 +12,18 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="785817000fs"></ZoomStartTime>
-      <ZoomEndTime time="2670817001fs"></ZoomEndTime>
-      <Cursor1Time time="1701292500fs"></Cursor1Time>
+      <ZoomStartTime time="1738650400fs"></ZoomStartTime>
+      <ZoomEndTime time="1738795901fs"></ZoomEndTime>
+      <Cursor1Time time="1738682500fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="159"></NameColumnWidth>
+      <NameColumnWidth column_width="155"></NameColumnWidth>
       <ValueColumnWidth column_width="58"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="50" />
-   <wvobject fp_name="/tb_mobilenet/dut/clk" type="logic">
-      <obj_property name="ElementShortName">clk</obj_property>
-      <obj_property name="ObjectShortName">clk</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/rst" type="logic">
-      <obj_property name="ElementShortName">rst</obj_property>
-      <obj_property name="ObjectShortName">rst</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
+   <WVObjectSize size="176" />
+   <wvobject type="divider" fp_name="divider197">
+      <obj_property name="label">00 TOP SEQUENCE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mobilenet/dut/clk" type="logic">
       <obj_property name="ElementShortName">clk</obj_property>
@@ -45,165 +37,97 @@
       <obj_property name="ElementShortName">start</obj_property>
       <obj_property name="ObjectShortName">start</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/done_w" type="logic">
-      <obj_property name="ElementShortName">done_w</obj_property>
-      <obj_property name="ObjectShortName">done_w</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_before_depth_valid" type="logic">
+      <obj_property name="ElementShortName">pointwise_before_depth_valid</obj_property>
+      <obj_property name="ObjectShortName">pointwise_before_depth_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/done_r" type="logic">
-      <obj_property name="ElementShortName">done_r</obj_property>
-      <obj_property name="ObjectShortName">done_r</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_buffer_write_done" type="logic">
+      <obj_property name="ElementShortName">pointwise_buffer_write_done</obj_property>
+      <obj_property name="ObjectShortName">pointwise_buffer_write_done</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_padded_valid" type="logic">
+      <obj_property name="ElementShortName">pointwise_padded_valid</obj_property>
+      <obj_property name="ObjectShortName">pointwise_padded_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/output_data_valid" type="logic">
-      <obj_property name="ElementShortName">output_data_valid</obj_property>
-      <obj_property name="ObjectShortName">output_data_valid</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/start_depth" type="logic">
+      <obj_property name="ElementShortName">start_depth</obj_property>
+      <obj_property name="ObjectShortName">start_depth</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mac_result" type="array">
-      <obj_property name="ElementShortName">mac_result[37:0]</obj_property>
-      <obj_property name="ObjectShortName">mac_result[37:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise_output_valid" type="logic">
+      <obj_property name="ElementShortName">depthwise_output_valid</obj_property>
+      <obj_property name="ObjectShortName">depthwise_output_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/done_w" type="logic">
-      <obj_property name="ElementShortName">done_w</obj_property>
-      <obj_property name="ObjectShortName">done_w</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/write_done" type="logic">
+      <obj_property name="ElementShortName">write_done</obj_property>
+      <obj_property name="ObjectShortName">write_done</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/start_w" type="logic">
-      <obj_property name="ElementShortName">start_w</obj_property>
-      <obj_property name="ObjectShortName">start_w</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_after_depth_valid" type="logic">
+      <obj_property name="ElementShortName">pointwise_after_depth_valid</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/wr_addr" type="array">
-      <obj_property name="ElementShortName">wr_addr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_addr[16:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/dina" type="array">
-      <obj_property name="ElementShortName">dina[37:0]</obj_property>
-      <obj_property name="ObjectShortName">dina[37:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/done_r" type="logic">
-      <obj_property name="ElementShortName">done_r</obj_property>
-      <obj_property name="ObjectShortName">done_r</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/rd_addr" type="array">
-      <obj_property name="ElementShortName">rd_addr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">rd_addr[16:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pointwise/mem_layer08_out/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/ReLU6_pw/data_out_relu" type="array">
-      <obj_property name="ElementShortName">data_out_relu[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out_relu[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/input_data" type="array">
-      <obj_property name="ElementShortName">input_data[15:0]</obj_property>
-      <obj_property name="ObjectShortName">input_data[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/data_out" type="array">
-      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
-      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_addr" type="array">
-      <obj_property name="ElementShortName">wr_addr[10:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_addr[10:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_lane" type="array">
-      <obj_property name="ElementShortName">wr_lane[5:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_lane[5:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_valid" type="logic">
-      <obj_property name="ElementShortName">wr_valid</obj_property>
-      <obj_property name="ObjectShortName">wr_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_data" type="array">
-      <obj_property name="ElementShortName">wr_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_data[7:0]</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/input_rd_en" type="logic">
-      <obj_property name="ElementShortName">input_rd_en</obj_property>
-      <obj_property name="ObjectShortName">input_rd_en</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/input_rd_addr" type="array">
-      <obj_property name="ElementShortName">input_rd_addr[10:0]</obj_property>
-      <obj_property name="ObjectShortName">input_rd_addr[10:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/start" type="logic">
-      <obj_property name="ElementShortName">start</obj_property>
-      <obj_property name="ObjectShortName">start</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/depth_relu_data" type="array">
-      <obj_property name="ElementShortName">depth_relu_data[7:0]</obj_property>
-      <obj_property name="ObjectShortName">depth_relu_data[7:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/depth_relu_valid" type="logic">
-      <obj_property name="ElementShortName">depth_relu_valid</obj_property>
-      <obj_property name="ObjectShortName">depth_relu_valid</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/done" type="logic">
+   <wvobject fp_name="/tb_mobilenet/dut/done" type="logic">
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/output_valid" type="logic">
+   <wvobject fp_name="/tb_mobilenet/dut/result" type="array">
+      <obj_property name="ElementShortName">result[15:0]</obj_property>
+      <obj_property name="ObjectShortName">result[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider210">
+      <obj_property name="label">00A SAMPLE CH0 PIX0 TRACE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/input_valid" type="logic">
+      <obj_property name="ElementShortName">input_valid</obj_property>
+      <obj_property name="ObjectShortName">input_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/input_rd_data" type="array">
+      <obj_property name="ElementShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/weight_data" type="array">
+      <obj_property name="ElementShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/bias_data" type="array">
+      <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/dot_sum_q24" type="array">
+      <obj_property name="ElementShortName">dot_sum_q24[50:0]</obj_property>
+      <obj_property name="ObjectShortName">dot_sum_q24[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/shifted_q312" type="array">
+      <obj_property name="ElementShortName">shifted_q312[50:0]</obj_property>
+      <obj_property name="ObjectShortName">shifted_q312[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/output_valid" type="logic">
       <obj_property name="ElementShortName">output_valid</obj_property>
       <obj_property name="ObjectShortName">output_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/pad/pointwise_after_depth_out" type="array">
-      <obj_property name="ElementShortName">pointwise_after_depth_out[50:0]</obj_property>
-      <obj_property name="ObjectShortName">pointwise_after_depth_out[50:0]</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/pointwise_before_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_before_depth_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_before_depth_out[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/run" type="logic">
-      <obj_property name="ElementShortName">run</obj_property>
-      <obj_property name="ObjectShortName">run</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/data_valid" type="logic">
+      <obj_property name="ElementShortName">data_valid</obj_property>
+      <obj_property name="ObjectShortName">data_valid</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/row_cnt" type="array">
-      <obj_property name="ElementShortName">row_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">row_cnt[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/col_cnt" type="array">
-      <obj_property name="ElementShortName">col_cnt[3:0]</obj_property>
-      <obj_property name="ObjectShortName">col_cnt[3:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/input_data" type="array">
-      <obj_property name="ElementShortName">input_data[15:0]</obj_property>
-      <obj_property name="ObjectShortName">input_data[15:0]</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/line_buf_1" type="array">
-      <obj_property name="ElementShortName">line_buf_1[239:0]</obj_property>
-      <obj_property name="ObjectShortName">line_buf_1[239:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/line_buf_2" type="array">
-      <obj_property name="ElementShortName">line_buf_2[239:0]</obj_property>
-      <obj_property name="ObjectShortName">line_buf_2[239:0]</obj_property>
-      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/window_valid" type="logic">
+      <obj_property name="ElementShortName">window_valid</obj_property>
+      <obj_property name="ObjectShortName">window_valid</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/top_out" type="array">
       <obj_property name="ElementShortName">top_out[47:0]</obj_property>
@@ -220,30 +144,683 @@
       <obj_property name="ObjectShortName">bot_out[47:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bias_data" type="array">
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/relu_input" type="array">
+      <obj_property name="ElementShortName">relu_input[47:0]</obj_property>
+      <obj_property name="ObjectShortName">relu_input[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/depth_output_valid" type="logic">
+      <obj_property name="ElementShortName">depth_output_valid</obj_property>
+      <obj_property name="ObjectShortName">depth_output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_valid" type="logic">
+      <obj_property name="ElementShortName">wr_valid</obj_property>
+      <obj_property name="ObjectShortName">wr_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_data" type="array">
+      <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_addr" type="array">
+      <obj_property name="ElementShortName">wr_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_addr[10:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_lane" type="array">
+      <obj_property name="ElementShortName">wr_lane[5:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_lane[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/first" type="logic">
+      <obj_property name="ElementShortName">first</obj_property>
+      <obj_property name="ObjectShortName">first</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/input_rd_data" type="array">
+      <obj_property name="ElementShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/weight_data" type="array">
+      <obj_property name="ElementShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/sum" type="array">
+      <obj_property name="ElementShortName">sum[50:0]</obj_property>
+      <obj_property name="ObjectShortName">sum[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/bias_data" type="array">
       <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
       <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/output_valid" type="logic">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/pointwise_after_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider240">
+      <obj_property name="label">01 POINTWISE BEFORE DEPTH CONTROL</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/accept_start" type="logic">
+      <obj_property name="ElementShortName">accept_start</obj_property>
+      <obj_property name="ObjectShortName">accept_start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/busy" type="logic">
+      <obj_property name="ElementShortName">busy</obj_property>
+      <obj_property name="ObjectShortName">busy</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/run" type="logic">
+      <obj_property name="ElementShortName">run</obj_property>
+      <obj_property name="ObjectShortName">run</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/run_d1" type="logic">
+      <obj_property name="ElementShortName">run_d1</obj_property>
+      <obj_property name="ObjectShortName">run_d1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/mem_en" type="logic">
+      <obj_property name="ElementShortName">mem_en</obj_property>
+      <obj_property name="ObjectShortName">mem_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/pixel_cnt" type="array">
+      <obj_property name="ElementShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/channel_cnt" type="array">
+      <obj_property name="ElementShortName">channel_cnt[8:0]</obj_property>
+      <obj_property name="ObjectShortName">channel_cnt[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/last_request" type="logic">
+      <obj_property name="ElementShortName">last_request</obj_property>
+      <obj_property name="ObjectShortName">last_request</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/input_rd_en" type="logic">
+      <obj_property name="ElementShortName">input_rd_en</obj_property>
+      <obj_property name="ObjectShortName">input_rd_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/input_rd_addr" type="array">
+      <obj_property name="ElementShortName">input_rd_addr[7:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_addr[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/weight_addr" type="array">
+      <obj_property name="ElementShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/bias_addr" type="array">
+      <obj_property name="ElementShortName">bias_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_addr[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/request_valid_d" type="array">
+      <obj_property name="ElementShortName">request_valid_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">request_valid_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/last_request_d" type="array">
+      <obj_property name="ElementShortName">last_request_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">last_request_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider255">
+      <obj_property name="label">02 POINTWISE BEFORE DEPTH DATA</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/input_rd_data" type="array">
+      <obj_property name="ElementShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/weight_data" type="array">
+      <obj_property name="ElementShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/bias_data" type="array">
+      <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/input_valid" type="logic">
+      <obj_property name="ElementShortName">input_valid</obj_property>
+      <obj_property name="ObjectShortName">input_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/last_all" type="logic">
+      <obj_property name="ElementShortName">last_all</obj_property>
+      <obj_property name="ObjectShortName">last_all</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/valid_delay" type="array">
+      <obj_property name="ElementShortName">valid_delay[14:0]</obj_property>
+      <obj_property name="ObjectShortName">valid_delay[14:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/done_delay" type="array">
+      <obj_property name="ElementShortName">done_delay[14:0]</obj_property>
+      <obj_property name="ObjectShortName">done_delay[14:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/adder_third_tree" type="array">
+      <obj_property name="ElementShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="ObjectShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/dot_sum_q24" type="array">
+      <obj_property name="ElementShortName">dot_sum_q24[50:0]</obj_property>
+      <obj_property name="ObjectShortName">dot_sum_q24[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/bias_extended" type="array">
+      <obj_property name="ElementShortName">bias_extended[50:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_extended[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/biased_acc_q24" type="array">
+      <obj_property name="ElementShortName">biased_acc_q24[50:0]</obj_property>
+      <obj_property name="ObjectShortName">biased_acc_q24[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/shifted_q312" type="array">
+      <obj_property name="ElementShortName">shifted_q312[50:0]</obj_property>
+      <obj_property name="ObjectShortName">shifted_q312[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/output_valid" type="logic">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/pointwise_before_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_before_depth_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_before_depth_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_before_depth/u_core/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider271">
+      <obj_property name="label">03 POINTWISE OUTPUT BUFFER WRITE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/start_w" type="logic">
+      <obj_property name="ElementShortName">start_w</obj_property>
+      <obj_property name="ObjectShortName">start_w</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/dina" type="array">
+      <obj_property name="ElementShortName">dina[37:0]</obj_property>
+      <obj_property name="ObjectShortName">dina[37:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/bram_wr_en" type="logic">
+      <obj_property name="ElementShortName">bram_wr_en</obj_property>
+      <obj_property name="ObjectShortName">bram_wr_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/wr_addr" type="array">
+      <obj_property name="ElementShortName">wr_addr[16:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_addr[16:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/bram_wr_addr" type="array">
+      <obj_property name="ElementShortName">bram_wr_addr[16:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_wr_addr[16:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/bram_wr_data" type="array">
+      <obj_property name="ElementShortName">bram_wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_wr_data[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/done_w" type="logic">
+      <obj_property name="ElementShortName">done_w</obj_property>
+      <obj_property name="ObjectShortName">done_w</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider279">
+      <obj_property name="label">04 POINTWISE ZERO PADDING READ</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/reading" type="logic">
+      <obj_property name="ElementShortName">reading</obj_property>
+      <obj_property name="ObjectShortName">reading</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/rd_addr" type="array">
+      <obj_property name="ElementShortName">rd_addr[16:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_addr[16:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/rd_channel_cnt" type="array">
+      <obj_property name="ElementShortName">rd_channel_cnt[8:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_channel_cnt[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/rd_row_cnt" type="array">
+      <obj_property name="ElementShortName">rd_row_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_row_cnt[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/rd_col_cnt" type="array">
+      <obj_property name="ElementShortName">rd_col_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">rd_col_cnt[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/real_slot" type="logic">
+      <obj_property name="ElementShortName">real_slot</obj_property>
+      <obj_property name="ObjectShortName">real_slot</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/real_slot_d1" type="logic">
+      <obj_property name="ElementShortName">real_slot_d1</obj_property>
+      <obj_property name="ObjectShortName">real_slot_d1</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/real_slot_d2" type="logic">
+      <obj_property name="ElementShortName">real_slot_d2</obj_property>
+      <obj_property name="ObjectShortName">real_slot_d2</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/bram_data_out" type="array">
+      <obj_property name="ElementShortName">bram_data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_data_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/data_valid" type="logic">
+      <obj_property name="ElementShortName">data_valid</obj_property>
+      <obj_property name="ObjectShortName">data_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/u_pointwise_output/done_r" type="logic">
+      <obj_property name="ElementShortName">done_r</obj_property>
+      <obj_property name="ObjectShortName">done_r</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_padded_valid_d" type="logic">
+      <obj_property name="ElementShortName">pointwise_padded_valid_d</obj_property>
+      <obj_property name="ObjectShortName">pointwise_padded_valid_d</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/start_depth" type="logic">
+      <obj_property name="ElementShortName">start_depth</obj_property>
+      <obj_property name="ObjectShortName">start_depth</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider294">
+      <obj_property name="label">05 DEPTHWISE INPUT AND WINDOW</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/run" type="logic">
+      <obj_property name="ElementShortName">run</obj_property>
+      <obj_property name="ObjectShortName">run</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/run" type="logic">
+      <obj_property name="ElementShortName">run</obj_property>
+      <obj_property name="ObjectShortName">run</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/channel" type="array">
+      <obj_property name="ElementShortName">channel[8:0]</obj_property>
+      <obj_property name="ObjectShortName">channel[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/in_cnt" type="array">
+      <obj_property name="ElementShortName">in_cnt[8:0]</obj_property>
+      <obj_property name="ObjectShortName">in_cnt[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/input_channel_cnt" type="array">
+      <obj_property name="ElementShortName">input_channel_cnt[8:0]</obj_property>
+      <obj_property name="ObjectShortName">input_channel_cnt[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/row_cnt" type="array">
+      <obj_property name="ElementShortName">row_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">row_cnt[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/col_cnt" type="array">
+      <obj_property name="ElementShortName">col_cnt[3:0]</obj_property>
+      <obj_property name="ObjectShortName">col_cnt[3:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/channel_end" type="logic">
+      <obj_property name="ElementShortName">channel_end</obj_property>
+      <obj_property name="ObjectShortName">channel_end</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/input_data" type="array">
+      <obj_property name="ElementShortName">input_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">input_data[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/weight" type="array">
+      <obj_property name="ElementShortName">weight[143:0]</obj_property>
+      <obj_property name="ObjectShortName">weight[143:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/top" type="array">
+      <obj_property name="ElementShortName">top[15:0]</obj_property>
+      <obj_property name="ObjectShortName">top[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/mid" type="array">
+      <obj_property name="ElementShortName">mid[15:0]</obj_property>
+      <obj_property name="ObjectShortName">mid[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bot" type="array">
+      <obj_property name="ElementShortName">bot[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bot[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/window_valid" type="logic">
+      <obj_property name="ElementShortName">window_valid</obj_property>
+      <obj_property name="ObjectShortName">window_valid</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider310">
+      <obj_property name="label">06 DEPTHWISE MAC BIAS RELU6</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/top_out" type="array">
+      <obj_property name="ElementShortName">top_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">top_out[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/mid_out" type="array">
+      <obj_property name="ElementShortName">mid_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">mid_out[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bot_out" type="array">
+      <obj_property name="ElementShortName">bot_out[47:0]</obj_property>
+      <obj_property name="ObjectShortName">bot_out[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/output_valid_d" type="array">
+      <obj_property name="ElementShortName">output_valid_d[5:0]</obj_property>
+      <obj_property name="ObjectShortName">output_valid_d[5:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/channel_end_d" type="array">
+      <obj_property name="ElementShortName">channel_end_d[5:0]</obj_property>
+      <obj_property name="ObjectShortName">channel_end_d[5:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bias_addr" type="array">
       <obj_property name="ElementShortName">bias_addr[8:0]</obj_property>
       <obj_property name="ObjectShortName">bias_addr[8:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/weight" type="array">
-      <obj_property name="ElementShortName">weight[143:0]</obj_property>
-      <obj_property name="ObjectShortName">weight[143:0]</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bias_data" type="array">
+      <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/run" type="logic">
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/bias_extended" type="array">
+      <obj_property name="ElementShortName">bias_extended[47:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_extended[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/relu_input" type="array">
+      <obj_property name="ElementShortName">relu_input[47:0]</obj_property>
+      <obj_property name="ObjectShortName">relu_input[47:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/depth_output_valid" type="logic">
+      <obj_property name="ElementShortName">depth_output_valid</obj_property>
+      <obj_property name="ObjectShortName">depth_output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/depthwise/depth_mac/data_out" type="array">
+      <obj_property name="ElementShortName">data_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider322">
+      <obj_property name="label">07 DEPTH TO POINTWISE BRAM WRITE</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_valid" type="logic">
+      <obj_property name="ElementShortName">wr_valid</obj_property>
+      <obj_property name="ObjectShortName">wr_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_data" type="array">
+      <obj_property name="ElementShortName">wr_data[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_data[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_pixel_cnt" type="array">
+      <obj_property name="ElementShortName">wr_pixel_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_pixel_cnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_channel_cnt" type="array">
+      <obj_property name="ElementShortName">wr_channel_cnt[8:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_channel_cnt[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_addr" type="array">
+      <obj_property name="ElementShortName">wr_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_addr[10:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_lane" type="array">
+      <obj_property name="ElementShortName">wr_lane[5:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_lane[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_wea" type="array">
+      <obj_property name="ElementShortName">wr_wea[127:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_wea[127:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_dina" type="array">
+      <obj_property name="ElementShortName">wr_dina[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_dina[1023:0]</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/write_done" type="logic">
+      <obj_property name="ElementShortName">write_done</obj_property>
+      <obj_property name="ObjectShortName">write_done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider332">
+      <obj_property name="label">08 DEPTH TO POINTWISE BRAM READ</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/input_rd_en" type="logic">
+      <obj_property name="ElementShortName">input_rd_en</obj_property>
+      <obj_property name="ObjectShortName">input_rd_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/input_rd_addr" type="array">
+      <obj_property name="ElementShortName">input_rd_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_addr[10:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/input_rd_data" type="array">
+      <obj_property name="ElementShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider336">
+      <obj_property name="label">09 POINTWISE AFTER DEPTH CONTROL</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/start" type="logic">
+      <obj_property name="ElementShortName">start</obj_property>
+      <obj_property name="ObjectShortName">start</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/run" type="logic">
       <obj_property name="ElementShortName">run</obj_property>
       <obj_property name="ObjectShortName">run</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/in_cnt" type="array">
-      <obj_property name="ElementShortName">in_cnt[8:0]</obj_property>
-      <obj_property name="ObjectShortName">in_cnt[8:0]</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/run_d1" type="logic">
+      <obj_property name="ElementShortName">run_d1</obj_property>
+      <obj_property name="ObjectShortName">run_d1</obj_property>
    </wvobject>
-   <wvobject fp_name="/tb_mobilenet/dut/depthwise/u1/channel" type="array">
-      <obj_property name="ElementShortName">channel[8:0]</obj_property>
-      <obj_property name="ObjectShortName">channel[8:0]</obj_property>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/mem_en" type="logic">
+      <obj_property name="ElementShortName">mem_en</obj_property>
+      <obj_property name="ObjectShortName">mem_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pixel_cnt" type="array">
+      <obj_property name="ElementShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">pixel_cnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/chunk_cnt" type="array">
+      <obj_property name="ElementShortName">chunk_cnt[2:0]</obj_property>
+      <obj_property name="ObjectShortName">chunk_cnt[2:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/channel_cnt" type="array">
+      <obj_property name="ElementShortName">channel_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">channel_cnt[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/last_input" type="logic">
+      <obj_property name="ElementShortName">last_input</obj_property>
+      <obj_property name="ObjectShortName">last_input</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/input_rd_en" type="logic">
+      <obj_property name="ElementShortName">input_rd_en</obj_property>
+      <obj_property name="ObjectShortName">input_rd_en</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/input_rd_addr" type="array">
+      <obj_property name="ElementShortName">input_rd_addr[10:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_addr[10:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/weight_addr" type="array">
+      <obj_property name="ElementShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_addr[8:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/bias_addr" type="array">
+      <obj_property name="ElementShortName">bias_addr[5:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_addr[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/first_d" type="array">
+      <obj_property name="ElementShortName">first_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">first_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/last_d" type="array">
+      <obj_property name="ElementShortName">last_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">last_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/done_d" type="array">
+      <obj_property name="ElementShortName">done_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">done_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider352">
+      <obj_property name="label">10 POINTWISE AFTER DEPTH DATA</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/input_rd_data" type="array">
+      <obj_property name="ElementShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/weight_data" type="array">
+      <obj_property name="ElementShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">weight_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/bias_data" type="array">
+      <obj_property name="ElementShortName">bias_data[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_data[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/first" type="logic">
+      <obj_property name="ElementShortName">first</obj_property>
+      <obj_property name="ObjectShortName">first</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/last" type="logic">
+      <obj_property name="ElementShortName">last</obj_property>
+      <obj_property name="ObjectShortName">last</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/last_all" type="logic">
+      <obj_property name="ElementShortName">last_all</obj_property>
+      <obj_property name="ObjectShortName">last_all</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/first_output" type="array">
+      <obj_property name="ElementShortName">first_output[13:0]</obj_property>
+      <obj_property name="ObjectShortName">first_output[13:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/last_output" type="array">
+      <obj_property name="ElementShortName">last_output[13:0]</obj_property>
+      <obj_property name="ObjectShortName">last_output[13:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/done_delay" type="array">
+      <obj_property name="ElementShortName">done_delay[14:0]</obj_property>
+      <obj_property name="ObjectShortName">done_delay[14:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/adder_third_tree" type="array">
+      <obj_property name="ElementShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="ObjectShortName">adder_third_tree[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/sum" type="array">
+      <obj_property name="ElementShortName">sum[50:0]</obj_property>
+      <obj_property name="ObjectShortName">sum[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/bias_extended" type="array">
+      <obj_property name="ElementShortName">bias_extended[50:0]</obj_property>
+      <obj_property name="ObjectShortName">bias_extended[50:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/output_valid" type="logic">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/pointwise_after_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pad1/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider368">
+      <obj_property name="label">11 FINAL OUTPUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_after_depth_valid" type="logic">
+      <obj_property name="ElementShortName">pointwise_after_depth_valid</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pointwise_after_depth_out_full" type="array">
+      <obj_property name="ElementShortName">pointwise_after_depth_out_full[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_out_full[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/result" type="array">
+      <obj_property name="ElementShortName">result[15:0]</obj_property>
+      <obj_property name="ObjectShortName">result[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/done" type="logic">
+      <obj_property name="ElementShortName">done</obj_property>
+      <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
 </wave_config>

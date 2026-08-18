@@ -242,18 +242,27 @@ module depth_mac #(
         ((top_out + mid_out + bot_out) >>> 12)
         + bias_extended;
 
+    logic signed [3*DW-1:0] relu_input_reg;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst)
+            relu_input_reg <= '0;
+        else
+            relu_input_reg <= relu_input;
+    end
+
     localparam logic signed [3*DW-1:0] RELU6_Q312 =
         48'sh000000006000;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
             data_out <= '0;
-        end else if (relu_input <= 0)
+        end else if (relu_input_reg <= 0)
             data_out <= '0;
-        else if (relu_input >= RELU6_Q312)
+        else if (relu_input_reg >= RELU6_Q312)
             data_out <= RELU6_Q312;
         else
-            data_out <= relu_input[15:0];
+            data_out <= relu_input_reg[15:0];
     end
     
 endmodule

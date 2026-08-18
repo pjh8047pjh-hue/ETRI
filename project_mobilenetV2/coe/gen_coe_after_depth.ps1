@@ -1,130 +1,109 @@
-﻿# =============================================================================
-# pointwise_after_depth 디버깅용 .coe / .mem 생성 스크립트
+# Layer 08 Project Pointwise waveform-debug COE generator.
 #
-#   input_after_depth.coe          512-bit x 1176  (depthwise 출력 feature map)
-#   weight_after_depth_onehot.coe  512-bit x  384  (one-hot, 값 확인용)
-#   weight_after_depth_all1.coe    512-bit x  384  (전부 +1, 64-MAC 합 확인용)
+# Current data path:
+#   input  : signed Q3.12, 16-bit x 64 = 1024-bit, depth 196*6 = 1176
+#   weight : signed Q3.12, 16-bit x 64 = 1024-bit, depth 64*6  = 384
+#   bias   : signed Q24 INT32, depth 64
 #
-#   같은 내용을 .mem 으로도 뽑는다. .coe는 BRAM IP 초기화용이고
-#   (헤더/쉼표 때문에 $readmemh로 못 읽는다), .mem은 TB에서
-#   $readmemh("input_after_depth.mem", mem) 으로 바로 읽는 용도다.
-#
-# 데이터 폭
-#   pointwise_after_depth는 512-bit를 data[i*8 +: 8]로 뽑아 쓰므로
-#   int8 x 64 lane, lane0이 LSB다. .coe 한 줄은 MSB가 왼쪽이므로
-#   lane63 ... lane0 순서(2 hex digit씩)로 적는다. 음수는 2의 보수.
-#
-# 채널/주소 구조
-#   IN_CH = 384 = 64 lane x 6 chunk  -> 한 픽셀이 6 줄을 차지한다.
-#   input  주소 = p*6 + g            (p = 0..195 픽셀, g = 0..5 chunk)
-#   weight 주소 = ic_cnt*64 + cnt    (RTL 카운터와 동일: cnt=출력채널, ic_cnt=chunk)
-#                = g*64 + oc         (oc = 0..63)
-#
-# 입력 값 정의
-#   x[p][c] = ((c % 8) - 4) + (p % 8) + (c / 64)      , c = 0..383
-#           = lane 성분(-4..3) + 픽셀 성분(0..7) + chunk 성분(0..5)  -> -4..15, int8 안전
-#
-# 기대값 (adder tree 출력 = 한 clk당 64-MAC 합)
-#   all1  weight : sum = -32 + 64*(p%8) + 64*g
-#                  (8*sum(k-4, k=0..7) = -32 이므로 lane 성분은 항상 -32로 상쇄)
-#                  -> -32, 32, 96, ... 로 chunk/픽셀이 바뀔 때마다 64씩 증가
-#   onehot weight: out[p][oc] = x[p][6*oc]  (hot 채널 c = 6*oc, 나머지 lane은 0)
-#                  6*oc가 0..378이라 6개 chunk를 전부 훑는다.
-# =============================================================================
+# Rows are lane63 ... lane0 because RTL extracts data[i*16 +: 16].
 
 $ErrorActionPreference = 'Stop'
 $outDir = $PSScriptRoot
 
-$LANES  = 64     # 512-bit / 8-bit
-$CHUNK  = 6      # 384 / 64
-$IN_CH  = $LANES * $CHUNK   # 384
-$PIX    = 196    # 14 x 14
-$OUT_CH = 64     # pointwise 출력 채널 수
+$LANES  = 64
+$CHUNK  = 6
+$PIX    = 196
+$OUT_CH = 64
 
-# int8 -> 2의 보수 2자리 hex
-function To-Hex8([int]$v) { '{0:X2}' -f ($v -band 0xFF) }
-
-# 입력 feature map 값 정의
-function Get-X([int]$p, [int]$c) {
-    return (($c % 8) - 4) + ($p % 8) + [int][math]::Floor($c / $LANES)
+function Hex16([int]$Value) {
+    return '{0:X4}' -f ($Value -band 0xFFFF)
 }
 
-# 줄 목록을 .coe(헤더+쉼표) 와 .mem(순수 hex) 두 형태로 저장
-function Write-Both([string]$name, [System.Collections.Generic.List[string]]$rows) {
+function Hex32([long]$Value) {
+    return '{0:X8}' -f ($Value -band 0xFFFFFFFFL)
+}
+
+function Write-CoeAndMem(
+    [string]$Name,
+    [System.Collections.Generic.List[string]]$Rows
+) {
     $coe = New-Object System.Collections.Generic.List[string]
     $coe.Add('memory_initialization_radix=16;')
     $coe.Add('memory_initialization_vector=')
-    for ($i = 0; $i -lt $rows.Count; $i++) {
-        $term = if ($i -eq $rows.Count - 1) { ';' } else { ',' }
-        $coe.Add($rows[$i] + $term)
+    for ($i = 0; $i -lt $Rows.Count; $i++) {
+        $term = if ($i -eq $Rows.Count - 1) { ';' } else { ',' }
+        $coe.Add($Rows[$i] + $term)
     }
-    Set-Content -Path (Join-Path $outDir "$name.coe") -Value $coe -Encoding ascii
-    Set-Content -Path (Join-Path $outDir "$name.mem") -Value $rows -Encoding ascii
-    Write-Host ("{0,-30} {1,5} lines x {2}-bit" -f $name, $rows.Count, ($rows[0].Length * 4))
+
+    Set-Content -LiteralPath (Join-Path $outDir "$Name.coe") -Value $coe -Encoding ascii
+    Set-Content -LiteralPath (Join-Path $outDir "$Name.mem") -Value $Rows -Encoding ascii
+    Write-Host ("{0,-36} {1,6} rows x {2,4} bits" -f $Name, $Rows.Count, ($Rows[0].Length * 4))
 }
 
-# ---------------- input feature map (p*6 + g) ----------------
+# Standalone Project input at address pixel*6+chunk.
+# Raw Q3.12 = (pixel mod 8)*256 + lane*16 + chunk, range 0..0x0AED.
+function Get-InputRaw([int]$Pixel, [int]$Channel) {
+    $chunk = [int][math]::Floor($Channel / $LANES)
+    $lane  = $Channel % $LANES
+    return (($Pixel % 8) * 256) + ($lane * 16) + $chunk
+}
+
 $rows = New-Object System.Collections.Generic.List[string]
 for ($p = 0; $p -lt $PIX; $p++) {
     for ($g = 0; $g -lt $CHUNK; $g++) {
         $sb = New-Object System.Text.StringBuilder
-        # lane63 -> lane0 (MSB first)
-        for ($i = $LANES - 1; $i -ge 0; $i--) {
-            [void]$sb.Append((To-Hex8 (Get-X $p ($g * $LANES + $i))))
+        for ($lane = $LANES - 1; $lane -ge 0; $lane--) {
+            [void]$sb.Append((Hex16 (Get-InputRaw $p ($g * $LANES + $lane))))
         }
         [void]$rows.Add($sb.ToString())
     }
 }
-Write-Both 'input_after_depth' $rows
+Write-CoeAndMem 'input_after_depth' $rows
 
-# ---------------- weight : one-hot (+1.0 = 0x10, Q3.4) ----------------
-# addr = oc*6 + g (oc-major). 픽셀을 최상위 루프에 두면 weight 주소가
-# 0~383 단순 증가가 되도록 하는 배치다.
-# hot 채널 c = 6*oc -> chunk g_hot = c/64, lane = c%64
+# One-hot +1.0 Q3.12. Output oc selects input channel 6*oc.
 $rows = New-Object System.Collections.Generic.List[string]
+for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
+    $selectedChannel = 6 * $oc
+    $hotChunk = [int][math]::Floor($selectedChannel / $LANES)
+    $hotLane  = $selectedChannel % $LANES
+    for ($g = 0; $g -lt $CHUNK; $g++) {
+        $sb = New-Object System.Text.StringBuilder
+        for ($lane = $LANES - 1; $lane -ge 0; $lane--) {
+            if (($g -eq $hotChunk) -and ($lane -eq $hotLane)) {
+                [void]$sb.Append('1000')
+            } else {
+                [void]$sb.Append('0000')
+            }
+        }
+        [void]$rows.Add($sb.ToString())
+    }
+}
+Write-CoeAndMem 'weight_after_depth_onehot' $rows
+
+# All +1.0 Q3.12 for checking each 64-lane group sum.
+$rows = New-Object System.Collections.Generic.List[string]
+$allOneRow = '1000' * $LANES
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
     for ($g = 0; $g -lt $CHUNK; $g++) {
-        $c     = 6 * $oc
-        $gHot  = [int][math]::Floor($c / $LANES)
-        $hot   = $c % $LANES
-        $sb = New-Object System.Text.StringBuilder
-        for ($i = $LANES - 1; $i -ge 0; $i--) {
-            if (($g -eq $gHot) -and ($i -eq $hot)) { [void]$sb.Append('10') }
-            else                                   { [void]$sb.Append('00') }
-        }
-        [void]$rows.Add($sb.ToString())
+        [void]$rows.Add($allOneRow)
     }
 }
-Write-Both 'weight_after_depth_onehot' $rows
+Write-CoeAndMem 'weight_after_depth_all1' $rows
 
-# ---------------- weight : all +1.0 (= 0x10, Q3.4) ----------------
-$rows = New-Object System.Collections.Generic.List[string]
-$all1 = '10' * $LANES
-for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
-    for ($g = 0; $g -lt $CHUNK; $g++) { [void]$rows.Add($all1) }
-}
-Write-Both 'weight_after_depth_all1' $rows
-
-# ---------------- bias : Q3.4 debug pattern ----------------
-# 출력채널마다 0, 1, 2, ... 6, -1을 반복한다. int32에도 Q3.4 raw 값을 저장한다.
+# Default zero Q24 bias keeps the one-hot output transparent.
 $rows = New-Object System.Collections.Generic.List[string]
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
-    $biasReal = $oc % 8
-    if ($biasReal -eq 7) { $biasReal = -1 }
-    $v = $biasReal * 16
-    [void]$rows.Add('{0:X8}' -f ($v -band 0xFFFFFFFF))   # int32, 2의 보수
+    [void]$rows.Add('00000000')
 }
-Write-Both 'bias_after_depth' $rows
+Write-CoeAndMem 'bias_after_depth' $rows
 
-# ---------------- bias : 부호 섞기 ----------------
-# 홀수 채널을 음수로 만들어 signed 처리를 검증한다.
-# bias_data 가 unsigned 로 선언돼 있으면 음수가 40억대 양수로 나와서 즉시 드러난다.
+# Optional signed Q24 bias: +/- (oc+1)/64. Q24 step = 2^18 = 0x40000.
 $rows = New-Object System.Collections.Generic.List[string]
 for ($oc = 0; $oc -lt $OUT_CH; $oc++) {
-    $v = ($oc + 1) * 10000
-    if ($oc % 2 -eq 1) { $v = -$v }
-    [void]$rows.Add('{0:X8}' -f ($v -band 0xFFFFFFFF))
+    $raw = [long]($oc + 1) * 0x00040000L
+    if (($oc % 2) -eq 1) { $raw = -$raw }
+    [void]$rows.Add((Hex32 $raw))
 }
-Write-Both 'bias_after_depth_signed' $rows
+Write-CoeAndMem 'bias_after_depth_signed' $rows
 
-Write-Host "generated in $outDir"
+Write-Host "Generated Layer 08 Project debug files in $outDir"

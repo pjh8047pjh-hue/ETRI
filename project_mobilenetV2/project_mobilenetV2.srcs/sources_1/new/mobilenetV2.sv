@@ -29,11 +29,23 @@ module mobilenetV2(
     output logic [15:0] result
     );
 
-    wire        done_w, done_r;
-    wire        output_data_valid;
-    wire [15:0] pointwise_data_out;
-    wire [15:0] pointwise_relu_out;
     wire        start_depth;
+
+    wire        pointwise_input_rd_en;
+    wire [7:0]  pointwise_input_rd_addr;
+    wire signed [1023:0] pointwise_input_rd_data;
+
+    wire signed [15:0] pointwise_before_depth_out;
+    wire               pointwise_before_depth_valid;
+    wire               pointwise_before_depth_done;
+
+    wire        pointwise_buffer_write_done;
+    wire [15:0] pointwise_padded_out;
+    wire        pointwise_padded_valid;
+    wire        pointwise_padded_done;
+
+    wire signed [37:0] pointwise_before_depth_ext =
+        {{22{pointwise_before_depth_out[15]}}, pointwise_before_depth_out};
 
     wire clk;
 
@@ -42,36 +54,58 @@ module mobilenetV2(
                   .clk_out1(clk)
                   );
 
-    //------------------- pointwise ----------------------
-    pointwise pointwise(.clk(clk),
-                        .rst(rst),
-                        .start(start),
-                        .done_w(done_w),
-                        .done_r(done_r),
-                        .data_out(pointwise_data_out),
-                        .output_data_valid(output_data_valid)
-                        );
+    //------------------- pointwise before depthwise ----------------------
+    mem_layer08_input_bram u_pointwise_input (
+        .clk       (clk),
+        .rst       (rst),
+        .start_w   (1'b0),
+        .dina      ('0),
+        .done_w    (),
+        .start_r   (pointwise_input_rd_en),
+        .pix_addr  (pointwise_input_rd_addr),
+        .data_out  (pointwise_input_rd_data)
+    );
 
-    ReLU6 #(.UPPER(16'h6000)) ReLU6_pw(.clk(clk),
-                .rst(rst),
-                .din(pointwise_data_out),
-                .data_out_relu(pointwise_relu_out)
-                );
+    top_pointwise_before_depth u_pointwise_before_depth (
+        .clk                         (clk),
+        .rst                         (rst),
+        .start                       (start),
+        .input_rd_data               (pointwise_input_rd_data),
+        .input_rd_addr               (pointwise_input_rd_addr),
+        .input_rd_en                 (pointwise_input_rd_en),
+        .done                        (pointwise_before_depth_done),
+        .output_valid                (pointwise_before_depth_valid),
+        .pointwise_before_depth_out  (pointwise_before_depth_out)
+    );
+
+    mem_layer08_out #(
+        .QUANT_LSB (0)
+    ) u_pointwise_output (
+        .clk        (clk),
+        .rst        (rst),
+        .start_w    (pointwise_before_depth_valid),
+        .dina       (pointwise_before_depth_ext),
+        .done_w     (pointwise_buffer_write_done),
+        .start_r    (pointwise_buffer_write_done),
+        .data_out   (pointwise_padded_out),
+        .data_valid (pointwise_padded_valid),
+        .done_r     (pointwise_padded_done)
+    );
     //----------------------------------------------------
 
-    // Interconnect BRAM 필요 - 나중에 pointwise를 채널별로 계산하면 필요 X
-    // 지금은 pointwise 출력 1개를 바로 depthwise에 흘려보내는 직결 구조.
+    // Pointwise output is channel-major 14x14. Buffer it and insert a
+    // one-pixel zero border before starting the 16x16 depthwise stream.
 
-    logic output_data_valid_d;
+    logic pointwise_padded_valid_d;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst)
-            output_data_valid_d <= 1'b0;
+            pointwise_padded_valid_d <= 1'b0;
         else
-            output_data_valid_d <= output_data_valid;
+            pointwise_padded_valid_d <= pointwise_padded_valid;
     end
 
-    assign start_depth = output_data_valid && !output_data_valid_d;
+    assign start_depth = pointwise_padded_valid && !pointwise_padded_valid_d;
 
     //------------------- depthwise ---------------------
     // depth_mac에서 bias add와 ReLU6까지 처리된 결과가 출력된다.
@@ -86,23 +120,23 @@ module mobilenetV2(
         .clk          (clk),
         .rst          (rst),
         .start        (start_depth),
-        .input_data   (pointwise_relu_out),
+        .input_data   (pointwise_padded_out),
         .depth_output_valid (depthwise_output_valid),
         .data_out     (depthwise_data_out)
     );
  //------------------- interconnect bram ---------------------
     wire  [ 10:0] input_rd_addr;
-    wire  [511:0] input_rd_data;
+    wire  [1023:0] input_rd_data;
     wire          input_rd_en;
     wire          write_done;
-    wire signed [50:0] pointwise_after_depth_out_full;
+    wire signed [15:0] pointwise_after_depth_out_full;
     
-    // BRAM의 write, read를 비대칭으로 설정. byte lane을 사용
+    // BRAM은 Q3.12 16-bit lane 64개를 한 word(1024-bit)로 저장한다.
     interconnect_bram_d2p bram_d2p(
         .clk(clk),
         .rst(rst),
         .start(start),
-        .wr_data(depthwise_data_out[15:8]),
+        .wr_data(depthwise_data_out),
         .wr_valid(depthwise_output_valid),
         .input_rd_addr(input_rd_addr),
         .input_rd_en(input_rd_en),
@@ -116,7 +150,7 @@ module mobilenetV2(
         .clk(clk),
         .rst(rst),
         .start(write_done),
-        .depth_relu_data(depthwise_data_out[7:0]),
+        .depth_relu_data(depthwise_data_out),
         .depth_relu_valid(depthwise_output_valid),
         .input_rd_data(input_rd_data),
         .input_rd_addr(input_rd_addr),
@@ -126,7 +160,7 @@ module mobilenetV2(
         .pointwise_after_depth_out(pointwise_after_depth_out_full)
     );
 
-    assign result = pointwise_after_depth_out_full[15:0];
+    assign result = pointwise_after_depth_out_full;
 
     //-----------------------------------------------------------------
 

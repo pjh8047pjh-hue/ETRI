@@ -20,7 +20,7 @@
 //////////////////////////////////////////////////////////////////////////////////
 
 module pointwise_after_depth #(
-    parameter int RELU_UPPER = 6
+    parameter int RELU_UPPER = 6  // legacy compatibility only; Project output is linear
 )(
     input  logic         clk,
     input  logic         rst,
@@ -28,18 +28,18 @@ module pointwise_after_depth #(
     input  logic         last_all,
     input  logic         last,
 
-    input  logic [511:0] input_data,
-    input  logic [511:0] weight_data,
+    input  logic [1023:0] input_data,
+    input  logic [1023:0] weight_data,
     input  logic signed [ 31:0] bias_data,
 
     output logic        done,
     output logic        output_valid,
-    output logic signed [50:0] pointwise_after_depth_out
+    output logic signed [15:0] pointwise_after_depth_out
     );
 
     localparam PARALLEL_DSP = 64;
-    localparam DATA_WIDTH   = 8;
-    localparam FRAC_BITS    = 4;
+    localparam DATA_WIDTH   = 16;
+    localparam FRAC_BITS    = 12;
 
     //------------------- output delay logic ------------------
     // dsp에서 나오는 데 11 clk, adder tree 3clk = 14clk
@@ -80,11 +80,11 @@ module pointwise_after_depth #(
     localparam GROUP_SIZE   = 8;
 
     //-------------- lane 슬라이싱 + input skew -------------------
-    // 현재 weight, input 의 bit 수는 512.
+    // Q3.12 16-bit lane 64개이므로 weight/input bus는 각각 1024-bit.
     // A/B를 전부 같은 clk에 넣으면 lane 0~7이 서로 다른 입력 워드의 곱을
     // 더하게 된다. lane j의 A/B를 j clk 늦춰 PCIN 도착 시점과 맞춘다.
-    logic signed [7:0] weight_point [0:PARALLEL_DSP-1];
-    logic signed [7:0] input_point  [0:PARALLEL_DSP-1];
+    logic signed [DATA_WIDTH-1:0] weight_point [0:PARALLEL_DSP-1];
+    logic signed [DATA_WIDTH-1:0] input_point  [0:PARALLEL_DSP-1];
 
     generate
         for(genvar i = 0; i < PARALLEL_DSP; i++) begin
@@ -179,15 +179,23 @@ module pointwise_after_depth #(
             // adder tree 구조로 8 -> 4 -> 2 -> 1순으로 저장
             // DSP에서 각 8개마다 하나의 합으로 만들었기 때문에 8개의 총합이 나옴
             for(int f = 0; f < 4; f++) begin
-                adder_first_tree[f] <= $signed(group_sum[2*f] + group_sum[2*f+1]);
+                adder_first_tree[f] <=
+                    $signed({group_sum[2*f][47], group_sum[2*f]}) +
+                    $signed({group_sum[2*f+1][47], group_sum[2*f+1]});
             end
             
             // second adder tree
-            adder_second_tree[0] <= $signed(adder_first_tree[0] + adder_first_tree[1]);
-            adder_second_tree[1] <= $signed(adder_first_tree[2] + adder_first_tree[3]);
+            adder_second_tree[0] <=
+                $signed({adder_first_tree[0][48], adder_first_tree[0]}) +
+                $signed({adder_first_tree[1][48], adder_first_tree[1]});
+            adder_second_tree[1] <=
+                $signed({adder_first_tree[2][48], adder_first_tree[2]}) +
+                $signed({adder_first_tree[3][48], adder_first_tree[3]});
 
             // third  adder tree
-            adder_third_tree <= $signed(adder_second_tree[0] + adder_second_tree[1]);
+            adder_third_tree <=
+                $signed({adder_second_tree[0][49], adder_second_tree[0]}) +
+                $signed({adder_second_tree[1][49], adder_second_tree[1]});
         end
     end
 
@@ -199,23 +207,27 @@ module pointwise_after_depth #(
         else sum <= $signed(sum + adder_third_tree);
     end
 
-    //-------------------- bias add + ReLU6 --------------------
-    localparam logic signed [50:0] RELU_UPPER_VALUE = RELU_UPPER <<< FRAC_BITS;
-
     wire signed [50:0] bias_extended = {{(51-32){bias_data[31]}}, bias_data};
-    wire signed [50:0] sum_q34 = sum >>> FRAC_BITS;
-    wire signed [50:0] biased_sum = sum_q34 + bias_extended;
+    assign pointwise_after_depth_out = (sum + bias_extended) >>> FRAC_BITS;
+    /*
+    // Q3.12 x Q3.12 = Q24. bias_data도 Q24이므로 shift 전에 더한다.
+    // Project convolution은 linear이므로 ReLU6를 적용하지 않는다.
+    localparam logic signed [50:0] Q312_MAX = 51'sd32767;
+    localparam logic signed [50:0] Q312_MIN = -51'sd32768;
+
+    wire signed [50:0] biased_acc    = sum + bias_extended;
+    wire signed [50:0] shifted_q312  = biased_acc >>> FRAC_BITS;
 
     always_comb begin
         if (!output_valid)
             pointwise_after_depth_out = '0;
-        else if (biased_sum <= 0)
-            pointwise_after_depth_out = '0;
-        else if (biased_sum >= RELU_UPPER_VALUE)
-            pointwise_after_depth_out = RELU_UPPER_VALUE;
+        else if (shifted_q312 > Q312_MAX)
+            pointwise_after_depth_out = 16'sh7fff;
+        else if (shifted_q312 < Q312_MIN)
+            pointwise_after_depth_out = 16'sh8000;
         else
-            pointwise_after_depth_out = biased_sum;
+            pointwise_after_depth_out = shifted_q312[15:0];
     end
     //----------------------------------------------------------
-
+    */
 endmodule

@@ -24,12 +24,12 @@ module interconnect_bram_d2p(
     input  logic                clk,
     input  logic                rst,
     input  logic                start,
-    input  logic signed [  7:0] wr_data,
+    input  logic signed [ 15:0] wr_data,
     input  logic                wr_valid,
     input  logic        [ 10:0] input_rd_addr,
     input  logic                input_rd_en,
 
-    output logic signed [511:0] input_rd_data,
+    output logic signed [1023:0] input_rd_data,
     output logic                write_done
 );
 
@@ -59,7 +59,8 @@ module interconnect_bram_d2p(
     logic [    5:0] wr_lane;
     logic [    7:0] wr_pixel_cnt;    // 0~195
     logic [    8:0] wr_channel_cnt;  // 0~383
-    logic [LANE-1:0] wr_wea;
+    // BMG byte-write 단위가 8-bit이므로 Q3.12 lane 하나당 WEA 2개를 사용한다.
+    logic [2*LANE-1:0] wr_wea;
 
     //----------- index calculator --------------------
     always_ff @(posedge clk) begin
@@ -97,11 +98,11 @@ module interconnect_bram_d2p(
     // 실제로 메모리에서 바뀌는 건 wr_lane 이 가리키는 8bit 한 칸뿐.
     // dina 는 512bit 전체를 요구하므로 같은 값을 복제해두고 wea 가 골라가게 함.
     always_comb begin
-        wr_wea           = '0;
-        wr_wea[wr_lane]  = 1'b1;   // one-hot decoder
+        wr_wea                         = '0;
+        wr_wea[2*wr_lane +: 2]         = 2'b11;
     end
 
-    wire [8*LANE-1:0] wr_dina = {LANE{wr_data}};
+    wire [16*LANE-1:0] wr_dina = {LANE{wr_data}};
 
     pointwise_after_depth_input u_in (
         // 쓰기 (depthwise 붙일 때 연결)

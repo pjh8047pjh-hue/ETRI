@@ -21,21 +21,21 @@
 
 
 module top_pointwise_after_depth #(
-    parameter int RELU_UPPER = 6
+    parameter int RELU_UPPER = 6  // legacy compatibility only
 )(
     // input  logic         clk_in,
     input  logic                clk,
     input  logic                rst,
     input  logic                start,
-    input  logic        [  7:0] depth_relu_data,
+    input  logic        [ 15:0] depth_relu_data,
     input  logic                depth_relu_valid,
-    input  logic signed [511:0] input_rd_data,
+    input  logic signed [1023:0] input_rd_data,
 
     output logic        [ 10:0] input_rd_addr,
     output logic                input_rd_en,
     output logic                done,
     output logic                output_valid,
-    output logic signed [ 50:0] pointwise_after_depth_out
+    output logic signed [ 15:0] pointwise_after_depth_out
     );
 
     /*
@@ -130,7 +130,7 @@ module top_pointwise_after_depth #(
     logic [  8:0] weight_addr;
     logic [  5:0] bias_addr;
 
-    wire  signed [511:0] weight_data;
+    wire  signed [1023:0] weight_data;
     
     // 상수이기 때문에 shift로 구현 됨
     assign input_rd_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
