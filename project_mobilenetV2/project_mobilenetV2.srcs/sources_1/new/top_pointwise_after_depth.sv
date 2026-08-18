@@ -131,6 +131,18 @@ module top_pointwise_after_depth #(
     logic [  5:0] bias_addr;
 
     wire  signed [1023:0] weight_data;
+    wire  signed [1023:0] skip_bram_data;
+    wire  signed [  15:0] pw_raw;
+    wire                       pw_valid;
+    wire                       pw_done;
+    logic signed [  15:0] pw_hold;
+    logic [  7:0] skip_pixel_cnt;
+    logic [  5:0] skip_channel_cnt;
+    logic [  5:0] skip_channel_hold;
+    logic [BRAM_LATENCY-1:0] skip_valid_d;
+    logic [BRAM_LATENCY-1:0] skip_done_d;
+    wire signed [15:0] skip_lane =
+        $signed(skip_bram_data[skip_channel_hold*16 +: 16]);
     
     // 상수이기 때문에 shift로 구현 됨
     assign input_rd_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
@@ -151,6 +163,44 @@ module top_pointwise_after_depth #(
         .addra(bias_addr)
     );
 
+    mem_layer08_input_bram u_skip_input (
+        .clk      (clk),
+        .rst      (rst),
+        .start_w  (1'b0),
+        .dina     ('0),
+        .done_w   (),
+        .start_r  (pw_valid || skip_valid_d[0]),
+        .pix_addr (skip_pixel_cnt),
+        .data_out (skip_bram_data)
+    );
+
+    always_ff @(posedge clk) begin
+        if (rst || start) begin
+            pw_hold          <= '0;
+            skip_pixel_cnt   <= '0;
+            skip_channel_cnt <= '0;
+            skip_channel_hold <= '0;
+            skip_valid_d     <= '0;
+            skip_done_d      <= '0;
+        end else begin
+            skip_valid_d <= {skip_valid_d[BRAM_LATENCY-2:0], pw_valid};
+            skip_done_d  <= {skip_done_d [BRAM_LATENCY-2:0], pw_done};
+            if (pw_valid) begin
+                pw_hold            <= pw_raw;
+                skip_channel_hold  <= skip_channel_cnt;
+                if (skip_pixel_cnt == PIXEL-1) begin
+                    skip_pixel_cnt <= '0;
+                    if (skip_channel_cnt == OUT_CH-1) skip_channel_cnt <= '0;
+                    else skip_channel_cnt <= skip_channel_cnt + 1'b1;
+                end else skip_pixel_cnt <= skip_pixel_cnt + 1'b1;
+            end
+        end
+    end
+
+    assign pointwise_after_depth_out = pw_hold + skip_lane;
+    assign output_valid = skip_valid_d[BRAM_LATENCY-1];
+    assign done         = skip_done_d [BRAM_LATENCY-1];
+
     //-------------------------------------------------------------------------
       
     pointwise_after_depth #(
@@ -164,9 +214,9 @@ module top_pointwise_after_depth #(
         .input_data(input_rd_data),
         .weight_data(weight_data),
         .bias_data(bias_data_d[14]),
-        .done(done),
-        .output_valid(output_valid),
-        .pointwise_after_depth_out(pointwise_after_depth_out)
+        .done(pw_done),
+        .output_valid(pw_valid),
+        .pointwise_after_depth_out(pw_raw)
         );
     //-------------------------------------------------------------------------
 

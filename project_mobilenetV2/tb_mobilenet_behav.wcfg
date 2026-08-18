@@ -12,16 +12,16 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="1738650400fs"></ZoomStartTime>
-      <ZoomEndTime time="1738795901fs"></ZoomEndTime>
-      <Cursor1Time time="1738682500fs"></Cursor1Time>
+      <ZoomStartTime time="576941611fs"></ZoomStartTime>
+      <ZoomEndTime time="580663612fs"></ZoomEndTime>
+      <Cursor1Time time="577561944fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="155"></NameColumnWidth>
-      <ValueColumnWidth column_width="58"></ValueColumnWidth>
+      <NameColumnWidth column_width="250"></NameColumnWidth>
+      <ValueColumnWidth column_width="121"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="176" />
-   <wvobject type="divider" fp_name="divider197">
+   <WVObjectSize size="189" />
+   <wvobject type="divider" fp_name="divider1397">
       <obj_property name="label">00 TOP SEQUENCE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -74,7 +74,7 @@
       <obj_property name="ObjectShortName">result[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider210">
+   <wvobject type="divider" fp_name="divider1410">
       <obj_property name="label">00A SAMPLE CH0 PIX0 TRACE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -214,7 +214,7 @@
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider240">
+   <wvobject type="divider" fp_name="divider1440">
       <obj_property name="label">01 POINTWISE BEFORE DEPTH CONTROL</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -281,7 +281,7 @@
       <obj_property name="ObjectShortName">last_request_d[1:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider255">
+   <wvobject type="divider" fp_name="divider1455">
       <obj_property name="label">02 POINTWISE BEFORE DEPTH DATA</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -356,7 +356,7 @@
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider271">
+   <wvobject type="divider" fp_name="divider1471">
       <obj_property name="label">03 POINTWISE OUTPUT BUFFER WRITE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -392,7 +392,7 @@
       <obj_property name="ElementShortName">done_w</obj_property>
       <obj_property name="ObjectShortName">done_w</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider279">
+   <wvobject type="divider" fp_name="divider1479">
       <obj_property name="label">04 POINTWISE ZERO PADDING READ</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -458,7 +458,7 @@
       <obj_property name="ElementShortName">start_depth</obj_property>
       <obj_property name="ObjectShortName">start_depth</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider294">
+   <wvobject type="divider" fp_name="divider1494">
       <obj_property name="label">05 DEPTHWISE INPUT AND WINDOW</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -532,7 +532,7 @@
       <obj_property name="ElementShortName">window_valid</obj_property>
       <obj_property name="ObjectShortName">window_valid</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider310">
+   <wvobject type="divider" fp_name="divider1510">
       <obj_property name="label">06 DEPTHWISE MAC BIAS RELU6</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -590,7 +590,7 @@
       <obj_property name="ObjectShortName">data_out[15:0]</obj_property>
       <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider322">
+   <wvobject type="divider" fp_name="divider1522">
       <obj_property name="label">07 DEPTH TO POINTWISE BRAM WRITE</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -626,17 +626,18 @@
    <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_wea" type="array">
       <obj_property name="ElementShortName">wr_wea[127:0]</obj_property>
       <obj_property name="ObjectShortName">wr_wea[127:0]</obj_property>
-      <obj_property name="Radix">BINARYRADIX</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/wr_dina" type="array">
       <obj_property name="ElementShortName">wr_dina[1023:0]</obj_property>
       <obj_property name="ObjectShortName">wr_dina[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
    <wvobject fp_name="/tb_mobilenet/dut/bram_d2p/write_done" type="logic">
       <obj_property name="ElementShortName">write_done</obj_property>
       <obj_property name="ObjectShortName">write_done</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider332">
+   <wvobject type="divider" fp_name="divider1532">
       <obj_property name="label">08 DEPTH TO POINTWISE BRAM READ</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -654,7 +655,7 @@
       <obj_property name="ObjectShortName">input_rd_data[1023:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider336">
+   <wvobject type="divider" fp_name="divider1536">
       <obj_property name="label">09 POINTWISE AFTER DEPTH CONTROL</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -727,7 +728,7 @@
       <obj_property name="ObjectShortName">done_d[1:0]</obj_property>
       <obj_property name="Radix">BINARYRADIX</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider352">
+   <wvobject type="divider" fp_name="divider1552">
       <obj_property name="label">10 POINTWISE AFTER DEPTH DATA</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>
@@ -801,7 +802,69 @@
       <obj_property name="ElementShortName">done</obj_property>
       <obj_property name="ObjectShortName">done</obj_property>
    </wvobject>
-   <wvobject type="divider" fp_name="divider368">
+   <wvobject type="divider" fp_name="divider1568">
+      <obj_property name="label">10A SKIP CONNECTION</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pw_valid" type="logic">
+      <obj_property name="ElementShortName">pw_valid</obj_property>
+      <obj_property name="ObjectShortName">pw_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pw_raw" type="array">
+      <obj_property name="ElementShortName">pw_raw[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pw_raw[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_pixel_cnt" type="array">
+      <obj_property name="ElementShortName">skip_pixel_cnt[7:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_pixel_cnt[7:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_channel_cnt" type="array">
+      <obj_property name="ElementShortName">skip_channel_cnt[5:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_channel_cnt[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_channel_hold" type="array">
+      <obj_property name="ElementShortName">skip_channel_hold[5:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_channel_hold[5:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pw_hold" type="array">
+      <obj_property name="ElementShortName">pw_hold[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pw_hold[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_bram_data" type="array">
+      <obj_property name="ElementShortName">skip_bram_data[1023:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_bram_data[1023:0]</obj_property>
+      <obj_property name="Radix">HEXRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_lane" type="array">
+      <obj_property name="ElementShortName">skip_lane[15:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_lane[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_valid_d" type="array">
+      <obj_property name="ElementShortName">skip_valid_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_valid_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/skip_done_d" type="array">
+      <obj_property name="ElementShortName">skip_done_d[1:0]</obj_property>
+      <obj_property name="ObjectShortName">skip_done_d[1:0]</obj_property>
+      <obj_property name="Radix">BINARYRADIX</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/output_valid" type="logic">
+      <obj_property name="ElementShortName">output_valid</obj_property>
+      <obj_property name="ObjectShortName">output_valid</obj_property>
+   </wvobject>
+   <wvobject fp_name="/tb_mobilenet/dut/pad/pointwise_after_depth_out" type="array">
+      <obj_property name="ElementShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="ObjectShortName">pointwise_after_depth_out[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="divider" fp_name="divider1581">
       <obj_property name="label">11 FINAL OUTPUT</obj_property>
       <obj_property name="DisplayName">label</obj_property>
    </wvobject>

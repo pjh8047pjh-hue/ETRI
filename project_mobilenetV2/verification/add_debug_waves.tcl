@@ -214,6 +214,20 @@ jh_aw $D/pad/pad1/output_valid
 jh_aw $D/pad/pad1/pointwise_after_depth_out dec
 jh_aw $D/pad/pad1/done
 
+add_wave_divider "10A SKIP CONNECTION"
+jh_aw $D/pad/pw_valid
+jh_aw $D/pad/pw_raw dec
+jh_aw $D/pad/skip_pixel_cnt unsigned
+jh_aw $D/pad/skip_channel_cnt unsigned
+jh_aw $D/pad/skip_channel_hold unsigned
+jh_aw $D/pad/pw_hold dec
+jh_aw $D/pad/skip_bram_data hex
+jh_aw $D/pad/skip_lane dec
+jh_aw $D/pad/skip_valid_d bin
+jh_aw $D/pad/skip_done_d bin
+jh_aw $D/pad/output_valid
+jh_aw $D/pad/pointwise_after_depth_out dec
+
 add_wave_divider "11 FINAL OUTPUT"
 jh_aw $D/pointwise_after_depth_valid
 jh_aw $D/pointwise_after_depth_out_full dec

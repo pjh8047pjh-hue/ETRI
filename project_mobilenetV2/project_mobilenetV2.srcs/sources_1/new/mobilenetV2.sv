@@ -38,6 +38,15 @@ module mobilenetV2(
     wire signed [15:0] pointwise_before_depth_out;
     wire               pointwise_before_depth_valid;
     wire               pointwise_before_depth_done;
+    wire               clk;
+    
+    logic [3:0]         pw_prefill_cnt;
+    wire                pw_depth_start = pointwise_before_depth_valid && (pw_prefill_cnt == 4'd8);
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst || pointwise_before_depth_done) pw_prefill_cnt <= '0;
+        else if (pointwise_before_depth_valid && pw_prefill_cnt < 4'd9) pw_prefill_cnt <= pw_prefill_cnt + 1'b1;
+    end
 
     wire        pointwise_buffer_write_done;
     wire [15:0] pointwise_padded_out;
@@ -46,8 +55,6 @@ module mobilenetV2(
 
     wire signed [37:0] pointwise_before_depth_ext =
         {{22{pointwise_before_depth_out[15]}}, pointwise_before_depth_out};
-
-    wire clk;
 
     clk_wiz_0 clk_gen(.clk_in1(clk_in),
                   .locked(),
@@ -86,7 +93,7 @@ module mobilenetV2(
         .start_w    (pointwise_before_depth_valid),
         .dina       (pointwise_before_depth_ext),
         .done_w     (pointwise_buffer_write_done),
-        .start_r    (pointwise_buffer_write_done),
+        .start_r    (pw_depth_start),
         .data_out   (pointwise_padded_out),
         .data_valid (pointwise_padded_valid),
         .done_r     (pointwise_padded_done)

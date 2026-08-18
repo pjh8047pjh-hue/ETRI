@@ -125,6 +125,6 @@ module top_pointwise_before_depth (
         .done                       (done),
         .output_valid               (output_valid),
         .pointwise_before_depth_out (pointwise_before_depth_out)
-    );
+    );  
 
 endmodule

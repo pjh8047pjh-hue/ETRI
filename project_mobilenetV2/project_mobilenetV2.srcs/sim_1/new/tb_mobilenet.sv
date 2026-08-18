@@ -27,15 +27,16 @@ module tb_mobilenet(
     logic clk_in;
     logic rst;
     logic start;
-    logic done;
-    logic [15:0] result;
+    wire done;
+    wire [15:0] result;
 
     mobilenetV2 dut(.clk_in(clk_in),
                     .rst(rst),
-                    .start(start),
-                    .done(done), 
-                    .result(result)
+                    .start(start)
     );
+
+    assign done   = dut.done;
+    assign result = dut.result;
 
 
     always #12.5 clk_in = ~clk_in; // 실제 board의 input

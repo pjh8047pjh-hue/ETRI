@@ -4,16 +4,17 @@ module tb_mobilenet_verify;
     logic        clk_in = 1'b0;
     logic        rst    = 1'b1;
     logic        start  = 1'b0;
-    logic        done;
-    logic [15:0] result;
+    wire         done;
+    wire  [15:0] result;
 
     mobilenetV2 dut (
         .clk_in (clk_in),
         .rst    (rst),
-        .start  (start),
-        .done   (done),
-        .result (result)
+        .start  (start)
     );
+
+    assign done   = dut.done;
+    assign result = dut.result;
 
     always #12.5 clk_in = ~clk_in;
 
