@@ -71,14 +71,27 @@ output_raw[p][oc] = input_raw[p][6*oc]
 For the integrated design, the Project input comes from the depthwise
 interconnect BRAM rather than `input_after_depth.coe`.
 
-## Current RTL caveat
+## Two-way parallel integrated example
 
-`pointwise_after_depth.sv` currently assigns the low 16 bits of the Q24 `sum`
-directly to the output. Its bias addition, arithmetic `>>>12`, and signed
-16-bit saturation block is commented out. Therefore the Project final output
-will not yet match the Q3.12 equation above even though the COE widths and
-values are now correct. The waveform should still show correct 16x16 products
-and adder-tree sums.
+With the current debug COEs (`bias_pointwise_before_debug.coe`,
+`depth_bias_debug.coe`, and `bias_after_depth_signed.coe`), follow pair 0 in
+the `00A SAMPLE PAIR0 TRACE` waveform group.
+
+| Stage | Expected decimal | Expected hex |
+|---|---:|---:|
+| PW-before channel 0, pixel 0 | 0 | `0000` |
+| PW-before channel 1, pixel 0 | 1025 | `0401` |
+| PW-before pair word | `{1025, 0}` | `04010000` |
+| Depth channel 0, output pixel 0 | 1920 | `0780` |
+| Depth channel 1, output pixel 0 | 10116 | `2784` |
+| Depth pair word | `{10116, 1920}` | `27840780` |
+| PW-after channel 0, pixel 0 raw | 1984 | `07C0` |
+| PW-after channel 0, pixel 1 raw | 3136 | `0C40` |
+| Skip pixel 0 / pixel 1 | 0 / 128 | `0000` / `0080` |
+| Final serialized output pixel 0 / pixel 1 | 1984 / 3264 | `07C0` / `0CC0` |
+
+`pointwise_after_depth.sv` currently adds the signed 32-bit Q24 bias and applies
+the arithmetic `>>>12` conversion before producing the 16-bit Q3.12 result.
 
 ## Vivado setup
 

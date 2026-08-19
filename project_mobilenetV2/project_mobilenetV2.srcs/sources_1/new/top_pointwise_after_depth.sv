@@ -27,12 +27,19 @@ module top_pointwise_after_depth #(
     input  logic                clk,
     input  logic                rst,
     input  logic                start,
-    input  logic        [ 15:0] depth_relu_data,
+    input  logic        [ 31:0] depth_relu_data,
     input  logic                depth_relu_valid,
-    input  logic signed [1023:0] input_rd_data,
+    input  logic signed [1023:0] input_rd_data_a,
+    input  logic signed [1023:0] input_rd_data_b,
+    input  logic signed [1023:0] skip_bram_data_even,
+    input  logic signed [1023:0] skip_bram_data_odd,
 
-    output logic        [ 10:0] input_rd_addr,
+    output logic        [ 10:0] input_rd_addr_a,
+    output logic        [ 10:0] input_rd_addr_b,
     output logic                input_rd_en,
+    output logic        [  7:0] skip_rd_addr_even,
+    output logic        [  7:0] skip_rd_addr_odd,
+    output logic                skip_rd_en,
     output logic                done,
     output logic                output_valid,
     output logic signed [ 15:0] pointwise_after_depth_out
@@ -49,7 +56,7 @@ module top_pointwise_after_depth #(
 
     //------------------------- point count logic -----------------------------
     logic [2:0] chunk_cnt;   // 0~5, 384채널을 64 lane씩 6번 나눠 읽는 카운트
-    logic [7:0] pixel_cnt;  // 196개의 픽셀의 완료를 카운트 하는 로직
+    logic [6:0] pixel_pair_cnt;
     logic [5:0] channel_cnt;   // channel의 개수가 다 카운트 되었는지 확인하는 로직
     logic       run;
     logic       run_d1;
@@ -64,7 +71,7 @@ module top_pointwise_after_depth #(
     wire mem_en = run || run_d1;
     assign input_rd_en = mem_en;
     assign last_input  = run && (chunk_cnt == CHUNK-1)
-                             && (pixel_cnt == PIXEL-1)
+                             && (pixel_pair_cnt == (PIXEL/2)-1)
                              && (channel_cnt == OUT_CH-1);
 
     always_ff @(posedge clk) begin
@@ -81,18 +88,18 @@ module top_pointwise_after_depth #(
     always_ff @(posedge clk) begin
         if(rst) begin
             chunk_cnt  <= 0;
-            pixel_cnt <= 0;
+            pixel_pair_cnt <= 0;
             channel_cnt <= 0;
         end
         else if(run) begin
             if(chunk_cnt == CHUNK-1) begin
                 chunk_cnt <= 0;
-                if(pixel_cnt == PIXEL-1) begin
-                    pixel_cnt <= 0;
+                if(pixel_pair_cnt == (PIXEL/2)-1) begin
+                    pixel_pair_cnt <= 0;
                     if(channel_cnt == OUT_CH-1) channel_cnt <= 0;
                     else channel_cnt <= channel_cnt + 1'b1;
                 end
-                else pixel_cnt <= pixel_cnt + 1'b1;
+                else pixel_pair_cnt <= pixel_pair_cnt + 1'b1;
             end
             else chunk_cnt <= chunk_cnt + 1'b1;
         end
@@ -131,21 +138,27 @@ module top_pointwise_after_depth #(
     logic [  5:0] bias_addr;
 
     wire  signed [1023:0] weight_data;
-    wire  signed [1023:0] skip_bram_data;
-    wire  signed [  15:0] pw_raw;
+    wire  signed [  15:0] pw_raw_even, pw_raw_odd;
     wire                       pw_valid;
     wire                       pw_done;
-    logic signed [  15:0] pw_hold;
-    logic [  7:0] skip_pixel_cnt;
+    logic signed [  15:0] pw_hold_even, pw_hold_odd;
+    logic [  6:0] skip_pixel_pair_cnt;
     logic [  5:0] skip_channel_cnt;
     logic [  5:0] skip_channel_hold;
     logic [BRAM_LATENCY-1:0] skip_valid_d;
     logic [BRAM_LATENCY-1:0] skip_done_d;
-    wire signed [15:0] skip_lane =
-        $signed(skip_bram_data[skip_channel_hold*16 +: 16]);
+    logic signed [ 15:0] odd_result_hold;
+    logic               odd_pending;
+    logic               final_pair_hold;
+    wire [7:0] pixel_even = {pixel_pair_cnt, 1'b0};
+    wire signed [15:0] skip_lane_even =
+        $signed(skip_bram_data_even[skip_channel_hold*16 +: 16]);
+    wire signed [15:0] skip_lane_odd =
+        $signed(skip_bram_data_odd[skip_channel_hold*16 +: 16]);
     
     // 상수이기 때문에 shift로 구현 됨
-    assign input_rd_addr  = pixel_cnt   * CHUNK + chunk_cnt; 
+    assign input_rd_addr_a = pixel_even          * CHUNK + chunk_cnt;
+    assign input_rd_addr_b = (pixel_even + 1'b1) * CHUNK + chunk_cnt;
     assign weight_addr    = channel_cnt * CHUNK + chunk_cnt;
     assign bias_addr      = channel_cnt;
 
@@ -163,60 +176,81 @@ module top_pointwise_after_depth #(
         .addra(bias_addr)
     );
 
-    mem_layer08_input_bram u_skip_input (
-        .clk      (clk),
-        .rst      (rst),
-        .start_w  (1'b0),
-        .dina     ('0),
-        .done_w   (),
-        .start_r  (pw_valid || skip_valid_d[0]),
-        .pix_addr (skip_pixel_cnt),
-        .data_out (skip_bram_data)
-    );
+    assign skip_rd_en        = pw_valid || skip_valid_d[0];
+    assign skip_rd_addr_even = {skip_pixel_pair_cnt, 1'b0};
+    assign skip_rd_addr_odd  = skip_rd_addr_even + 1'b1;
 
     always_ff @(posedge clk) begin
         if (rst || start) begin
-            pw_hold          <= '0;
-            skip_pixel_cnt   <= '0;
+            pw_hold_even     <= '0;
+            pw_hold_odd      <= '0;
+            skip_pixel_pair_cnt <= '0;
             skip_channel_cnt <= '0;
             skip_channel_hold <= '0;
             skip_valid_d     <= '0;
             skip_done_d      <= '0;
+            odd_result_hold  <= '0;
+            odd_pending      <= 1'b0;
+            final_pair_hold  <= 1'b0;
         end else begin
             skip_valid_d <= {skip_valid_d[BRAM_LATENCY-2:0], pw_valid};
             skip_done_d  <= {skip_done_d [BRAM_LATENCY-2:0], pw_done};
+            odd_pending  <= skip_valid_d[BRAM_LATENCY-1];
             if (pw_valid) begin
-                pw_hold            <= pw_raw;
+                pw_hold_even       <= pw_raw_even;
+                pw_hold_odd        <= pw_raw_odd;
                 skip_channel_hold  <= skip_channel_cnt;
-                if (skip_pixel_cnt == PIXEL-1) begin
-                    skip_pixel_cnt <= '0;
+                if (skip_pixel_pair_cnt == (PIXEL/2)-1) begin
+                    skip_pixel_pair_cnt <= '0;
                     if (skip_channel_cnt == OUT_CH-1) skip_channel_cnt <= '0;
                     else skip_channel_cnt <= skip_channel_cnt + 1'b1;
-                end else skip_pixel_cnt <= skip_pixel_cnt + 1'b1;
+                end else skip_pixel_pair_cnt <= skip_pixel_pair_cnt + 1'b1;
+            end
+            if (skip_valid_d[BRAM_LATENCY-1]) begin
+                odd_result_hold <= pw_hold_odd + skip_lane_odd;
+                final_pair_hold <= skip_done_d[BRAM_LATENCY-1];
             end
         end
     end
 
-    assign pointwise_after_depth_out = pw_hold + skip_lane;
-    assign output_valid = skip_valid_d[BRAM_LATENCY-1];
-    assign done         = skip_done_d [BRAM_LATENCY-1];
+    assign pointwise_after_depth_out = skip_valid_d[BRAM_LATENCY-1]
+                                     ? pw_hold_even + skip_lane_even
+                                     : odd_result_hold;
+    assign output_valid = skip_valid_d[BRAM_LATENCY-1] || odd_pending;
+    assign done         = odd_pending && final_pair_hold;
 
     //-------------------------------------------------------------------------
       
     pointwise_after_depth #(
         .RELU_UPPER(RELU_UPPER)
-    ) pad1(
+    ) pad_even(
         .clk(clk),
         .rst(rst),
         .first(first_d[BRAM_LATENCY-1]),
         .last(last_d[BRAM_LATENCY-1]),
         .last_all(done_d[BRAM_LATENCY-1]),
-        .input_data(input_rd_data),
+        .input_data(input_rd_data_a),
         .weight_data(weight_data),
         .bias_data(bias_data_d[14]),
         .done(pw_done),
         .output_valid(pw_valid),
-        .pointwise_after_depth_out(pw_raw)
+        .pointwise_after_depth_out(pw_raw_even)
+        );
+
+    pointwise_after_depth #(
+        .RELU_UPPER(RELU_UPPER)
+    ) pad_odd(
+        .clk(clk),
+        .rst(rst),
+        .first(first_d[BRAM_LATENCY-1]),
+        .last(last_d[BRAM_LATENCY-1]),
+        .last_all(done_d[BRAM_LATENCY-1]),
+        .input_data(input_rd_data_b),
+        .weight_data(weight_data),
+        .bias_data(bias_data_d[14]),
+        .done(),
+        .output_valid(),
+        .pointwise_after_depth_out(pw_raw_odd)
         );
     //-------------------------------------------------------------------------
 

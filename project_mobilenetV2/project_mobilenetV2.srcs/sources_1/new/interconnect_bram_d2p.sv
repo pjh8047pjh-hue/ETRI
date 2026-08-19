@@ -24,12 +24,14 @@ module interconnect_bram_d2p(
     input  logic                clk,
     input  logic                rst,
     input  logic                start,
-    input  logic signed [ 15:0] wr_data,
+    input  logic signed [ 31:0] wr_data,
     input  logic                wr_valid,
-    input  logic        [ 10:0] input_rd_addr,
+    input  logic        [ 10:0] input_rd_addr_a,
+    input  logic        [ 10:0] input_rd_addr_b,
     input  logic                input_rd_en,
 
-    output logic signed [1023:0] input_rd_data,
+    output logic signed [1023:0] input_rd_data_a,
+    output logic signed [1023:0] input_rd_data_b,
     output logic                write_done
 );
 
@@ -58,7 +60,7 @@ module interconnect_bram_d2p(
     logic [   10:0] wr_addr;
     logic [    5:0] wr_lane;
     logic [    7:0] wr_pixel_cnt;    // 0~195
-    logic [    8:0] wr_channel_cnt;  // 0~383
+    logic [    7:0] wr_pair_cnt;     // 0~191
     // BMG byte-write 단위가 8-bit이므로 Q3.12 lane 하나당 WEA 2개를 사용한다.
     logic [2*LANE-1:0] wr_wea;
 
@@ -66,7 +68,7 @@ module interconnect_bram_d2p(
     always_ff @(posedge clk) begin
         if (rst || start) begin
             wr_pixel_cnt   <= '0;
-            wr_channel_cnt <= '0;
+            wr_pair_cnt    <= '0;
             write_done     <=  0;
         end else begin
             write_done <= 0;
@@ -75,11 +77,11 @@ module interconnect_bram_d2p(
                 if(wr_pixel_cnt == 195) begin
                     wr_pixel_cnt <= '0;
 
-                    if(wr_channel_cnt == 383) begin
-                        wr_channel_cnt <= '0;
+                    if(wr_pair_cnt == 191) begin
+                        wr_pair_cnt    <= '0;
                         write_done     <= 1;
                     end else begin
-                        wr_channel_cnt <= wr_channel_cnt + 1'b1;
+                        wr_pair_cnt    <= wr_pair_cnt + 1'b1;
                     end
                 end else begin
                     wr_pixel_cnt <= wr_pixel_cnt + 1'b1;
@@ -88,34 +90,38 @@ module interconnect_bram_d2p(
         end
     end
 
-    // wr_channel_cnt[8:6] = channel / 64 -> chunk
-    // wr_channel_cnt[5:0] = channel % 64 -> lane
+    // wr_pair_cnt[7:5] = channel_pair / 32 -> chunk
+    // wr_pair_cnt[4:0] = channel_pair % 32 -> adjacent two lanes
     // 주소 배치는 top_pointwise_after_depth 의 input_rd_addr 과 반드시 동일해야 함
     //   top : input_rd_addr = pixel_cnt * CHUNK + chunk_cnt   (pixel-major)
-    assign wr_addr = wr_pixel_cnt * CHUNK + wr_channel_cnt[8:6];
-    assign wr_lane = wr_channel_cnt[5:0];
+    assign wr_addr = wr_pixel_cnt * CHUNK + wr_pair_cnt[7:5];
+    assign wr_lane = {wr_pair_cnt[4:0], 1'b0};
 
     // 실제로 메모리에서 바뀌는 건 wr_lane 이 가리키는 8bit 한 칸뿐.
     // dina 는 512bit 전체를 요구하므로 같은 값을 복제해두고 wea 가 골라가게 함.
     always_comb begin
         wr_wea                         = '0;
-        wr_wea[2*wr_lane +: 2]         = 2'b11;
+        wr_wea[2*wr_lane +: 4]         = 4'b1111;
     end
 
-    wire [16*LANE-1:0] wr_dina = {LANE{wr_data}};
+    wire [16*LANE-1:0] wr_dina = {LANE/2{wr_data}};
+    wire [2*LANE-1:0] port_a_wea = wr_valid ? wr_wea : '0;
 
     pointwise_after_depth_input u_in (
         // 쓰기 (depthwise 붙일 때 연결)
         .clka (clk),
-        .ena  (wr_valid),
-        .wea  (wr_wea),
-        .addra(wr_addr),
+        .ena  (wr_valid || input_rd_en),
+        .wea  (port_a_wea),
+        .addra(wr_valid ? wr_addr : input_rd_addr_a),
         .dina (wr_dina),
+        .douta(input_rd_data_a),
         // 읽기
         .clkb (clk),
         .enb  (input_rd_en),
-        .addrb(input_rd_addr),
-        .doutb(input_rd_data)
+        .web  ('0),
+        .addrb(input_rd_addr_b),
+        .dinb ('0),
+        .doutb(input_rd_data_b)
     );
 
 endmodule

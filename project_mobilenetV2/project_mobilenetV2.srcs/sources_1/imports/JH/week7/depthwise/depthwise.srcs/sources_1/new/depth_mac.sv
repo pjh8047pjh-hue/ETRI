@@ -3,14 +3,17 @@
 module depth_mac #(
     parameter SP = 16,
     parameter DW = 16,
-    parameter int RELU_UPPER = 6
+    parameter int RELU_UPPER = 6,
+    parameter int CHANNEL_COUNT = 384
 )(
     input  logic                   clk, rst,
     input  logic                   start,        // 첫 픽셀보다 한 클럭 앞
     input  logic signed [  DW-1:0] input_data,
     input  logic signed [9*DW-1:0] weight,
+    input  logic signed [    31:0] bias_data,
     
     output logic                   depth_output_valid,
+    output logic                   channel_step,
     output logic signed [15:0] data_out
 );
 
@@ -57,7 +60,7 @@ module depth_mac #(
         end else if(run) begin
             // 마지막 입력은 파이프라인에 넣되, 다음 입력 발행은 정지한다.
             // output_valid_d에 남은 valid가 배출되므로 마지막 BRAM write는 유지된다.
-            if(channel_end && (input_channel_cnt == 9'd383)) begin
+            if(channel_end && (input_channel_cnt == CHANNEL_COUNT-1)) begin
                 col_cnt           <= '0;
                 row_cnt           <= '0;
                 input_channel_cnt <= '0;
@@ -191,11 +194,8 @@ module depth_mac #(
         .PCIN(pc_bot[1])
     );
 
-    localparam int CHANNEL_COUNT = 384;
     localparam int OUTPUT_LATENCY = 6;
 
-    logic signed [31:0] bias_data;
-    logic        [ 8:0] bias_addr;
     logic [OUTPUT_LATENCY-1:0] output_valid_d;
     logic [OUTPUT_LATENCY-1:0] channel_end_d;
 
@@ -213,23 +213,7 @@ module depth_mac #(
     end
 
     assign depth_output_valid = output_valid_d[OUTPUT_LATENCY-1];
-
-    //------------ depth bias input --------------
-    always_ff @(posedge clk) begin
-        if (rst || start) begin
-            bias_addr <= '0;
-        end else if (channel_end_d[OUTPUT_LATENCY-1]) begin
-            bias_addr <= (bias_addr == CHANNEL_COUNT-1) ? '0 : bias_addr + 1'b1;
-        end
-    end
-
-    depth_bias bias_in(
-        .clka (clk),
-        .ena  (run),
-        .douta(bias_data),
-        .addra(bias_addr)
-    );
-    //---------------------------------------------
+    assign channel_step       = channel_end_d[OUTPUT_LATENCY-1];
 
     //---------- bias add + ReLU6 output ----------
     // 32비트 bias를 48비트로 부호 확장

@@ -12,7 +12,13 @@ module mem_layer08_input_bram(
     // pointwise FSM의 현재 pixel 주소를 읽는다.
     input  logic                  start_r,
     input  logic [$clog2(pointwise_pkg::CHANNEL_WIDTH)-1:0] pix_addr,
-    output logic [pointwise_pkg::IN_CH*16-1:0] data_out
+    output logic [pointwise_pkg::IN_CH*16-1:0] data_out,
+
+    input  logic                  skip_rd_en,
+    input  logic [$clog2(pointwise_pkg::CHANNEL_WIDTH)-1:0] skip_addr_a,
+    input  logic [$clog2(pointwise_pkg::CHANNEL_WIDTH)-1:0] skip_addr_b,
+    output logic [pointwise_pkg::IN_CH*16-1:0] skip_data_a,
+    output logic [pointwise_pkg::IN_CH*16-1:0] skip_data_b
     );
 
     localparam integer DATA_WIDTH = pointwise_pkg::IN_CH * 16;
@@ -22,21 +28,28 @@ module mem_layer08_input_bram(
 
     logic [ADDR_WIDTH-1:0] wr_addr;
     logic [0:0]            wea;
+    logic [DATA_WIDTH-1:0] port_b_data;
 
     assign wea[0] = start_w;
 
-    // Block Memory Generator: Simple Dual Port RAM, 1024-bit x 196.
+    // Block Memory Generator: True Dual Port RAM, 1024-bit x 196.
     input_bram_ip input_bram_ip (
         .clka  (clk),
-        .ena   (start_w),
+        .ena   (start_w || skip_rd_en),
         .wea   (wea),
-        .addra (wr_addr),
+        .addra (start_w ? wr_addr : skip_addr_a),
         .dina  (dina),
+        .douta (skip_data_a),
         .clkb  (clk),
-        .enb   (start_r),
-        .addrb (pix_addr),
-        .doutb (data_out)
+        .enb   (start_r || skip_rd_en),
+        .web   (1'b0),
+        .addrb (skip_rd_en ? skip_addr_b : pix_addr),
+        .dinb  ('0),
+        .doutb (port_b_data)
     );
+
+    assign data_out   = port_b_data;
+    assign skip_data_b = port_b_data;
 
     // start_w가 들어오는 매 cycle마다 write 주소를 증가시킨다.
     // 전체 196개를 저장한 cycle에 done_w를 한 cycle pulse로 출력한다.

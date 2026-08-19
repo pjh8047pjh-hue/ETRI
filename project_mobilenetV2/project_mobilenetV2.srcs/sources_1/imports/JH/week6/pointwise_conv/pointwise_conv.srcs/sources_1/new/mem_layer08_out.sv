@@ -10,12 +10,13 @@ module mem_layer08_out #(
 
     // result_valid 한 pulse당 MAC 결과 한 개를 저장한다.
     input  logic                        start_w,
-    input  logic signed [37:0]          dina,
+    input  logic signed [37:0]          dina_even,
+    input  logic signed [37:0]          dina_odd,
     output logic                        done_w,
 
     // start_r 한 pulse로 주소 0부터 전체 결과를 순서대로 읽는다.
     input  logic                        start_r,
-    output logic [15:0]                 data_out,
+    output logic [31:0]                 data_out,
     output logic                        data_valid,
     output logic                        done_r
     );
@@ -24,7 +25,8 @@ module mem_layer08_out #(
 
     localparam integer ACC_WIDTH  = 38;
     localparam integer DATA_WIDTH = 16;
-    localparam integer DEPTH      = pointwise_pkg::WEIGHT_WIDTH
+    localparam integer BRAM_WIDTH = 32;
+    localparam integer DEPTH      = (pointwise_pkg::WEIGHT_WIDTH / 2)
                                   * pointwise_pkg::CHANNEL_WIDTH;
     localparam integer ADDR_WIDTH = $clog2(DEPTH); // 75_264
     localparam logic [ADDR_WIDTH-1:0] LAST_ADDR = DEPTH - 1;
@@ -33,12 +35,13 @@ module mem_layer08_out #(
     logic [ADDR_WIDTH-1:0] rd_addr;
     logic                  reading;
 
-    logic [DATA_WIDTH-1:0] quantized_data;
+    logic [15:0]           quantized_even;
+    logic [15:0]           quantized_odd;
     logic [0:0]            wea;
-    logic [15:0]           bram_data_out;
+    logic [31:0]           bram_data_out;
     logic                  bram_wr_en;
     logic [ADDR_WIDTH-1:0] bram_wr_addr;
-    logic [DATA_WIDTH-1:0] bram_wr_data;
+    logic [BRAM_WIDTH-1:0] bram_wr_data;
 
     // dina[QUANT_LSB +: DATA_WIDTH]를 그대로 자르면 16bit로 안 들어가는 값은
     // 부호까지 랩어라운드된다. 상위 확장 비트가 전부 부호비트와 같을 때만
@@ -47,15 +50,26 @@ module mem_layer08_out #(
     localparam logic signed [DATA_WIDTH-1:0] MAX = {1'b0, {(DATA_WIDTH-1){1'b1}}};
     localparam logic signed [DATA_WIDTH-1:0] MIN = {1'b1, {(DATA_WIDTH-1){1'b0}}};
 
-    wire in_range = &(dina[ACC_WIDTH-1 -: EXT_BITS] ~^ {EXT_BITS{dina[ACC_WIDTH-1]}});
+    wire in_range_even = &(dina_even[ACC_WIDTH-1 -: EXT_BITS]
+                         ~^ {EXT_BITS{dina_even[ACC_WIDTH-1]}});
+    wire in_range_odd  = &(dina_odd[ACC_WIDTH-1 -: EXT_BITS]
+                         ~^ {EXT_BITS{dina_odd[ACC_WIDTH-1]}});
 
     always_comb begin
-        if(in_range) begin
-            quantized_data = dina[QUANT_LSB +: DATA_WIDTH];
-        end else if(dina[ACC_WIDTH-1]) begin
-            quantized_data = MIN;
+        if(in_range_even) begin
+            quantized_even = dina_even[QUANT_LSB +: 16];
+        end else if(dina_even[ACC_WIDTH-1]) begin
+            quantized_even = MIN;
         end else begin
-            quantized_data = MAX;
+            quantized_even = MAX;
+        end
+
+        if(in_range_odd) begin
+            quantized_odd = dina_odd[QUANT_LSB +: 16];
+        end else if(dina_odd[ACC_WIDTH-1]) begin
+            quantized_odd = MIN;
+        end else begin
+            quantized_odd = MAX;
         end
     end
 
@@ -68,23 +82,26 @@ module mem_layer08_out #(
             bram_wr_en <= start_w;
             if (start_w) begin
                 bram_wr_addr <= wr_addr;
-                bram_wr_data <= quantized_data;
+                bram_wr_data <= {quantized_odd, quantized_even};
             end
         end
     end
 
     assign wea[0] = bram_wr_en;
 
-    // Block Memory Generator: Simple Dual Port RAM, 16-bit x 75,264.
+    // Block Memory Generator: True Dual Port RAM, 32-bit x 37,632.
     output_bram_ip output_bram_ip (
         .clka  (clk),
         .ena   (bram_wr_en),
         .wea   (wea),
         .addra (bram_wr_addr),
         .dina  (bram_wr_data),
+        .douta (),
         .clkb  (clk),
         .enb   (reading),
+        .web   (1'b0),
         .addrb (rd_addr),
+        .dinb  ('0),
         .doutb (bram_data_out)
     );
 
@@ -115,13 +132,13 @@ module mem_layer08_out #(
     localparam int ROW_LEN = 16;
     logic [3:0] rd_col_cnt;
     logic [3:0] rd_row_cnt;
-    logic [8:0] rd_channel_cnt;
+    logic [7:0] rd_channel_pair_cnt;
 
     // 14x14 데이터의 상/하/좌/우에 1칸씩 zero padding을 붙여 16x16으로 출력한다.
     wire real_slot = (rd_row_cnt >= 1) && (rd_row_cnt <= 14)
                   && (rd_col_cnt >= 1) && (rd_col_cnt <= 14);
     wire last_slot = reading
-                  && (rd_channel_cnt == WEIGHT_WIDTH-1)
+                  && (rd_channel_pair_cnt == (WEIGHT_WIDTH/2)-1)
                   && (rd_row_cnt == ROW_LEN-1)
                   && (rd_col_cnt == ROW_LEN-1);
     
@@ -156,7 +173,7 @@ module mem_layer08_out #(
 
     assign data_out = real_slot_d2
                     ? bram_data_out
-                    : 16'd0;
+                    : 32'd0;
 
     always_ff @(posedge clk or posedge rst) begin
         if (rst) begin
@@ -183,14 +200,14 @@ module mem_layer08_out #(
         if(rst || start_r) begin   
             rd_col_cnt     <= '0;
             rd_row_cnt     <= '0;
-            rd_channel_cnt <= '0;
+            rd_channel_pair_cnt <= '0;
         end else if (reading) begin
             if (rd_col_cnt == ROW_LEN-1) begin
                 rd_col_cnt <= '0;
                 if (rd_row_cnt == ROW_LEN-1) begin
                     rd_row_cnt <= '0;
-                    rd_channel_cnt <= (rd_channel_cnt == WEIGHT_WIDTH-1)
-                                    ? '0 : rd_channel_cnt + 1'b1;
+                    rd_channel_pair_cnt <= (rd_channel_pair_cnt == (WEIGHT_WIDTH/2)-1)
+                                         ? '0 : rd_channel_pair_cnt + 1'b1;
                 end else begin
                     rd_row_cnt <= rd_row_cnt + 1'b1;
                 end

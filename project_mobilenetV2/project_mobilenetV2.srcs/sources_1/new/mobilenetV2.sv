@@ -34,8 +34,11 @@ module mobilenetV2(
     wire        pointwise_input_rd_en;
     wire [7:0]  pointwise_input_rd_addr;
     wire signed [1023:0] pointwise_input_rd_data;
+    wire        skip_rd_en;
+    wire [7:0]  skip_rd_addr_even, skip_rd_addr_odd;
+    wire signed [1023:0] skip_bram_data_even, skip_bram_data_odd;
 
-    wire signed [15:0] pointwise_before_depth_out;
+    wire signed [31:0] pointwise_before_depth_out;
     wire               pointwise_before_depth_valid;
     wire               pointwise_before_depth_done;
     wire               clk;
@@ -49,12 +52,14 @@ module mobilenetV2(
     end
 
     wire        pointwise_buffer_write_done;
-    wire [15:0] pointwise_padded_out;
+    wire [31:0] pointwise_padded_out;
     wire        pointwise_padded_valid;
     wire        pointwise_padded_done;
 
-    wire signed [37:0] pointwise_before_depth_ext =
-        {{22{pointwise_before_depth_out[15]}}, pointwise_before_depth_out};
+    wire signed [37:0] pointwise_before_depth_even_ext =
+        {{22{pointwise_before_depth_out[15]}}, pointwise_before_depth_out[15:0]};
+    wire signed [37:0] pointwise_before_depth_odd_ext =
+        {{22{pointwise_before_depth_out[31]}}, pointwise_before_depth_out[31:16]};
 
     clk_wiz_0 clk_gen(.clk_in1(clk_in),
                   .locked(),
@@ -70,7 +75,12 @@ module mobilenetV2(
         .done_w    (),
         .start_r   (pointwise_input_rd_en),
         .pix_addr  (pointwise_input_rd_addr),
-        .data_out  (pointwise_input_rd_data)
+        .data_out  (pointwise_input_rd_data),
+        .skip_rd_en(skip_rd_en),
+        .skip_addr_a(skip_rd_addr_even),
+        .skip_addr_b(skip_rd_addr_odd),
+        .skip_data_a(skip_bram_data_even),
+        .skip_data_b(skip_bram_data_odd)
     );
 
     top_pointwise_before_depth u_pointwise_before_depth (
@@ -91,7 +101,8 @@ module mobilenetV2(
         .clk        (clk),
         .rst        (rst),
         .start_w    (pointwise_before_depth_valid),
-        .dina       (pointwise_before_depth_ext),
+        .dina_even  (pointwise_before_depth_even_ext),
+        .dina_odd   (pointwise_before_depth_odd_ext),
         .done_w     (pointwise_buffer_write_done),
         .start_r    (pw_depth_start),
         .data_out   (pointwise_padded_out),
@@ -116,7 +127,7 @@ module mobilenetV2(
 
     //------------------- depthwise ---------------------
     // depth_mac에서 bias add와 ReLU6까지 처리된 결과가 출력된다.
-    wire signed [15:0] depthwise_data_out;
+    wire signed [31:0] depthwise_data_out;
     wire               depthwise_output_valid;
     wire               pointwise_after_depth_valid;
 
@@ -132,8 +143,8 @@ module mobilenetV2(
         .data_out     (depthwise_data_out)
     );
  //------------------- interconnect bram ---------------------
-    wire  [ 10:0] input_rd_addr;
-    wire  [1023:0] input_rd_data;
+    wire  [ 10:0] input_rd_addr_a, input_rd_addr_b;
+    wire  [1023:0] input_rd_data_a, input_rd_data_b;
     wire          input_rd_en;
     wire          write_done;
     wire signed [15:0] pointwise_after_depth_out_full;
@@ -145,9 +156,11 @@ module mobilenetV2(
         .start(start),
         .wr_data(depthwise_data_out),
         .wr_valid(depthwise_output_valid),
-        .input_rd_addr(input_rd_addr),
+        .input_rd_addr_a(input_rd_addr_a),
+        .input_rd_addr_b(input_rd_addr_b),
         .input_rd_en(input_rd_en),
-        .input_rd_data(input_rd_data),
+        .input_rd_data_a(input_rd_data_a),
+        .input_rd_data_b(input_rd_data_b),
         .write_done(write_done)
     );
     //------------------- pointwise after depthwise ---------------------
@@ -159,9 +172,16 @@ module mobilenetV2(
         .start(write_done),
         .depth_relu_data(depthwise_data_out),
         .depth_relu_valid(depthwise_output_valid),
-        .input_rd_data(input_rd_data),
-        .input_rd_addr(input_rd_addr),
+        .input_rd_data_a(input_rd_data_a),
+        .input_rd_data_b(input_rd_data_b),
+        .skip_bram_data_even(skip_bram_data_even),
+        .skip_bram_data_odd(skip_bram_data_odd),
+        .input_rd_addr_a(input_rd_addr_a),
+        .input_rd_addr_b(input_rd_addr_b),
         .input_rd_en(input_rd_en),
+        .skip_rd_addr_even(skip_rd_addr_even),
+        .skip_rd_addr_odd(skip_rd_addr_odd),
+        .skip_rd_en(skip_rd_en),
         .done(done),
         .output_valid(pointwise_after_depth_valid),
         .pointwise_after_depth_out(pointwise_after_depth_out_full)
