@@ -68,3 +68,13 @@ week5/mul_4bit_uart.tar.xz
 .env
 .secrets/
 *.token
+
+# Vitis: platform tree and app build outputs are fully regenerated from
+# mobilenetV2_hw.xsa + mobilenetV2_test/src/, and hold absolute paths of the
+# machine that built them. Only the XSA and the app sources are tracked.
+**/mobilenetV2_platform/
+**/mobilenetV2_test/Debug/
+**/mobilenetV2_test/_ide/
+**/mobilenetV2_test/.cproject
+**/mobilenetV2_test/.project
+**/mobilenetV2_test/*.prj
