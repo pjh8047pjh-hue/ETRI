@@ -78,3 +78,6 @@ week5/mul_4bit_uart.tar.xz
 **/mobilenetV2_test/.cproject
 **/mobilenetV2_test/.project
 **/mobilenetV2_test/*.prj
+
+# 보드 플래싱용 산출물은 예외로 추적한다 (project_mobilenetV2/boot/README.md 참고)
+!project_mobilenetV2/boot/design_1_wrapper.bit
