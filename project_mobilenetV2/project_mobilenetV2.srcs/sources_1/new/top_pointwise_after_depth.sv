@@ -157,8 +157,27 @@ module top_pointwise_after_depth #(
         $signed(skip_bram_data_odd[skip_channel_hold*16 +: 16]);
     
     // 상수이기 때문에 shift로 구현 됨
-    assign input_rd_addr_a = pixel_even          * CHUNK + chunk_cnt;
-    assign input_rd_addr_b = (pixel_even + 1'b1) * CHUNK + chunk_cnt;
+    // Registered BRAM addresses remove the pixel*6 calculation from the
+    // 400 MHz address path while preserving the original address sequence.
+    always_ff @(posedge clk) begin
+        if (rst || start) begin
+            input_rd_addr_a <= 11'd0;
+            input_rd_addr_b <= 11'd6;
+        end else if (run && !last_input) begin
+            if (chunk_cnt == CHUNK-1) begin
+                if (pixel_pair_cnt == (PIXEL/2)-1) begin
+                    input_rd_addr_a <= 11'd0;
+                    input_rd_addr_b <= 11'd6;
+                end else begin
+                    input_rd_addr_a <= input_rd_addr_a + 11'd7;
+                    input_rd_addr_b <= input_rd_addr_b + 11'd7;
+                end
+            end else begin
+                input_rd_addr_a <= input_rd_addr_a + 1'b1;
+                input_rd_addr_b <= input_rd_addr_b + 1'b1;
+            end
+        end
+    end
     assign weight_addr    = channel_cnt * CHUNK + chunk_cnt;
     assign bias_addr      = channel_cnt;
 

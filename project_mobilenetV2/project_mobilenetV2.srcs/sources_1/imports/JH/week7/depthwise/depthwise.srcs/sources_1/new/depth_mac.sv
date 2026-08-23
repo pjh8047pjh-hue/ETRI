@@ -194,7 +194,9 @@ module depth_mac #(
         .PCIN(pc_bot[1])
     );
 
-    localparam int OUTPUT_LATENCY = 6;
+    // The spatial-sum pipeline below adds one clock to the registered ReLU
+    // path, so the matching validity tag trails window_valid by eight clocks.
+    localparam int OUTPUT_LATENCY = 8;
 
     logic [OUTPUT_LATENCY-1:0] output_valid_d;
     logic [OUTPUT_LATENCY-1:0] channel_end_d;
@@ -220,11 +222,26 @@ module depth_mac #(
     wire signed [3*DW-1:0] bias_extended =
         {{(3*DW-32){bias_data[31]}}, bias_data};
 
+    // Register the three DSP-row sum and its matching bias.  This breaks the
+    // DSP output -> three-way add -> shift/bias -> relu_input_reg path while
+    // preserving one result per clock throughput.
+    logic signed [3*DW-1:0] spatial_sum_reg;
+    logic signed [3*DW-1:0] bias_extended_reg;
+
+    always_ff @(posedge clk or posedge rst) begin
+        if (rst) begin
+            spatial_sum_reg   <= '0;
+            bias_extended_reg <= '0;
+        end else begin
+            spatial_sum_reg   <= top_out + mid_out + bot_out;
+            bias_extended_reg <= bias_extended;
+        end
+    end
+
     // MAC은 소수부 24비트이므로 >>>12 후,
     // 소수부 12비트인 32비트 bias를 더함
     wire signed [3*DW-1:0] relu_input =
-        ((top_out + mid_out + bot_out) >>> 12)
-        + bias_extended;
+        (spatial_sum_reg >>> 12) + bias_extended_reg;
 
     logic signed [3*DW-1:0] relu_input_reg;
 

@@ -24,7 +24,7 @@
 #set_property PACKAGE_PIN D3   [get_ports {pmod_c[6]               }];  # "D3.DSI_D3_P"
 
 # External 40 MHz clock input for clk_wiz_0.
-set_property PACKAGE_PIN L2 [get_ports clk_in]
+#set_property PACKAGE_PIN L2 [get_ports clk_in]
 
 
 # ----------------------------------------------------------------------------
@@ -65,7 +65,15 @@ set_property PACKAGE_PIN L2 [get_ports clk_in]
 #set_property IOSTANDARD LVCMOS18 [get_ports -of_objects [get_iobanks 26]]
 
 # Set the bank voltage for IO Bank 65 to 1.2V
-set_property IOSTANDARD LVCMOS12 [get_ports -of_objects [get_iobanks 65]]
+#set_property IOSTANDARD LVCMOS12 [get_ports -of_objects [get_iobanks 65]]
 
 # Set the voltage for BT* to 1.8V
 #set_property IOSTANDARD LVCMOS18 [get_ports BT*]
+
+# ----------------------------------------------------------------------------
+# AXI GPIO (100 MHz) to MobileNet core clock-domain crossing
+# ----------------------------------------------------------------------------
+# Only the first stage of each explicit two-flop synchronizer is asynchronous.
+# Paths after stage 0 remain timed in the accelerator clock domain.
+set_false_path -to [get_pins -hierarchical -regexp {^.*/(rst_sync_ff_reg|start_sync_ff_reg)\[0\]/D$}]
+set_false_path -to [get_pins -hierarchical -regexp {^.*/result_addr_sync_ff_reg\[[0-9]+\]/D$}]

@@ -44,9 +44,6 @@ module pointwise_before_depth (
         end
     end
 
-    assign output_valid = valid_delay[TOTAL_LATENCY];
-    assign done         = done_delay[TOTAL_LATENCY];
-
     // DSP cascade stage j의 A/B를 j cycle 늦춰 같은 transaction의 PCIN과 맞춘다.
     logic signed [DATA_WIDTH-1:0] input_point  [0:PARALLEL_DSP-1];
     logic signed [DATA_WIDTH-1:0] weight_point [0:PARALLEL_DSP-1];
@@ -164,19 +161,48 @@ module pointwise_before_depth (
         {{(51-32){bias_delay[TOTAL_LATENCY][31]}},
           bias_delay[TOTAL_LATENCY]};
     wire signed [50:0] biased_acc_q24 = dot_sum_q24 + bias_extended;
-    wire signed [50:0] shifted_q312   = biased_acc_q24 >>> 12;
+
+    logic signed [50:0] biased_acc_q24_reg;
+    logic               biased_valid_reg;
+    logic               biased_done_reg;
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            biased_acc_q24_reg <= '0;
+            biased_valid_reg   <= 1'b0;
+            biased_done_reg    <= 1'b0;
+        end else begin
+            biased_acc_q24_reg <= biased_acc_q24;
+            biased_valid_reg   <= valid_delay[TOTAL_LATENCY];
+            biased_done_reg    <= done_delay[TOTAL_LATENCY];
+        end
+    end
+
+    wire signed [50:0] shifted_q312 = biased_acc_q24_reg >>> 12;
 
     localparam logic signed [50:0] RELU6_Q312 = 51'sd24576;
 
-    always_comb begin
-        if (!output_valid)
-            pointwise_before_depth_out = '0;
-        else if (shifted_q312 <= 0)
-            pointwise_before_depth_out = 16'sd0;
-        else if (shifted_q312 >= RELU6_Q312)
-            pointwise_before_depth_out = 16'sh6000;
-        else
-            pointwise_before_depth_out = shifted_q312[15:0];
+    // Register the final clamp so the PW1 result does not feed the Depthwise
+    // DSP input through a same-cycle combinational path.  valid/done are
+    // registered with the data, increasing the external latency by one clock.
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            output_valid               <= 1'b0;
+            done                       <= 1'b0;
+            pointwise_before_depth_out <= '0;
+        end else begin
+            output_valid <= biased_valid_reg;
+            done         <= biased_done_reg;
+
+            if (!biased_valid_reg)
+                pointwise_before_depth_out <= '0;
+            else if (shifted_q312 <= 0)
+                pointwise_before_depth_out <= 16'sd0;
+            else if (shifted_q312 >= RELU6_Q312)
+                pointwise_before_depth_out <= 16'sh6000;
+            else
+                pointwise_before_depth_out <= shifted_q312[15:0];
+        end
     end
 
 endmodule
