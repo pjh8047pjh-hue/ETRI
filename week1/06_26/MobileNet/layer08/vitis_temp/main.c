@@ -1,155 +1,238 @@
-/*
- * Temporary Vitis standalone self-test for Layer 08 Q3.12 data.
- *
- * This program verifies a small MAC example and actual Layer 08 input samples.
- * It does not start the Layer 08 accelerator. By default it uses CPU-visible
- * temporary RAM. Set USE_LAYER08_BRAM and LAYER08_BRAM_BASEADDR only after the
- * correct AXI BRAM address has been confirmed in xparameters.h.
- */
+/* Actual Layer 08 FPGA verification through AXI GPIO. */
 
-#ifdef HOST_TEST
-#include <stdint.h>
-#include <stdio.h>
-typedef uint16_t u16;
-typedef int16_t s16;
-typedef uint32_t u32;
-typedef int32_t s32;
-typedef int64_t s64;
-#define xil_printf printf
-#define LINE_END "\n"
-#else
-#include "xil_printf.h"
-#include "xil_types.h"
-#define LINE_END "\r\n"
-#endif
-
-#define USE_LAYER08_BRAM       0
-/* Example after confirming xparameters.h: XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR */
-#define LAYER08_BRAM_BASEADDR  0x00000000U
-
-#if USE_LAYER08_BRAM
+#include "xgpio.h"
 #include "xparameters.h"
+#include "xstatus.h"
+#include "xil_cache.h"
 #include "xil_io.h"
-#endif
+#include "xil_printf.h"
+#include "sleep.h"
 
-#define SAMPLE_COUNT 4
-#define FRAC_BITS     12
+#define RESULT_COUNT       12544U
+#define DONE_MASK          0x00010000U
+#define START_MASK         0x00000001U
+#define RESET_MASK         0x00000002U
+#define DONE_POLL_LIMIT    1000000U
+#define MAX_ERROR_PRINTS   20U
+#define PL0_REF_CTRL_ADDR  0xFF5E00C0U
+#define PL0_CLKACT_MASK    0x01000000U
+#define DIAG_SIGNATURE_ADDR 0x3FFCU
+#define DIAG_COUNTER_ADDR   0x3FFDU
+#define DIAG_WRITE_ADDR     0x3FFEU
+#define DIAG_STATUS_ADDR    0x3FFFU
 
-static volatile u16 temporary_memory[SAMPLE_COUNT];
+/* Kept in PS memory so the complete hardware result can be inspected later. */
+volatile s16 output_data[RESULT_COUNT];
+volatile u32 verification_state = 0x4C380000U;
+volatile u32 verification_error_count = 0xFFFFFFFFU;
 
-static void print_hex16(u16 value)
+static u32 read_result_address(XGpio *gpio, u32 address)
 {
-    static const char hex[] = "0123456789abcdef";
-    xil_printf("%c%c%c%c",
-               hex[(value >> 12) & 0x0f],
-               hex[(value >> 8) & 0x0f],
-               hex[(value >> 4) & 0x0f],
-               hex[value & 0x0f]);
+    XGpio_DiscreteWrite(gpio, 1, address << 2);
+    usleep(10);
+    return XGpio_DiscreteRead(gpio, 2) & 0xFFFFU;
 }
 
-static void print_values(const char *name, const u16 values[SAMPLE_COUNT], int count)
+static void print_hardware_diagnostics(XGpio *gpio)
 {
-    xil_printf("%s:", name);
-    for (int i = 0; i < count; ++i) {
-        xil_printf(" ");
-        print_hex16(values[i]);
+    u32 signature = read_result_address(gpio, DIAG_SIGNATURE_ADDR);
+    u32 counter_a = read_result_address(gpio, DIAG_COUNTER_ADDR);
+    u32 write_addr = read_result_address(gpio, DIAG_WRITE_ADDR);
+    u32 diag = read_result_address(gpio, DIAG_STATUS_ADDR);
+    u32 counter_b;
+
+    usleep(1000);
+    counter_b = read_result_address(gpio, DIAG_COUNTER_ADDR);
+
+    xil_printf("DIAG signature=0x%04x counter=%04x->%04x write_addr=%u status=0x%04x\r\n",
+               signature, counter_a, counter_b, write_addr, diag);
+    xil_printf("DIAG lock=%u reset=%u start_level=%u start_seen=%u "
+               "pw1_seen=%u pw1_done=%u depth_seen=%u bram_done=%u "
+               "pw2_seen=%u results_ready=%u\r\n",
+               (diag >> 15) & 1U, (diag >> 14) & 1U,
+               (diag >> 13) & 1U, (diag >> 12) & 1U,
+               (diag >> 10) & 1U, (diag >> 8) & 1U,
+               (diag >> 6) & 1U, (diag >> 4) & 1U,
+               (diag >> 2) & 1U, diag & 1U);
+}
+
+static int golden_pw_q312(int channel, int pixel)
+{
+    static const int bias_q312[8] = {
+        0, 1024, 2048, 3072, 4096, -1024, -2048, -4096
+    };
+    int value = pixel * 64 + (channel % 64) + bias_q312[channel % 8];
+
+    if (value <= 0)
+        return 0;
+    if (value >= 24576)
+        return 24576;
+    return value;
+}
+
+static int golden_depth_q312(int channel, int pixel)
+{
+    int row = pixel / 14;
+    int col = pixel % 14;
+    int acc = 0;
+    int bias_real;
+    int dr;
+    int dc;
+
+    for (dr = -1; dr <= 1; ++dr) {
+        for (dc = -1; dc <= 1; ++dc) {
+            int rr = row + dr;
+            int cc = col + dc;
+
+            if (rr >= 0 && rr < 14 && cc >= 0 && cc < 14)
+                acc += golden_pw_q312(channel, rr * 14 + cc);
+        }
     }
-    xil_printf(LINE_END);
+
+    bias_real = channel % 8;
+    if (bias_real == 7)
+        bias_real = -1;
+    acc += bias_real * 4096;
+
+    if (acc <= 0)
+        return 0;
+    if (acc >= 24576)
+        return 24576;
+    return acc;
 }
 
-static void memory_write(int index, u16 value)
+static s16 golden_p2_q34(u32 output_index)
 {
-#if USE_LAYER08_BRAM
-    UINTPTR address = (UINTPTR)LAYER08_BRAM_BASEADDR + (UINTPTR)(index & ~1) * 2U;
-    u32 word = Xil_In32(address);
-    if (index & 1)
-        word = (word & 0x0000ffffU) | ((u32)value << 16);
-    else
-        word = (word & 0xffff0000U) | value;
-    Xil_Out32(address, word);
-#else
-    temporary_memory[index] = value;
-#endif
-}
+    int output_channel = (int)(output_index / 196U);
+    int pixel = (int)(output_index % 196U);
+    int bias_q312 = (output_channel + 1) * 64;
+    int skip_q312 = 2 * (pixel * 64 + output_channel);
+    int value;
 
-static u16 memory_read(int index)
-{
-#if USE_LAYER08_BRAM
-    UINTPTR address = (UINTPTR)LAYER08_BRAM_BASEADDR + (UINTPTR)(index & ~1) * 2U;
-    u32 word = Xil_In32(address);
-    return (u16)((index & 1) ? (word >> 16) : word);
-#else
-    return temporary_memory[index];
-#endif
-}
+    if ((output_channel % 2) == 1)
+        bias_q312 = -bias_q312;
 
-static int compare_values(const u16 *actual, const u16 *expected, int count)
-{
-    for (int i = 0; i < count; ++i)
-        if (actual[i] != expected[i]) return 0;
-    return 1;
-}
-
-static void print_mode(void)
-{
-    xil_printf("MODE     : LAYER08 SELF TEST" LINE_END);
-}
-
-static int run_example_test(void)
-{
-    const s16 input[SAMPLE_COUNT] = {0x1000, 0x2000, 0x3000, 0x4000};
-    const s16 weight[SAMPLE_COUNT] = {0x0800, 0x0400, -0x0800, 0x1000};
-    const u16 expected[SAMPLE_COUNT] = {0x3800, 0, 0, 0};
-    u16 input_print[SAMPLE_COUNT];
-    u16 readback[SAMPLE_COUNT] = {0, 0, 0, 0};
-    s64 accumulator = 0;
-
-    for (int i = 0; i < SAMPLE_COUNT; ++i) {
-        input_print[i] = (u16)input[i];
-        accumulator += (s32)input[i] * weight[i];
-    }
-    memory_write(0, (u16)((accumulator + (1 << (FRAC_BITS - 1))) >> FRAC_BITS));
-    readback[0] = memory_read(0);
-
-    print_mode();
-    xil_printf("TEST     : EXAMPLE Q3.12 MAC" LINE_END);
-    print_values("INPUT    ", input_print, SAMPLE_COUNT);
-    print_values("READBACK ", readback, 1);
-    print_values("EXPECTED ", expected, 1);
-    xil_printf("%s" LINE_END LINE_END,
-               compare_values(readback, expected, 1) ? "PASS" : "FAIL");
-    return compare_values(readback, expected, 1);
-}
-
-static int run_actual_input_test(void)
-{
-    /* q312_ifm_1024.coe, address 0, channels 0..3. */
-    const u16 input[SAMPLE_COUNT] = {0xef30, 0xf6b2, 0x106e, 0xf911};
-    u16 readback[SAMPLE_COUNT];
-
-    for (int i = 0; i < SAMPLE_COUNT; ++i)
-        memory_write(i, input[i]);
-    for (int i = 0; i < SAMPLE_COUNT; ++i)
-        readback[i] = memory_read(i);
-
-    print_mode();
-    xil_printf("TEST     : ACTUAL LAYER08 INPUT" LINE_END);
-    print_values("INPUT    ", input, SAMPLE_COUNT);
-    print_values("READBACK ", readback, SAMPLE_COUNT);
-    print_values("EXPECTED ", input, SAMPLE_COUNT);
-    xil_printf("%s" LINE_END,
-               compare_values(readback, input, SAMPLE_COUNT) ? "PASS" : "FAIL");
-    return compare_values(readback, input, SAMPLE_COUNT);
+    value = golden_depth_q312(6 * output_channel, pixel)
+          + bias_q312 + skip_q312;
+    return (s16)(value & 0xFFFF);
 }
 
 int main(void)
 {
-    int example_pass;
-    int actual_pass;
+    XGpio gpio;
+    u32 status = 0;
+    u32 poll_count;
+    u32 addr;
+    u32 error_count = 0;
+    u32 pl0_ref_ctrl;
+    u32 reset_readback;
+    u32 start_readback;
 
-    example_pass = run_example_test();
-    actual_pass = run_actual_input_test();
-    xil_printf(LINE_END "FINAL    : %s" LINE_END,
-               example_pass && actual_pass ? "PASS" : "FAIL");
-    return example_pass && actual_pass ? 0 : 1;
+    xil_printf("\r\nMobileNetV2 hardware verification start\r\n");
+
+    if (XGpio_Initialize(&gpio, XPAR_AXI_GPIO_0_DEVICE_ID) != XST_SUCCESS) {
+        xil_printf("ERROR: AXI GPIO initialization failed\r\n");
+        return XST_FAILURE;
+    }
+    /* Channel 1: {result_addr[13:0], rst, start}; Channel 2: {done, result}. */
+    XGpio_SetDataDirection(&gpio, 1, 0x00000000U);
+    /* Channel 2 is synthesized with C_ALL_INPUTS_2=1; do not write TRI2. */
+
+    pl0_ref_ctrl = Xil_In32(PL0_REF_CTRL_ADDR);
+    xil_printf("PL0_REF_CTRL=0x%08x CLKACT=%u\r\n",
+               pl0_ref_ctrl,
+               (pl0_ref_ctrl & PL0_CLKACT_MASK) ? 1U : 0U);
+
+    /* Allow the PL reset release and the accelerator Clock Wizard to settle. */
+    xil_printf("waiting for PL clock lock\r\n");
+    sleep(1);
+
+    XGpio_DiscreteWrite(&gpio, 1, RESET_MASK);
+    usleep(1000);
+    reset_readback = XGpio_DiscreteRead(&gpio, 1);
+    XGpio_DiscreteWrite(&gpio, 1, 0U);
+    usleep(1000);
+
+    XGpio_DiscreteWrite(&gpio, 1, START_MASK);
+    usleep(1000);
+    start_readback = XGpio_DiscreteRead(&gpio, 1);
+    XGpio_DiscreteWrite(&gpio, 1, 0U);
+    usleep(1000);
+
+    status = XGpio_DiscreteRead(&gpio, 2);
+    xil_printf("GPIO reset_readback=0x%08x start_readback=0x%08x\r\n",
+               reset_readback, start_readback);
+    xil_printf("GPIO CH2 initial=0x%08x done=%u result=0x%04x\r\n",
+               status, (status & DONE_MASK) ? 1U : 0U,
+               status & 0xFFFFU);
+
+    for (poll_count = 0; poll_count < DONE_POLL_LIMIT; ++poll_count) {
+        status = XGpio_DiscreteRead(&gpio, 2);
+        if ((status & DONE_MASK) != 0U)
+            break;
+    }
+    if ((status & DONE_MASK) == 0U) {
+        verification_state = 0x4C38DEADU;
+        verification_error_count = 0xFFFFFFFFU;
+        Xil_DCacheFlushRange((UINTPTR)&verification_state,
+                             sizeof(verification_state) +
+                             sizeof(verification_error_count));
+        xil_printf("FAIL: timeout waiting for done, CH2=0x%08x\r\n", status);
+        print_hardware_diagnostics(&gpio);
+        while (1) {
+            sleep(1);
+            status = XGpio_DiscreteRead(&gpio, 2);
+            pl0_ref_ctrl = Xil_In32(PL0_REF_CTRL_ADDR);
+            xil_printf("HEARTBEAT: TIMEOUT PL0=0x%08x CH2=0x%08x\r\n",
+                       pl0_ref_ctrl, status);
+        }
+    }
+
+    xil_printf("done detected; reading %u results\r\n", RESULT_COUNT);
+
+    for (addr = 0; addr < RESULT_COUNT; ++addr) {
+        s16 expected;
+
+        XGpio_DiscreteWrite(&gpio, 1, addr << 2);
+        usleep(1);
+        status = XGpio_DiscreteRead(&gpio, 2);
+        output_data[addr] = (s16)(status & 0xFFFFU);
+        expected = golden_p2_q34(addr);
+
+        if (output_data[addr] != expected) {
+            if (error_count < MAX_ERROR_PRINTS) {
+                xil_printf("MISMATCH[%u]: got=%d expected=%d\r\n",
+                           addr, (int)output_data[addr], (int)expected);
+            }
+            ++error_count;
+        }
+    }
+
+    Xil_DCacheFlushRange((UINTPTR)output_data, sizeof(output_data));
+    verification_error_count = error_count;
+    verification_state = (error_count == 0U) ? 0x4C38A551U : 0x4C38FA11U;
+    Xil_DCacheFlushRange((UINTPTR)&verification_state,
+                         sizeof(verification_state) +
+                         sizeof(verification_error_count));
+
+    if (error_count == 0U) {
+        xil_printf("PASS: all %u results match golden\r\n", RESULT_COUNT);
+    } else {
+        xil_printf("FAIL: %u / %u results mismatched\r\n",
+                   error_count, RESULT_COUNT);
+    }
+
+    xil_printf("first 8 results:");
+    for (addr = 0; addr < 8U; ++addr)
+        xil_printf(" %d", (int)output_data[addr]);
+    xil_printf("\r\n");
+
+    /* Repeat the final status so a terminal opened after execution can see it. */
+    while (1) {
+        sleep(1);
+        if (error_count == 0U)
+            xil_printf("HEARTBEAT: PASS (%u results)\r\n", RESULT_COUNT);
+        else
+            xil_printf("HEARTBEAT: FAIL (%u mismatches)\r\n", error_count);
+    }
 }

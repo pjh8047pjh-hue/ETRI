@@ -1,49 +1,58 @@
-# Layer08 temporary Vitis self-test
+# Layer08 Vitis hardware verification
 
-`main.c` is a temporary standalone application. It runs two tests:
+`main.c` is the actual FPGA verification application recovered from project
+history. It uses AXI GPIO to:
 
-1. A fixed Q3.12 MAC example (`0x3800` expected output)
-2. Write/readback of four samples from the real Layer08 IFM COE
+1. assert and release accelerator reset;
+2. pulse accelerator start;
+3. wait for the hardware `done` signal;
+4. read all 12,544 result-RAM entries;
+5. compare every entry against the deterministic golden model.
 
-It does not start the Layer08 accelerator. The default build uses a volatile
-CPU-visible array so that it can run before the AXI BRAM address is known.
+The input/golden model is the project's synthetic verification pattern, not a
+PyTorch or ImageNet inference sample.
 
-## Run without a board
+## Vitis 2020.2
 
-Open Vitis's integrated terminal and run the prebuilt Windows preview:
+1. Copy `main.c` into `mobilenetV2_test/src/main.c`.
+2. Clean and build `mobilenetV2_test`.
+3. Initialize the PS/PL bridge completely with the project's `run_ocm.tcl`.
+   Do not stop the FSBL after an arbitrary delay; that can leave the HPM AXI
+   clock/reset path unusable.
+4. Program the matching bitstream and launch `Debug/mobilenetV2_test.elf` on
+   `psu_cortexa53_0`.
+5. Open `psu_uart_1` in Tera Term at 115200 baud, 8-N-1, no flow control.
 
-```powershell
-cd C:\Users\user\Documents\JH\week1\06_26\MobileNet\layer08\vitis_temp
-.\layer08_vitis_preview.exe
+`PASS: all 12544 results match golden` is printed only when hardware asserts
+`done` and all result values match. `HEARTBEAT: TIMEOUT` is a real failure and
+must not be reported as a passing hardware run.
+
+From an XSCT prompt, the verified project artifacts can be run with:
+
+```tcl
+cd {C:/Users/user/Documents/JH/project_mobilenetV2}
+source run_ocm.tcl
 ```
 
-This requires no JTAG, UART, XSA, or board connection. The visible output is
-kept identical to the UART build; this command itself is still a PC execution
-rather than a hardware run.
+## Current observed board result (2026-08-24)
 
-## Vitis Unified IDE
+The timeout was reproduced when an FSBL was stopped after a fixed five-second
+delay. A diagnostic build showed AXI GPIO register accesses stalling before the
+accelerator could be controlled. Running the complete `psu_init.tcl` sequence
+(`run_ocm.tcl`) fixed the PS-to-PL HPM AXI clock/reset initialization. Channel 2
+is synthesized as fixed input (`C_ALL_INPUTS_2=1`), so the software also no
+longer writes its TRI2 direction register.
 
-1. If a platform is not ready, create **File > New Component > Platform** from
-   the Vivado `.xsa`, select the processor and `standalone` OS, then build it.
-2. Create **File > New Component > Application**.
-3. Select that platform and its `standalone` processor domain.
-4. Choose an empty application, then import this `main.c` into **Sources**.
-5. Remove or exclude the template's existing `main.c` if it has one.
-6. Build the application.
-7. Connect JTAG and UART, program the FPGA if necessary, and launch the
-   application on hardware.
-8. Open the serial terminal using the UART and baud rate selected by the
-   platform/BSP. The last line should be `FINAL    : PASS`.
+The final physical GPIO diagnostic read was:
 
-## Switch to a confirmed AXI BRAM
-
-Find the correct BRAM controller base-address symbol in the generated
-`xparameters.h`, then change the two definitions near the top of `main.c`:
-
-```c
-#define USE_LAYER08_BRAM       1
-#define LAYER08_BRAM_BASEADDR  XPAR_AXI_BRAM_CTRL_0_S_AXI_BASEADDR
+```text
+SIGNATURE=0x0001d108
+WRITE_ADDR=0x000130ff
+STATUS=0x00019555
 ```
 
-The symbol above is only an example. Do not enable it until the address and
-16-bit lane mapping of the intended Layer08 IFM BRAM have been confirmed.
+`STATUS[16]=1` proves `done=1`; the lower diagnostic bits show that start, PW1,
+depthwise, interconnect write completion, PW2, and result-ready were all seen.
+`WRITE_ADDR[13:0]=12543` is the final result address. The final OCM verification
+state was `0x4C38A551` with error count `0`, confirming that all 12,544 hardware
+results matched the golden model.
