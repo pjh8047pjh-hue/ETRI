@@ -1,0 +1,24 @@
+# Vivado regenerated outputs
+*.cache/
+*.gen/
+*.hw/
+*.ip_user_files/
+*.runs/
+*.sim/
+.Xil/
+xsim.dir/
+
+# Vivado logs and generated artifacts
+*.jou
+*.log
+*.pb
+*.wdb
+*.dcp
+*.rpt
+*.bit
+*.ltx
+webtalk*
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
