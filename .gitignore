@@ -81,3 +81,28 @@ week5/mul_4bit_uart.tar.xz
 
 # 보드 플래싱용 산출물은 예외로 추적한다 (project_mobilenetV2/boot/README.md 참고)
 !project_mobilenetV2/boot/design_1_wrapper.bit
+
+# ---------------------------------------------------------------------------
+# 교육 종료 정리(2026-08-28) 시 추가
+# ---------------------------------------------------------------------------
+
+# Vitis/Eclipse 워크스페이스 메타데이터. 로컬 절대경로와 실행 기록만 담고 있어
+# 워크스페이스를 다시 열면 재생성된다.
+project_mobilenetV2/.metadata/
+project_mobilenetV2/.analytics
+**/RemoteSystemsTempFiles/
+
+# Google Drive 자동 동기화 폴더(로컬 전용, AGENTS.md 참고)
+GoogleDrive/
+
+# 개인 취업 준비 자료. 공개 저장소이므로 추적하지 않는다.
+자소서 특강.md
+반도체_전공역량_강화활동_보고서*.docx
+
+# 편집기가 남긴 확장자 없는 사본 / 백업본
+project_mobilenetV2/mobilenetV2_test/src/main
+*.xdc.bak
+
+# Vitis 시스템 프로젝트. 이 PC의 절대경로만 담고 있고 플랫폼에서 재생성된다
+# (VITIS_SETUP.md 참고). mobilenetV2_test/_ide, .cproject와 같은 범주.
+**/mobilenetV2_test_system/
