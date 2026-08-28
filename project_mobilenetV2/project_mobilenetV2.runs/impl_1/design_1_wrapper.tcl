@@ -122,11 +122,7 @@ start_step init_design
 set ACTIVE_STEP init_design
 set rc [catch {
   create_msg_db init_design.pb
-  set_param power.BramSDPPropagationFix 1
-  set_param chipscope.maxJobs 4
-  set_param power.enableUnconnectedCarry8PinPower 1
-  set_param power.enableCarry8RouteBelPower 1
-  set_param power.enableLutRouteBelPower 1
+  set_param chipscope.maxJobs 3
 OPTRACE "create in-memory project" START { }
   create_project -in_memory -part xczu3eg-sbva484-1-e
   set_property board_part em.avnet.com:ultra96v2:part0:1.0 [current_project]
@@ -139,7 +135,7 @@ OPTRACE "set parameters" START { }
   set_property ip_repo_paths C:/Users/user/Documents/JH/project_mobilenetV2 [current_project]
   update_ip_catalog
   set_property ip_output_repo C:/Users/user/Documents/JH/project_mobilenetV2/project_mobilenetV2.cache/ip [current_project]
-  set_property ip_cache_permissions {read write} [current_project]
+  set_property ip_cache_permissions disable [current_project]
   set_property XPM_LIBRARIES {XPM_CDC XPM_MEMORY} [current_project]
 OPTRACE "set parameters" END { }
 OPTRACE "add files" START { }

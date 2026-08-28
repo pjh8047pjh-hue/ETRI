@@ -53,6 +53,7 @@ module mobilenetV2(
     (* ASYNC_REG = "TRUE", SHREG_EXTRACT = "NO" *) logic [1:0] start_sync_ff;
     logic rst_core;
     logic start_core;
+    logic start_sync_seen;
 
     clk_wiz_0 clk_gen(.clk_in1(clk_in),
                   .locked(clk_locked),
@@ -78,17 +79,24 @@ module mobilenetV2(
 
     // These third-stage registers are intentionally outside the ASYNC_REG
     // chains so Vivado may replicate them to handle the large core fanout.
+    // AXI GPIO writes are levels and can last many core clocks; convert the
+    // synchronized start level into exactly one core-clock pulse so repeated
+    // start cannot repeatedly clear the accelerator's internal counters.
     always_ff @(posedge clk or negedge clk_locked) begin
         if (!clk_locked) begin
-            rst_core   <= 1'b1;
-            start_core <= 1'b0;
+            rst_core        <= 1'b1;
+            start_core      <= 1'b0;
+            start_sync_seen <= 1'b0;
         end else begin
             rst_core <= rst_sync_ff[1];
 
-            if (rst_sync_ff[1])
+            if (rst_sync_ff[1]) begin
                 start_core <= 1'b0;
-            else
-                start_core <= start_sync_ff[1];
+                start_sync_seen <= 1'b0;
+            end else begin
+                start_core      <= start_sync_ff[1] && !start_sync_seen;
+                start_sync_seen <= start_sync_ff[1];
+            end
         end
     end
 
@@ -206,6 +214,14 @@ module mobilenetV2(
     logic signed [15:0] result_write_data;
     logic               result_write_valid;
     logic        results_ready;
+    logic [15:0] debug_cycle_counter;
+    logic        debug_start_seen;
+    logic        debug_pw1_valid_seen;
+    logic        debug_pw1_done_seen;
+    logic        debug_depth_valid_seen;
+    logic        debug_write_done_seen;
+    logic        debug_pw2_valid_seen;
+    logic [15:0] debug_status;
 
     always_ff @(posedge clk) begin
         if (rst_core) begin
@@ -241,6 +257,54 @@ module mobilenetV2(
         end
     end
 
+    // The four addresses above the 12,544-entry result range are read-only
+    // hardware diagnostic pages. They make a board-side timeout distinguishable
+    // without an ILA and do not alter any normal result address.
+    always_ff @(posedge clk) begin
+        if (rst_core) begin
+            debug_cycle_counter    <= '0;
+            debug_start_seen       <= 1'b0;
+            debug_pw1_valid_seen   <= 1'b0;
+            debug_pw1_done_seen    <= 1'b0;
+            debug_depth_valid_seen <= 1'b0;
+            debug_write_done_seen  <= 1'b0;
+            debug_pw2_valid_seen   <= 1'b0;
+        end else begin
+            debug_cycle_counter <= debug_cycle_counter + 1'b1;
+            if (start_core)
+                debug_start_seen <= 1'b1;
+            if (pointwise_before_depth_valid)
+                debug_pw1_valid_seen <= 1'b1;
+            if (pointwise_before_depth_done)
+                debug_pw1_done_seen <= 1'b1;
+            if (depthwise_output_valid)
+                debug_depth_valid_seen <= 1'b1;
+            if (write_done)
+                debug_write_done_seen <= 1'b1;
+            if (pointwise_after_depth_valid)
+                debug_pw2_valid_seen <= 1'b1;
+        end
+    end
+
+    assign debug_status = {
+        clk_locked,                       // 15
+        rst_core,                         // 14
+        start_sync_ff[1],                 // 13
+        debug_start_seen,                 // 12
+        pointwise_before_depth_valid,     // 11
+        debug_pw1_valid_seen,             // 10
+        pointwise_before_depth_done,      // 9
+        debug_pw1_done_seen,              // 8
+        depthwise_output_valid,           // 7
+        debug_depth_valid_seen,           // 6
+        write_done,                       // 5
+        debug_write_done_seen,            // 4
+        pointwise_after_depth_valid,      // 3
+        debug_pw2_valid_seen,             // 2
+        result_write_valid,               // 1
+        results_ready                     // 0
+    };
+
     layer08_result_final u_layer08_result_final (
         .clka  (clk),
         .ena   ((result_write_valid && !results_ready) || results_ready),
@@ -251,8 +315,12 @@ module mobilenetV2(
         .douta (result_ram_dout)
     );
 
-    assign done   = results_ready;
-    assign result = result_ram_dout;
+    assign done = results_ready;
+    assign result = (result_addr_core == 14'h3fff) ? debug_status
+                  : (result_addr_core == 14'h3ffe) ? {2'b00, result_wr_addr}
+                  : (result_addr_core == 14'h3ffd) ? debug_cycle_counter
+                  : (result_addr_core == 14'h3ffc) ? 16'hd108
+                  : result_ram_dout;
 
     //-----------------------------------------------------------------
 

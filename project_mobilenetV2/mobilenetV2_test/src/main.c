@@ -1,3 +1,5 @@
+/* Actual Layer 08 FPGA verification through AXI GPIO. */
+
 #include "xgpio.h"
 #include "xparameters.h"
 #include "xstatus.h"
@@ -10,13 +12,49 @@
 #define DONE_MASK          0x00010000U
 #define START_MASK         0x00000001U
 #define RESET_MASK         0x00000002U
-#define DONE_POLL_LIMIT    10000000U
+#define DONE_POLL_LIMIT    1000000U
 #define MAX_ERROR_PRINTS   20U
 #define PL0_REF_CTRL_ADDR  0xFF5E00C0U
 #define PL0_CLKACT_MASK    0x01000000U
+#define DIAG_SIGNATURE_ADDR 0x3FFCU
+#define DIAG_COUNTER_ADDR   0x3FFDU
+#define DIAG_WRITE_ADDR     0x3FFEU
+#define DIAG_STATUS_ADDR    0x3FFFU
 
 /* Kept in PS memory so the complete hardware result can be inspected later. */
 volatile s16 output_data[RESULT_COUNT];
+volatile u32 verification_state = 0x4C380000U;
+volatile u32 verification_error_count = 0xFFFFFFFFU;
+
+static u32 read_result_address(XGpio *gpio, u32 address)
+{
+    XGpio_DiscreteWrite(gpio, 1, address << 2);
+    usleep(10);
+    return XGpio_DiscreteRead(gpio, 2) & 0xFFFFU;
+}
+
+static void print_hardware_diagnostics(XGpio *gpio)
+{
+    u32 signature = read_result_address(gpio, DIAG_SIGNATURE_ADDR);
+    u32 counter_a = read_result_address(gpio, DIAG_COUNTER_ADDR);
+    u32 write_addr = read_result_address(gpio, DIAG_WRITE_ADDR);
+    u32 diag = read_result_address(gpio, DIAG_STATUS_ADDR);
+    u32 counter_b;
+
+    usleep(1000);
+    counter_b = read_result_address(gpio, DIAG_COUNTER_ADDR);
+
+    xil_printf("DIAG signature=0x%04x counter=%04x->%04x write_addr=%u status=0x%04x\r\n",
+               signature, counter_a, counter_b, write_addr, diag);
+    xil_printf("DIAG lock=%u reset=%u start_level=%u start_seen=%u "
+               "pw1_seen=%u pw1_done=%u depth_seen=%u bram_done=%u "
+               "pw2_seen=%u results_ready=%u\r\n",
+               (diag >> 15) & 1U, (diag >> 14) & 1U,
+               (diag >> 13) & 1U, (diag >> 12) & 1U,
+               (diag >> 10) & 1U, (diag >> 8) & 1U,
+               (diag >> 6) & 1U, (diag >> 4) & 1U,
+               (diag >> 2) & 1U, diag & 1U);
+}
 
 static int golden_pw_q312(int channel, int pixel)
 {
@@ -38,7 +76,8 @@ static int golden_depth_q312(int channel, int pixel)
     int col = pixel % 14;
     int acc = 0;
     int bias_real;
-    int dr, dc;
+    int dr;
+    int dc;
 
     for (dr = -1; dr <= 1; ++dr) {
         for (dc = -1; dc <= 1; ++dc) {
@@ -95,27 +134,30 @@ int main(void)
         xil_printf("ERROR: AXI GPIO initialization failed\r\n");
         return XST_FAILURE;
     }
-
     /* Channel 1: {result_addr[13:0], rst, start}; Channel 2: {done, result}. */
     XGpio_SetDataDirection(&gpio, 1, 0x00000000U);
-    XGpio_SetDataDirection(&gpio, 2, 0x0001FFFFU);
+    /* Channel 2 is synthesized with C_ALL_INPUTS_2=1; do not write TRI2. */
 
     pl0_ref_ctrl = Xil_In32(PL0_REF_CTRL_ADDR);
     xil_printf("PL0_REF_CTRL=0x%08x CLKACT=%u\r\n",
                pl0_ref_ctrl,
                (pl0_ref_ctrl & PL0_CLKACT_MASK) ? 1U : 0U);
 
+    /* Allow the PL reset release and the accelerator Clock Wizard to settle. */
+    xil_printf("waiting for PL clock lock\r\n");
+    sleep(1);
+
     XGpio_DiscreteWrite(&gpio, 1, RESET_MASK);
-    usleep(10);
+    usleep(1000);
     reset_readback = XGpio_DiscreteRead(&gpio, 1);
     XGpio_DiscreteWrite(&gpio, 1, 0U);
-    usleep(10);
+    usleep(1000);
 
     XGpio_DiscreteWrite(&gpio, 1, START_MASK);
-    usleep(10);
+    usleep(1000);
     start_readback = XGpio_DiscreteRead(&gpio, 1);
     XGpio_DiscreteWrite(&gpio, 1, 0U);
-    usleep(10);
+    usleep(1000);
 
     status = XGpio_DiscreteRead(&gpio, 2);
     xil_printf("GPIO reset_readback=0x%08x start_readback=0x%08x\r\n",
@@ -129,9 +171,14 @@ int main(void)
         if ((status & DONE_MASK) != 0U)
             break;
     }
-
     if ((status & DONE_MASK) == 0U) {
+        verification_state = 0x4C38DEADU;
+        verification_error_count = 0xFFFFFFFFU;
+        Xil_DCacheFlushRange((UINTPTR)&verification_state,
+                             sizeof(verification_state) +
+                             sizeof(verification_error_count));
         xil_printf("FAIL: timeout waiting for done, CH2=0x%08x\r\n", status);
+        print_hardware_diagnostics(&gpio);
         while (1) {
             sleep(1);
             status = XGpio_DiscreteRead(&gpio, 2);
@@ -162,6 +209,11 @@ int main(void)
     }
 
     Xil_DCacheFlushRange((UINTPTR)output_data, sizeof(output_data));
+    verification_error_count = error_count;
+    verification_state = (error_count == 0U) ? 0x4C38A551U : 0x4C38FA11U;
+    Xil_DCacheFlushRange((UINTPTR)&verification_state,
+                         sizeof(verification_state) +
+                         sizeof(verification_error_count));
 
     if (error_count == 0U) {
         xil_printf("PASS: all %u results match golden\r\n", RESULT_COUNT);
